@@ -1,0 +1,67 @@
+name: Bug report
+description: Something in Endury isn't working as expected.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. Your plan and training data live on your
+        intervals.icu account, not here, so there's no need to paste any of
+        that. **Never paste an API key, wellness data or a place you train** (intervals.icu or OpenRouter) into
+        an issue — if you think a key leaked, rotate it in that service's
+        own settings.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: input
+    id: browser-os
+    attributes:
+      label: Browser and OS
+      placeholder: e.g. Safari 18 on iOS 18, or Chrome 130 on Windows 11
+    validations:
+      required: true
+  - type: dropdown
+    id: installed
+    attributes:
+      label: Installed as a home-screen app?
+      options:
+        - "Yes"
+        - "No"
+        - "Not sure"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Shown in Settings, if your build has it there.
+    validations:
+      required: false
+  - type: textarea
+    id: console
+    attributes:
+      label: Console errors
+      description: Any errors from the browser's developer console (F12 → Console).
+      render: text
+    validations:
+      required: false

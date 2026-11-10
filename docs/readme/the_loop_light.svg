@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 224" width="960" height="224" role="img" aria-labelledby="t d">
+  <title id="t">The weekly loop</title>
+  <desc id="d">Connect intervals.icu, build a plan, train from your watch, review each session, adapt the plan; steps three to five repeat every week.</desc>
+  <defs>
+    <style>
+      text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #1F2328; }
+      .n { font-size: 24px; font-weight: 700; fill: #8C959F; }
+      .h { font-size: 15px; font-weight: 600; }
+      .s { font-size: 12.5px; fill: #59636E; }
+      .box { fill: #FFFFFF; stroke: #D0D7DE; stroke-width: 1.2; }
+      .line { stroke: #59636E; stroke-width: 1.6; fill: none; }
+      .loop { stroke: #3F8A53; stroke-width: 1.6; fill: none; stroke-dasharray: 6 4; }
+    </style>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#59636E"/>
+    </marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#3F8A53"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="224" rx="18" fill="#F6F8FA" stroke="#D0D7DE"/>
+
+  <!-- step 1 -->
+  <rect x="22" y="28" width="164" height="120" rx="12" class="box"/>
+  <text x="36" y="64" class="n">1</text>
+  <text x="58" y="64" class="h">Connect</text>
+  <text x="36" y="90" class="s">Paste your</text>
+  <text x="36" y="108" class="s">intervals.icu key.</text>
+  <text x="36" y="126" class="s">No account.</text>
+
+  <path d="M186 88 L210 88" class="line" marker-end="url(#a)"/>
+
+  <!-- step 2 -->
+  <rect x="210" y="28" width="164" height="120" rx="12" class="box"/>
+  <text x="224" y="64" class="n">2</text>
+  <text x="246" y="64" class="h">Plan</text>
+  <text x="224" y="90" class="s">Pick the race,</text>
+  <text x="224" y="108" class="s">the date and</text>
+  <text x="224" y="126" class="s">your ambition.</text>
+
+  <path d="M374 88 L398 88" class="line" marker-end="url(#a)"/>
+
+  <!-- step 3 -->
+  <rect x="398" y="28" width="164" height="120" rx="12" class="box"/>
+  <text x="412" y="64" class="n">3</text>
+  <text x="434" y="64" class="h">Train</text>
+  <text x="412" y="90" class="s">Each session</text>
+  <text x="412" y="108" class="s">arrives on your</text>
+  <text x="412" y="126" class="s">watch.</text>
+
+  <path d="M562 88 L586 88" class="line" marker-end="url(#a)"/>
+
+  <!-- step 4 -->
+  <rect x="586" y="28" width="164" height="120" rx="12" class="box"/>
+  <text x="600" y="64" class="n">4</text>
+  <text x="622" y="64" class="h">Review</text>
+  <text x="600" y="90" class="s">See what you did</text>
+  <text x="600" y="108" class="s">next to what</text>
+  <text x="600" y="126" class="s">was planned.</text>
+
+  <path d="M750 88 L774 88" class="line" marker-end="url(#a)"/>
+
+  <!-- step 5 -->
+  <rect x="774" y="28" width="164" height="120" rx="12" class="box"/>
+  <text x="788" y="64" class="n">5</text>
+  <text x="810" y="64" class="h">Adapt</text>
+  <text x="788" y="90" class="s">Move a session,</text>
+  <text x="788" y="108" class="s">replan, or ask</text>
+  <text x="788" y="126" class="s">the coach.</text>
+
+  <!-- the loop back from 5 to 3 -->
+  <path d="M856 148 L856 180 L480 180 L480 151" class="loop" marker-end="url(#g)"/>
+  <text x="668" y="202" class="s" text-anchor="middle" style="fill: #3F8A53">every week, for as long as the plan runs</text>
+</svg>

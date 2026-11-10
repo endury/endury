@@ -1,0 +1,175 @@
+/* Endury — Design Tokens
+   Single source of truth for the visual language shared by the mobile and
+   web shells. Change a value here and the app follows — a design edit is a
+   one-line token diff. */
+
+:root {
+  /* Surfaces (dark, warm-neutral) */
+  --cb-bg:              #19191B;   /* app background base */
+  --cb-bg-grad-top:     #1B1B1D;   /* top of the 160deg app gradient */
+  --cb-bg-grad-bot:     #171719;   /* bottom of the app gradient */
+  --cb-surface-1:       #1C1C1E;   /* rails, sunken panels */
+  --cb-surface-2:       #232325;   /* cards, inputs, chips (default) */
+  --cb-surface-3:       #2D2D30;   /* raised cards, nested tiles */
+  --cb-sheet-top:       #272729;   /* coach sheet / modal gradient top */
+  --cb-sheet-bot:       #1D1D1F;   /* coach sheet / modal gradient bottom */
+
+  /* Lines */
+  --cb-border:          #333336;   /* default hairline */
+  --cb-border-strong:   #3A3A3D;   /* modal / sheet edges */
+  --cb-border-faint:    #2B2B2E;   /* month cells, subtle dividers */
+  --cb-border-raised:   color-mix(in srgb, var(--cb-text-muted) 22%, transparent);   /* dividers on a raised card */
+
+  /* Text */
+  --cb-text:            #E5E5E7;   /* primary */
+  --cb-text-strong:     #EBE8E2;   /* coach name / emphasis */
+  --cb-text-muted:      #ADADB1;   /* secondary / labels — the dimmest legible tier */
+
+  /* Accent (warm platinum — the one brand accent) */
+  --cb-accent:          #B5B3AE;   /* primary actions, selection, ring */
+  --cb-accent-ink:      #19191B;   /* dark ink ON a light/mid fill (accent, race-a, good, warn, alert, miss) */
+  --cb-ink-light:       #FFFFFF;   /* light ink ON a dark fill (brand tiles) — the counterpart to accent-ink */
+
+  /* Semantic status (used sparingly — see rules below) */
+  --cb-good:            #86AD90;   /* on-target, connected, readiness OK (calm sage) */
+  --cb-good-bright:     #30D158;   /* "live"/online dot, fresh DONE badge only */
+  --cb-warn:            #C68F6C;   /* mild off-target, fatigue signal (calm terracotta) */
+  --cb-miss:            #C4748C;   /* missed session — its own hue, not warn's sync/off-target meaning */
+  --cb-skip:            #8FA3B8;   /* deliberately skipped session (illness/pause) — quieter than missed, distinct from planned grey */
+  --cb-alert:           #D9663F;   /* reserved: genuine problems only (sync failed, overreaching, listening) */
+
+  /* Sport colors (calendar cards, dots, load bars) */
+  --cb-sport-bike:      rgb(0,176,80);
+  --cb-sport-run:       rgb(255,149,0);
+  --cb-sport-swim:      rgb(0,120,215);
+  --cb-sport-strength:  rgb(155,89,182);
+  --cb-sport-rest:      rgb(142,142,147);
+  --cb-sport-other:     rgb(142,142,147);
+
+  /* Race priority */
+  --cb-race-a:          #b88a3a;   /* A race (gold) */
+  --cb-race-b:          #BE5167;   /* B tune-up (muted rose) — darkened so --cb-ink-light clears AA 4.5:1 */
+  --cb-race-c:          #6B7686;   /* C tune-up (slate) — darkened so --cb-ink-light clears AA 4.5:1 */
+
+  /* Zone palette (calm, 5-step, cool→warm) */
+  --cb-zone-1:          #8A9BA8;
+  --cb-zone-2:          #7FA8AC;   /* also CTL / fitness line */
+  --cb-zone-3:          #86AD90;
+  --cb-zone-4:          #C2A96B;   /* also ATL / fatigue line */
+  --cb-zone-5:          #C68F6C;   /* also TSB / form line */
+
+  /* Workout step colors (session outline / step list) */
+  --cb-step-warmup:     #0A84FF;
+  --cb-step-interval:   #FF9F0A;
+  --cb-step-recovery:   #30D158;
+  --cb-step-cooldown:   #BF5AF2;
+  --cb-step-rest:       #636366;
+
+  /* Brand (third-party integration tiles — not part of the app palette) */
+  --cb-brand-garmin:        #0a6fb0;
+  --cb-brand-strava:        #b5541f;
+  --cb-brand-wahoo:         #3b6ea5;
+  --cb-brand-trainingpeaks: #3a7d8c;
+  --cb-brand-apple:         #9b5b6b;
+
+  /* Typography */
+  --cb-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --cb-fs-hero:   26px;  /* ring value, big numbers */
+  --cb-fs-title:  17px;  /* screen title */
+  --cb-fs-body:   13px;  /* chat, buttons, card title */
+  --cb-fs-input:  16px;  /* text controls — iOS zooms a focused input below 16px */
+  --cb-fs-meta:   11px;  /* metrics row */
+  --cb-fs-label:  10px;  /* UPPERCASE section labels (letter-spacing .06em) */
+  --cb-fs-micro:  9px;   /* badges, axis ticks */
+  /* The session and race sheets, read at arm's length before a session. */
+  --cb-fs-sheet-hero:  38px;  /* the main set */
+  --cb-fs-sheet-title: 20px;  /* title row */
+  --cb-fs-sheet-body:  15px;  /* rows, paragraphs, buttons */
+  --cb-fs-sheet-meta:  14px;  /* a row's answer, the facts line */
+  --cb-fs-sheet-label: 13px;  /* section labels, stat labels */
+
+  /* Radii */
+  --cb-r-bar:     2px;   /* progress/load bars, sport dots, sheet handle */
+  --cb-r-chip:    6px;   /* small square controls, chips, badges */
+  --cb-r-card:    12px;
+  --cb-r-tile:    9px;
+  --cb-r-pill:    999px;
+  --cb-r-sheet:   20px;
+  --cb-r-phone:   37px;  /* device screen inner radius (mobile frame only) */
+
+  /* Spacing scale. The UI is laid out on a 2px grid; -N-5 names are the
+     half-steps between the whole steps, so a dense component can stay
+     on-scale without rounding. */
+  --cb-sp-0-5: 2px;  --cb-sp-1: 4px;    --cb-sp-1-5: 6px;
+  --cb-sp-2: 8px;    --cb-sp-2-5: 10px; --cb-sp-3: 12px;
+  --cb-sp-3-5: 14px; --cb-sp-4: 16px;   --cb-sp-5: 18px;
+  --cb-sp-5-5: 20px; --cb-sp-6: 22px;   --cb-sp-7: 24px;
+
+  /* Motion */
+  --cb-ease:      cubic-bezier(.4,0,.2,1);
+  --cb-dur-fast:  .15s;
+  --cb-dur-med:   .3s;
+  --cb-dur-drawer:.32s;
+}
+
+/* Light theme (theme.js sets data-theme from the athlete's choice). The
+   same roles on a warm off-white: surfaces still rise lighter, and every
+   fill that carries --cb-accent-ink is dark enough for white ink, so the
+   ink flips with the accent. Sport, race-b/c and brand colours carry over. */
+:root[data-theme="light"] {
+  --cb-bg:              #EDECE8;
+  --cb-bg-grad-top:     #F0EFEB;
+  --cb-bg-grad-bot:     #EAE9E5;
+  --cb-surface-1:       #F2F1EE;
+  --cb-surface-2:       #F8F7F5;
+  --cb-surface-3:       #FFFFFF;
+  --cb-sheet-top:       #FBFAF8;
+  --cb-sheet-bot:       #F2F1EE;
+
+  --cb-border:          #D9D7D2;
+  --cb-border-strong:   #CCCAC4;
+  --cb-border-faint:    #E3E1DC;
+
+  --cb-text:            #1F1F21;
+  --cb-text-strong:     #141416;
+  --cb-text-muted:      #5C5C61;   /* 5.6:1 on the background */
+
+  --cb-accent:          #4A4843;   /* warm graphite */
+  --cb-accent-ink:      #FFFFFF;
+
+  --cb-good:            #3E7A4E;   /* each status clears AA under white ink and as text */
+  --cb-good-bright:     #1E8239;
+  --cb-warn:            #A65A30;
+  --cb-miss:            #A3476A;
+  --cb-skip:            #4E6A86;
+  --cb-alert:           #B8461F;
+
+  --cb-race-a:          #8A6420;
+
+  --cb-zone-1:          #73879A;
+  --cb-zone-2:          #5E9397;
+  --cb-zone-3:          #5F9670;
+  --cb-zone-4:          #B08F3E;
+  --cb-zone-5:          #B8704A;
+
+  --cb-step-warmup:     #007AFF;
+  --cb-step-interval:   #F08C00;
+  --cb-step-recovery:   #28A745;
+  --cb-step-cooldown:   #AF52DE;
+  --cb-step-rest:       #8E8E93;
+}
+
+/*
+  Color semantics: keep the palette disciplined.
+  1. One accent (--cb-accent). Primary buttons, selection, the load ring,
+     the coach's left message border. Do not introduce new accents.
+  2. --cb-alert is reserved for genuine problems the athlete must act on:
+     failed sync, overreaching flag, active voice "listening". Never
+     for decoration. If everything is alert-colored, nothing is.
+  3. Compliance/adherence uses --cb-good (90–112% of plan) and --cb-warn
+     (outside that band). Percentages, not new hues.
+  4. Sport identity rides edges and markers (the card's left stripe, dots,
+     bars) — never a full-body card tint, which costs metadata contrast and
+     makes adjacent cards read as competing skins.
+  5. Fitness lines: CTL=zone-2, ATL=zone-4, TSB=zone-5 (dashed).
+*/

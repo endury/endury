@@ -1,0 +1,861 @@
+/* Endury — full-surface components: session detail, plan editor. Classes
+   carry every literal that is constant across instances; per-item
+   colors/sizes (sport tints, race priority, bar heights/widths) are set
+   inline by the renderers because they vary per data row. */
+
+/* Shared primitives */
+
+/* .cb-badge (base + --good/--warn/--done/--muted + the --agenda/--grid size
+   variants), and .cb-outline/.cb-outline__seg--* (workout-outline mini-bars)
+   live in kit.css — session_detail.js reuses them via session_card.js's
+   badgeMeta() and workout_outline.js's renderOutline(), so this file adds
+   no badge/outline rules of its own. */
+
+.cb-btn-primary {
+  font-size: var(--cb-fs-body);
+  font-weight: 600;
+  color: var(--cb-accent-ink);
+  background: var(--cb-accent);
+  border: none;
+  border-radius: var(--cb-r-card);
+  padding: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.cb-btn-primary:disabled { opacity: .5; cursor: default; }
+.cb-btn-primary--block { width: 100%; padding: var(--cb-sp-3-5); }
+
+.cb-btn-secondary {
+  font-size: var(--cb-fs-body);
+  font-weight: 500;
+  color: var(--cb-accent);
+  background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-card);
+  padding: 12px 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cb-divider {
+  height: 1px;
+  background: var(--cb-border);
+  margin: 14px 0;
+}
+
+/* .cb-section-label base lives in insights.css (shared with the insight
+   cards); only the margin here is specific to this component. */
+.cb-plan .cb-section-label { margin-bottom: var(--cb-sp-2-5); }
+
+.cb-stat-label { font-size: var(--cb-fs-micro); color: var(--cb-text-muted); }
+.cb-stat-value { font-size: var(--cb-fs-title); font-weight: 600; margin-top: 0; }
+.cb-stat-sub { font-size: var(--cb-fs-micro); color: var(--cb-text-muted); margin-top: 0; }
+
+/* Session and race sheet (sheet_pages.js): an overview of one-line answers,
+   and a page behind each row with more to say. The sheet owns its gutter so
+   the head and the action row can pin edge to edge while the body scrolls. */
+
+.cb-modal:has(> .cb-sheet) { padding: 0; gap: 0; background: var(--cb-surface-1); }
+/* The overview should fit a phone without scrolling, under its status bar. */
+.cb-modal--sheet:has(> .cb-sheet) { max-height: calc(100% - max(40px, env(safe-area-inset-top, 0px) + 8px)); }
+.cb-modal--sheet:has(> .cb-sheet) .cb-modal__handle { margin-top: var(--cb-sp-2); }
+
+.cb-sheet { font-size: var(--cb-fs-sheet-body); line-height: 1.45; font-variant-numeric: tabular-nums; }
+.cb-sheet__page { display: flex; flex-direction: column; }
+.cb-sheet__page[hidden] { display: none; }
+
+.cb-sheet__head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cb-sp-2-5);
+  padding: var(--cb-sp-2) var(--cb-sp-2) var(--cb-sp-2) var(--cb-sp-4);
+  background: var(--cb-surface-1);
+}
+.cb-sheet__heading { flex: 1; min-width: 0; }
+.cb-sheet__meta { font-size: var(--cb-fs-sheet-meta); color: var(--cb-text-muted); }
+.cb-sheet__head .cb-badge { margin-top: var(--cb-sp-1-5); }
+
+.cb-detail-dot {
+  width: 12px;
+  height: 12px;
+  margin-top: var(--cb-sp-2);
+  border-radius: 3px;
+  flex: none;
+}
+.cb-detail-title {
+  font-size: var(--cb-fs-sheet-title);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--cb-text-strong);
+}
+
+.cb-sheet-ib {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: none;
+  color: var(--cb-text-muted);
+  cursor: pointer;
+}
+/* A phone's touch target; the desktop dialog's own idiom. */
+.cb-modal--sheet .cb-sheet-ib { width: 44px; height: 44px; border-radius: var(--cb-r-card); }
+.cb-modal--center .cb-sheet-ib { width: 36px; height: 36px; border-radius: var(--cb-r-tile); }
+
+.cb-sheet-back {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-0-5);
+  margin-left: calc(var(--cb-sp-2) * -1);
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--cb-fs-sheet-body);
+  font-weight: 500;
+  color: var(--cb-text-muted);
+  text-align: left;
+  cursor: pointer;
+}
+.cb-sheet-back svg { flex: none; }
+.cb-sheet-back span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.cb-sheet__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-sp-3);
+  padding: var(--cb-sp-1) var(--cb-sp-4) var(--cb-sp-3);
+}
+.cb-sheet__body--page { padding-bottom: calc(var(--cb-sp-7) + env(safe-area-inset-bottom, 0px)); }
+.cb-sheet__body > :empty { display: none; }
+.cb-sheet__title { margin: 0; font-size: 26px; font-weight: 700; line-height: 1.2; color: var(--cb-text-strong); }
+.cb-sheet__sub { font-size: var(--cb-fs-sheet-meta); color: var(--cb-text-muted); }
+.cb-sheet__foot-note { font-size: var(--cb-fs-sheet-label); color: var(--cb-text-muted); }
+
+.cb-sheet__foot {
+  position: sticky;
+  bottom: 0;
+  padding: var(--cb-sp-2) var(--cb-sp-4) calc(var(--cb-sp-5) + env(safe-area-inset-bottom, 0px));
+  background: var(--cb-surface-1);
+}
+
+/* The hero: the set of a session to come, the verdict on a done one. */
+.cb-sheet-hero, .cb-sheet-card {
+  flex: none;
+  background: var(--cb-surface-3);
+  border-radius: 16px;
+  padding: var(--cb-sp-4);
+}
+.cb-sheet-hero__big {
+  font-size: var(--cb-fs-sheet-hero);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  color: var(--cb-text-strong);
+}
+.cb-sheet-hero__verdict {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-2);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--cb-text-strong);
+}
+.cb-sheet-hero__check { flex: none; display: flex; color: var(--cb-good); }
+.cb-sheet-hero__line {
+  margin-top: var(--cb-sp-0-5);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--cb-text-strong);
+}
+.cb-sheet-hero__sub { font-size: var(--cb-fs-sheet-meta); color: var(--cb-text-muted); }
+.cb-sheet-hero .cb-outline, .cb-sheet-hero [data-trace-slot] { margin-top: var(--cb-sp-3-5); }
+.cb-sheet-hero .cb-outline { border: 0; background: none; }
+.cb-sheet-hero__ends {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--cb-sp-3);
+  margin-top: var(--cb-sp-1-5);
+  font-size: var(--cb-fs-sheet-label);
+  color: var(--cb-text-muted);
+}
+
+/* The rows: a title and its one-line answer, in one grouped list. */
+.cb-sheet-list { flex: none; background: var(--cb-surface-3); border-radius: 14px; overflow: hidden; }
+.cb-sheet-row {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-2);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--cb-sp-2) var(--cb-sp-3) var(--cb-sp-2) var(--cb-sp-4);
+  border: 0;
+  border-top: 1px solid var(--cb-border-raised);
+  background: none;
+  font: inherit;
+  color: var(--cb-text-muted);
+  text-align: left;
+  cursor: pointer;
+}
+.cb-sheet-row:first-child { border-top: 0; }
+.cb-sheet-row--plain { cursor: default; }
+.cb-sheet-row svg { flex: none; }
+.cb-sheet-row__text { flex: 1; min-width: 0; display: block; }
+.cb-sheet-row__title { display: block; font-weight: 500; line-height: 1.35; color: var(--cb-text-strong); }
+.cb-sheet-row__answer {
+  display: block;
+  font-size: var(--cb-fs-sheet-meta);
+  line-height: 1.35;
+  color: var(--cb-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cb-sheet-row__answer--whole { white-space: normal; }
+.cb-sheet-row__answer--two {
+  display: -webkit-box;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.cb-sheet-row .cb-zonebar { display: flex; margin-top: var(--cb-sp-1-5); }
+.cb-brief { display: contents; }
+.cb-brief--loading { display: block; min-height: 180px; padding: var(--cb-sp-4); }
+
+/* A rep against the plan's band: the band in the middle of its track. */
+.cb-rep { padding: var(--cb-sp-3) 0 var(--cb-sp-3-5); border-top: 1px solid var(--cb-border-raised); }
+.cb-rep:first-child { border-top: 0; padding-top: 0; }
+.cb-rep__line { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: baseline; }
+.cb-rep__n { font-size: var(--cb-fs-sheet-meta); color: var(--cb-text-muted); }
+.cb-rep__main { font-size: 18px; font-weight: 600; color: var(--cb-text-strong); }
+.cb-rep__track {
+  position: relative;
+  height: 6px;
+  margin-top: var(--cb-sp-2-5);
+  border-radius: 3px;
+  background: var(--cb-border-raised);
+}
+.cb-rep__band {
+  position: absolute;
+  inset: 0 20%;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--cb-good) 40%, transparent);
+}
+.cb-rep__mark {
+  position: absolute;
+  top: -3px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--cb-surface-3);
+  background: var(--cb-good);
+}
+.cb-rep__ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--cb-fs-sheet-label);
+  color: var(--cb-text-muted);
+}
+
+/* How you felt: five words, then ten effort steps, each a comfortable tap. */
+.cb-verdict { display: flex; flex-direction: column; gap: var(--cb-sp-3); }
+.cb-verdict__feel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cb-sp-2); }
+.cb-verdict__feel .cb-reschedule-btn:last-child { grid-column: span 2; }
+.cb-verdict__feel .cb-reschedule-btn { text-transform: capitalize; }
+.cb-verdict__effort { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--cb-sp-2); }
+
+/* What the sheet reuses from elsewhere, at the sheet's reading size. */
+.cb-sheet .cb-reschedule-label {
+  font-size: var(--cb-fs-sheet-label);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: var(--cb-sp-1-5);
+}
+.cb-sheet .cb-reschedule-row { gap: var(--cb-sp-1); }
+.cb-sheet .cb-reschedule-btn {
+  min-height: 44px;
+  background: var(--cb-surface-3);
+  font-size: var(--cb-fs-sheet-label);
+  color: var(--cb-text);
+}
+.cb-sheet .cb-reschedule-btn--current { background: var(--cb-accent); color: var(--cb-accent-ink); }
+.cb-sheet .cb-detail-note, .cb-sheet .cb-detail-cue, .cb-sheet .cb-why-para {
+  font-size: var(--cb-fs-sheet-body);
+  color: var(--cb-text);
+}
+.cb-sheet .cb-detail-note { color: var(--cb-text-muted); }
+.cb-sheet .cb-detail-cue b { color: var(--cb-text-strong); }
+.cb-sheet .cb-detail-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--cb-sp-3); }
+.cb-sheet .cb-stat-label, .cb-sheet .cb-stat-sub { font-size: var(--cb-fs-sheet-label); }
+.cb-sheet .cb-stat-value { font-size: 22px; line-height: 1.2; color: var(--cb-text-strong); }
+.cb-sheet .cb-workout-steps { max-height: none; }
+.cb-sheet .cb-workout-row { padding: var(--cb-sp-2-5) 0; border-bottom-color: var(--cb-border-faint); }
+.cb-sheet .cb-workout-row:last-child { border-bottom: 0; }
+.cb-sheet .cb-workout-name { font-size: var(--cb-fs-sheet-body); color: var(--cb-text-strong); }
+.cb-sheet .cb-workout-target { font-size: var(--cb-fs-sheet-meta); }
+.cb-sheet .cb-workout-dur { font-size: var(--cb-fs-sheet-body); color: var(--cb-text-strong); }
+.cb-sheet .cb-workout-repeat-head {
+  font-size: var(--cb-fs-sheet-label);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--cb-text-muted);
+}
+.cb-sheet .cb-workout-toggle { background: var(--cb-surface-3); border: 0; border-radius: 14px; min-height: 52px; }
+.cb-sheet .cb-workout-toggle-label { font-size: var(--cb-fs-sheet-body); font-weight: 500; }
+.cb-sheet .cb-zonebar { height: 12px; }
+.cb-sheet .cb-zonebar-item { font-size: var(--cb-fs-sheet-label); }
+.cb-sheet .cb-zonebar-dot { width: 8px; height: 8px; }
+.cb-sheet .cb-link-line { font-size: var(--cb-fs-sheet-body); }
+.cb-sheet .cb-btn-secondary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--cb-sp-2) var(--cb-sp-3);
+  background: var(--cb-surface-3);
+  font-size: var(--cb-fs-sheet-body);
+  color: var(--cb-text);
+  text-decoration: none;
+}
+.cb-sheet .cb-msg--coach {
+  border-left: 0;
+  padding: var(--cb-sp-4);
+  border-radius: 16px;
+  background: var(--cb-surface-3);
+}
+.cb-sheet .cb-msg__meta {
+  font-size: var(--cb-fs-sheet-label);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--cb-text-muted);
+}
+.cb-sheet .cb-msg__text { font-size: 16px; line-height: 1.5; }
+.cb-sheet .cb-thinking__label { font-size: var(--cb-fs-sheet-meta); }
+
+.cb-detail-note { font-size: var(--cb-fs-body); line-height: 1.5; color: var(--cb-text-muted); }
+
+.cb-detail-cues { display: flex; flex-direction: column; gap: 4px; }
+.cb-detail-cue { font-size: var(--cb-fs-body); line-height: 1.5; color: var(--cb-text-muted); }
+
+.cb-why-para { font-size: var(--cb-fs-body); line-height: 1.5; color: var(--cb-text-muted); margin: 0 0 6px; }
+.cb-why-para:last-child { margin-bottom: 0; }
+
+.cb-workout-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-tile);
+  padding: var(--cb-sp-3) var(--cb-sp-3-5);
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--cb-text);
+}
+.cb-workout-toggle-label { font-size: var(--cb-fs-body); font-weight: 600; }
+.cb-workout-chevron { transition: transform var(--cb-dur-fast) var(--cb-ease); color: var(--cb-text-muted); }
+.cb-workout-toggle[aria-expanded="true"] .cb-workout-chevron { transform: rotate(180deg); }
+
+.cb-workout-steps {
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 6px;
+  padding: 2px 4px 2px 2px;
+}
+.cb-workout-repeat-head {
+  font-size: var(--cb-fs-micro);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--cb-accent);
+  padding: var(--cb-sp-2-5) 0 var(--cb-sp-0-5);
+}
+.cb-workout-row {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-2);
+  padding: var(--cb-sp-2) 0;
+  border-bottom: 1px solid var(--cb-border);
+}
+.cb-workout-row--child { margin-left: 16px; }
+.cb-workout-bar { width: 3px; border-radius: 2px; align-self: stretch; flex: none; }
+.cb-workout-info { flex: 1; min-width: 0; }
+.cb-workout-name { font-size: var(--cb-fs-body); font-weight: 500; color: var(--cb-text); }
+.cb-workout-target { font-size: var(--cb-fs-label); color: var(--cb-text-muted); }
+.cb-workout-dur { font-size: var(--cb-fs-meta); font-weight: 600; color: var(--cb-text-muted); white-space: nowrap; }
+
+/* Activity debrief: time-in-zones bar + legend (activity_debrief.js) */
+.cb-zonebar {
+  display: flex;
+  height: 8px;
+  border-radius: var(--cb-r-bar);
+  overflow: hidden;
+  background: var(--cb-surface-3);
+}
+.cb-zonebar__seg { height: 100%; }
+.cb-zonebar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cb-sp-1) var(--cb-sp-2-5);
+  margin-top: var(--cb-sp-1-5);
+}
+.cb-zonebar-item {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-1);
+  font-size: var(--cb-fs-label);
+  color: var(--cb-text-muted);
+}
+.cb-zonebar-dot { width: 7px; height: 7px; border-radius: var(--cb-r-bar); flex: none; }
+
+/* Activity debrief: recorded intensity trace (activity_trace.js). Bar
+   height/width/fill vary per bucket and are set inline by the renderer; the
+   frame, the threshold rule and the scrub cursor are constant and live here. */
+.cb-trace { display: flex; flex-direction: column; gap: var(--cb-sp-1-5); }
+.cb-trace-skeleton {
+  height: 112px;
+  border-radius: var(--cb-r-tile);
+  background: var(--cb-surface-3);
+}
+.cb-trace__box {
+  position: relative;
+  height: 72px;
+  border-radius: var(--cb-r-tile);
+  /* The track colour .cb-zonebar uses: the only surface token that stays
+     visible the whole length of the modal's own --cb-sheet-top/bot gradient. */
+  background: var(--cb-surface-3);
+  overflow: hidden;
+  /* Horizontal drag scrubs; vertical drag still scrolls the sheet. */
+  touch-action: pan-y;
+}
+.cb-trace__bars { display: flex; align-items: flex-end; height: 100%; }
+.cb-trace__bars--even { gap: 1px; }
+/* Measured: a 96-bucket trace is ~3.9px per bar in the 520px web modal, where
+   the hairline separates the buckets and the rounded cap reads as a bar, but
+   ~1.4px in the 342px phone sheet, where the 1px gap is as wide as the bar
+   (picket fence) and 96 caps scallop the top edge. The phone therefore draws
+   the same data as one continuous profile. Same scoping idiom as kit.css's
+   .cb-toast. */
+html[data-shell="mobile"] .cb-trace__bars--even { gap: 0; }
+html[data-shell="mobile"] .cb-trace__bars--even > .cb-trace__bar { border-radius: 0; }
+.cb-trace__bar {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: var(--cb-r-bar) var(--cb-r-bar) 0 0;
+}
+/* Rest, or a bucket the recording dropped: a flat floor segment the width of
+   the interval it stands for. Capped at the bar radius it rendered as a 3px
+   speck between the reps rather than as part of the trace. */
+.cb-trace__bar--rest {
+  height: 8%;
+  border-radius: 0;
+  background: var(--cb-text-muted);
+  opacity: .4;
+}
+/* Muted, not a border tone: this is the one datum the whole strip is read
+   against, and a hairline in --cb-border-strong disappears into the track. */
+.cb-trace__thresh {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed var(--cb-text-muted);
+  pointer-events: none;
+}
+.cb-trace__cursor {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--cb-text);
+  pointer-events: none;
+}
+.cb-trace__elev {
+  display: block;
+  width: 100%;
+  height: 18px;
+  margin-top: var(--cb-sp-0-5);
+  border-radius: var(--cb-r-bar);
+  background: var(--cb-surface-3);
+}
+.cb-trace__elev-fill { fill: var(--cb-text-muted); opacity: .3; }
+/* Caption left, the dashed rule's legend right. The legend lives out here
+   rather than on the rule: inside the plot it sat on top of whichever bars
+   were nearest threshold — in a threshold session, all of them. */
+.cb-trace__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-sp-2);
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+}
+.cb-trace__legend { display: flex; align-items: center; gap: var(--cb-sp-1-5); flex: none; }
+.cb-trace__legend-rule { width: 14px; border-top: 1px dashed var(--cb-text-muted); }
+
+.cb-reschedule-label {
+  font-size: var(--cb-fs-micro);
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--cb-text-muted);
+  margin-bottom: var(--cb-sp-2);
+}
+.cb-reschedule-row { display: flex; gap: var(--cb-sp-1-5); }
+.cb-reschedule-btn {
+  flex: 1;
+  font-size: var(--cb-fs-meta);
+  font-weight: 600;
+  border-radius: var(--cb-r-tile);
+  padding: 8px 0;
+  cursor: pointer;
+  font-family: inherit;
+  background: var(--cb-surface-2);
+  color: var(--cb-accent);
+  border: 1px solid var(--cb-border);
+}
+.cb-reschedule-btn--current {
+  background: var(--cb-accent);
+  color: var(--cb-accent-ink);
+  border-color: var(--cb-accent);
+}
+/* .4 put the past-day pills at 2.37:1 — legible only if you already knew what
+   they said. .55 reads 3.25:1 against the sheet gradient, still visibly
+   "off" but no longer a smudge. */
+.cb-reschedule-btn:disabled { opacity: .55; cursor: default; }
+
+/* Move, Ask coach and the intervals.icu link share the last line of every sheet. */
+.cb-detail-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.cb-detail-actions .cb-btn-secondary { flex: 1; }
+
+/* The coach's saved takes on an activity: coach-message blocks, then one
+   button per depth, side by side. A full debrief folds under its summary. */
+.cb-takes { display: flex; flex-direction: column; gap: var(--cb-sp-2); }
+.cb-takes .cb-reschedule-label { margin-bottom: 0; }
+.cb-takes summary { cursor: pointer; }
+.cb-takes details[open] summary { margin-bottom: var(--cb-sp-1); }
+.cb-takes__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.cb-takes__actions .cb-btn-secondary { flex: 1; }
+/* Its own row: three labels do not fit side by side on a phone sheet. */
+.cb-takes__actions .cb-takes__compare { flex-basis: 100%; }
+
+/* The chat's "What you can ask" sheet: one tappable question per row. */
+.cb-ideas__group { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--cb-sp-4); }
+.cb-idea {
+  text-align: left; font-family: inherit; font-size: var(--cb-fs-body); line-height: 1.4;
+  color: var(--cb-text); background: var(--cb-surface-2); border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-tile); padding: var(--cb-sp-2) var(--cb-sp-3); cursor: pointer;
+}
+.cb-idea:hover { border-color: var(--cb-accent); }
+
+/* What success looks like sits in a tinted block, the same recipe as the
+   race card on the calendar. */
+.cb-brief__success {
+  display: flex; flex-direction: column; gap: var(--cb-sp-1);
+  border: 1px solid color-mix(in srgb, var(--cb-good) 40%, transparent);
+  border-radius: var(--cb-r-tile); padding: var(--cb-sp-2) var(--cb-sp-3);
+  background: color-mix(in srgb, var(--cb-good) 8%, transparent);
+}
+.cb-brief__success .cb-detail-cue { color: var(--cb-text); }
+
+/* What the activity counts as in the plan: one line under the title, the
+   watch's session one tap away, every other choice folded. */
+.cb-link { display: flex; flex-direction: column; gap: var(--cb-sp-2); }
+.cb-link-line { font-size: var(--cb-fs-body); color: var(--cb-text-muted); }
+.cb-link .cb-btn-primary, .cb-link .cb-btn-secondary { width: 100%; }
+.cb-link-toggle { padding-block: var(--cb-sp-1-5); }
+.cb-link-toggle .cb-workout-toggle-label { font-weight: 500; color: var(--cb-text-muted); }
+.cb-link-options { display: flex; flex-direction: column; gap: var(--cb-sp-2); }
+.cb-link-options[hidden] { display: none; }
+
+/* Plan editor */
+
+.cb-plan { display: flex; flex-direction: column; gap: 18px; }
+
+/* One selection primitive. Three single-select rows once
+   spoke three selected grammars — fill-invert on a 9px rect, outline +
+   16% tint on a stadium pill, outline + 12% tint on a tile with the ink
+   swap on a child. One answer now: tile radius, outline + one canonical
+   12% tint, ink on the control itself. Size variants change padding and
+   layout only — never fill, border, or radius. */
+.cb-fam-row { display: flex; gap: 6px; margin-bottom: 10px; }
+.cb-goal-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.cb-amb-row { display: flex; gap: 6px; }
+.cb-select {
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--cb-fs-body);
+  border-radius: var(--cb-r-tile);
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-2);
+  color: var(--cb-text-muted);
+}
+.cb-select[aria-checked="true"] {
+  border-color: var(--cb-accent);
+  background: color-mix(in srgb, var(--cb-accent) 12%, transparent);
+  color: var(--cb-text);
+}
+.cb-select--fill { flex: 1; padding: var(--cb-sp-2-5) 0; font-weight: 600; text-align: center; }
+.cb-select--sm { padding: var(--cb-sp-2) var(--cb-sp-3-5); font-weight: 500; white-space: nowrap; }
+.cb-select--stacked {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 8px;
+  text-align: left;
+}
+.cb-amb-label { font-size: var(--cb-fs-body); font-weight: 600; }
+.cb-amb-sub { font-size: var(--cb-fs-micro); color: var(--cb-text-muted); }
+/* Blocking condition, not a caption: generation refuses with
+   athlete_data_required until these fields are filled in, so the note carries
+   --cb-alert rather than the muted ink it shared with .cb-amb-sub. */
+.cb-assess-note { font-size: var(--cb-fs-body); color: var(--cb-alert); }
+
+.cb-arace {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cb-surface-3);
+  border: 1px solid color-mix(in srgb, var(--cb-race-a) 40%, transparent);
+  border-radius: var(--cb-r-tile);
+  padding: 12px 14px;
+}
+.cb-arace-tag { display: flex; align-items: center; gap: 6px; }
+.cb-arace-badge {
+  font-size: var(--cb-fs-micro);
+  font-weight: 700;
+  color: var(--cb-accent-ink);
+  background: var(--cb-race-a);
+  border-radius: var(--cb-r-chip);
+  padding: 2px 6px;
+}
+.cb-arace-badge--maint { background: var(--cb-phase-maintain); color: var(--cb-ink-light); }
+.cb-maint-stepper { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.cb-maint-step {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--cb-r-chip);
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-3);
+  color: var(--cb-text);
+  font-size: var(--cb-fs-body);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cb-maint-step:disabled { opacity: 0.35; cursor: default; }
+.cb-maint-weeks { font-size: var(--cb-fs-title); font-weight: 600; min-width: 44px; text-align: center; }
+.cb-arace-label {
+  font-size: var(--cb-fs-micro);
+  color: var(--cb-text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.cb-arace-date-input {
+  display: block;
+  font-size: var(--cb-fs-body);
+  font-weight: 600;
+  color: var(--cb-text);
+  margin-top: 4px;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+.cb-arace-away { text-align: right; }
+.cb-arace-away-val { font-size: var(--cb-fs-body); font-weight: 600; margin-top: 2px; }
+/* Refusal ahead of time: the planner will reject this race date, so the
+   hint carries --cb-alert like .cb-assess-note. --warn is the softer,
+   still-buildable short-notice mid-join advisory — muted text, not a status
+   hue, so it doesn't compete with --cb-alert/--cb-warn's own reserved
+   meanings (tokens.css COLOR SEMANTICS rules 2/3). */
+.cb-arace-hint { font-size: var(--cb-fs-micro); color: var(--cb-alert); margin-top: 6px; }
+.cb-arace-hint--warn { color: var(--cb-text-muted); }
+
+.cb-races-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--cb-sp-2-5);
+}
+.cb-races-label {
+  font-size: var(--cb-fs-label);
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--cb-text-muted);
+}
+.cb-races-add {
+  font-size: var(--cb-fs-meta);
+  font-weight: 600;
+  color: var(--cb-accent);
+  background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-tile);
+  padding: var(--cb-sp-1-5) var(--cb-sp-2-5);
+  cursor: pointer;
+  font-family: inherit;
+}
+.cb-races-list { display: flex; flex-direction: column; gap: var(--cb-sp-2); }
+.cb-race-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border);
+  border-radius: 9px;
+  padding: var(--cb-sp-2-5) var(--cb-sp-3);
+}
+.cb-race-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.cb-race-info { flex: 1; min-width: 0; }
+.cb-race-label { font-size: var(--cb-fs-body); font-weight: 500; color: var(--cb-text); }
+.cb-race-date {
+  display: block;
+  font-size: var(--cb-fs-label);
+  color: var(--cb-text-muted);
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+/* A tune-up's race type and date are drawn as fields: a bare date read as
+   placeholder text, not as something to fill in. */
+.cb-race-field {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  font-size: var(--cb-fs-body);
+  color: var(--cb-text);
+  background: var(--cb-surface-3);
+  border: 1px solid var(--cb-border);
+  border-radius: 6px;
+  padding: var(--cb-sp-1) var(--cb-sp-2);
+  font-family: inherit;
+}
+.cb-race-field + .cb-race-field { margin-top: var(--cb-sp-1-5); }
+
+/* iOS zooms the page whenever a focused text control sits below 16px, and it
+   does not zoom back out. Touch pointers only, so the desktop wizard keeps
+   its own sizes. */
+@media (pointer: coarse) {
+  .cb-arace-date-input,
+  .cb-race-field,
+  .cb-race-date { font-size: var(--cb-fs-input); }
+}
+.cb-race-pris { display: flex; gap: 4px; flex: none; }
+.cb-race-pri {
+  min-width: 28px;
+  font-size: var(--cb-fs-micro);
+  font-weight: 700;
+  letter-spacing: .03em;
+  color: var(--cb-accent-ink);
+  border-radius: 6px;
+  padding: var(--cb-sp-1) var(--cb-sp-2);
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+.cb-race-pri[aria-checked="false"] {
+  color: var(--cb-text-muted);
+  background: var(--cb-surface-3);
+  box-shadow: inset 0 0 0 1px var(--cb-border);
+}
+.cb-race-remove {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--cb-r-chip);
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-3);
+  color: var(--cb-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex: none;
+}
+.cb-pri-a { background: var(--cb-race-a); }
+.cb-pri-b { background: var(--cb-race-b); }
+.cb-pri-c { background: var(--cb-race-c); }
+.cb-pri-peak { background: var(--cb-accent); }
+
+/* Ink follows the fill: the dark accent-ink above wins on race-a (5.63:1) and
+   the light accent (8.38:1); race-b/race-c are mid-toned, where white reads
+   better — their fills were darkened so white now clears AA at 4.60:1. */
+.cb-pri-b, .cb-pri-c { color: var(--cb-ink-light); }
+
+.cb-preview { background: var(--cb-surface-3); border: 1px solid var(--cb-border); border-radius: 12px; padding: var(--cb-sp-4); }
+.cb-preview-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.cb-preview-title {
+  font-size: var(--cb-fs-label);
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--cb-text-muted);
+}
+.cb-preview-eyebrow { font-size: var(--cb-fs-micro); color: var(--cb-text-muted); }
+.cb-preview-peak { display: flex; align-items: baseline; gap: var(--cb-sp-1); }
+.cb-preview-peak-num { font-size: var(--cb-fs-hero); font-weight: 700; }
+.cb-preview-peak-label { font-size: var(--cb-fs-body); color: var(--cb-text-muted); }
+/* Experimental-plan-type disclaimer, last row of the preview card. Muted,
+   not --cb-alert like .cb-assess-note: it is a caveat, not a blocking
+   condition — and sized at --cb-fs-body, since --cb-fs-micro is the
+   badge/axis-tick size. */
+.cb-preview-note {
+  font-size: var(--cb-fs-body);
+  color: var(--cb-text-muted);
+  margin-top: var(--cb-sp-3);
+}
+
+.cb-marker-row { display: flex; gap: 4px; margin-top: 14px; }
+.cb-marker-cell { flex: 1; display: flex; justify-content: center; align-items: flex-end; height: 9px; }
+.cb-marker-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--cb-surface-3);
+}
+
+.cb-ramp-row { display: flex; align-items: flex-end; gap: 4px; height: 56px; margin-top: var(--cb-sp-1-5); }
+.cb-ramp-bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--cb-bar-muted); }
+
+.cb-phase-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: var(--cb-fs-micro);
+  color: var(--cb-text-muted);
+}
+
+.cb-race-legend { display: flex; gap: 12px; margin-top: 10px; font-size: var(--cb-fs-micro); color: var(--cb-text-muted); }
+.cb-legend-item { display: flex; align-items: center; gap: var(--cb-sp-1); }
+.cb-legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+.cb-sport-strip { display: flex; height: 9px; border-radius: var(--cb-r-bar); overflow: hidden; gap: 2px; margin-bottom: 12px; }
+.cb-sport-rows { display: flex; flex-direction: column; gap: var(--cb-sp-2-5); }
+.cb-sport-row { display: flex; align-items: center; gap: var(--cb-sp-2); font-size: var(--cb-fs-body); }
+.cb-sport-dot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.cb-sport-label { color: var(--cb-text); }
+.cb-sport-hours { color: var(--cb-text-muted); margin-left: auto; }
+.cb-sport-pct { color: var(--cb-text-muted); width: 34px; text-align: right; }

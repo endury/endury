@@ -1,0 +1,593 @@
+# olympic_triathlon session menus. Format and validation ladder: AUTHORING.md.
+goal: olympic_triathlon
+progressions:
+  # intent: Olympic-distance long run, durability lever.
+  - olympic_long_run
+  # intent: Olympic long ride; aerobic lever.
+  - olympic_long_bike
+  # intent: Olympic long swim, race-distance familiarisation.
+  - olympic_long_swim
+menus:
+  base/load:
+    contract:
+      must_contain: [bike_long, run_long, swim_endurance]
+      must_not_contain: [run_full_mp, run_long_progression]
+      bricks_per_week: [1, 1]
+    slots:
+      - name: oly_base_wed_long_run
+        day: wed
+        activity: run_long
+        minutes: {scaled: [60, 75]}
+        progression: olympic_long_run
+        why: >-
+          The week's longest run, growing patiently through the base phase.
+          Standard-distance racing asks for a 10 km on legs the bike has already
+          emptied, and that durability comes from steady aerobic running long
+          before any of the fast work matters.
+      - name: oly_base_sat_bike_long
+        day: sat
+        activity: bike_long
+        minutes: {scaled: [90, 130]}
+        progression: olympic_long_bike
+        why: >-
+          The weekend long ride is where the aerobic engine gets built: the bike
+          gives you the most fitness per hour and the least wear and tear of the
+          three sports. In base, keep it steady — the point is time in the
+          saddle, not watts.
+      - name: oly_base_fri_swim_long
+        day: fri
+        activity: swim_endurance
+        metres: {basic: [1500, 1500], moderate: [1800, 1912], competitive: [2000, 2250]}
+        progression: olympic_long_swim
+        why: >-
+          A longer, continuous swim building the aerobic base under your 1500 m.
+          The swim is the shortest part of the race, but coming out of the water
+          calm rather than ragged shapes everything that follows it.
+      - name: oly_base_sun_bike
+        day: sun
+        activity: bike_endurance
+        minutes: {scaled: [60, 80]}
+        why: >-
+          A second, shorter aerobic ride, and the front half of your weekly
+          brick. Keep the effort easy — this ride exists to give the run that
+          follows it something to come off.
+      - name: oly_base_sun_brick
+        day: sun
+        activity: run_brick_short
+        minutes: {scaled: [15, 20]}
+        brick: true
+        why: >-
+          A short run straight off the bike. Your legs move differently in the
+          first minutes after cycling, and that awkwardness fades with practice
+          rather than with fitness. In base it stays short: the transition
+          itself is the training, not the distance.
+      # intent: strides, not run_speed/run_fartlek (2026-09-25): the reps
+      # spent 8 % of the session in Z5, a neuromuscular touch the scorecard
+      # counted as VO2max work in BASE, and the cards built at 48 min against
+      # 30-40 authored. Strides build inside these bounds at every tier.
+      - name: oly_base_thu_strides
+        day: thu
+        activity: run_strides
+        minutes: {basic: [30, 36], moderate: [30, 40], competitive: [30, 40]}
+        why: >-
+          A touch of faster running in an otherwise aerobic week. Short reps
+          keep your stride and turnover sharp while base volume builds — cheap
+          speed that costs almost nothing in fatigue.
+      - name: oly_base_tue_bike_cadence
+        day: tue
+        activity: bike_cadence
+        rotation: [bike_cadence, bike_vo2max_short]
+        minutes: {scaled: [35, 45]}
+        # intent: BASE colour (2026-09-30): a 30/15 ride every other week, one set or
+        # two as the booked length allows (2026-10-05).
+        # Preparation-phase triathlon training holds about 8 % of its time above LT2,
+        # and short intervals give that dose cheaply (endurance_methodology.md §4);
+        # the triathlon vo2max_in_base band allows up to one interval session per
+        # base week. The run stays strides only: the catalog's fartlek and hill
+        # repeats sit in zone 4, not the zone 5 an interval label promises.
+        why: >-
+          Your midweek quality ride, alternating week by week. One week is cadence work:
+          a smooth, quick pedal stroke that spares your legs for the run. The next is
+          one or two short sets of 30-second surges with 15-second easy spins between them, a
+          small taste of top-end work that keeps your engine responsive without taking
+          anything from the easy volume this phase is built on.
+      - name: oly_base_wed_swim_css
+        day: wed
+        activity: swim_css
+        rotation: [swim_css, swim_threshold]
+        metres: {basic: [1500, 1500], moderate: [1800, 1800], competitive: [2000, 2000]}
+        # intent: swim_css (400 m warm-up) at every tier: the swim floor
+        # (1500/1800/2000 m by tier, R-SESS-039) puts every load and taper swim
+        # past the 1400 m where its set holds 8+ min at CSS. swim_css_short
+        # (200 m warm-up) stays in the recovery weeks, which carry no floor.
+        why: >-
+          Your swim threshold session — the pace you can hold once you settle
+          in. A standard-distance swim is raced close to that pace, so this is the set
+          that actually moves your swim split.
+      - name: oly_base_mon_swim_drill
+        day: mon
+        activity: swim_drill
+        metres: {scaled: [1250, 1500]}
+        why: >-
+          A technique swim. In the water, removing drag beats adding fitness —
+          and swim form is the first thing to fall apart when you tire, so
+          drills stay in the week all season rather than being something you
+          finish in base.
+
+  # Recovery weeks (2026-09-25): each phase authors its own recovery week,
+  # sized against the load weeks each tier actually gets in that phase —
+  # about 0.6 of the preceding load week at MODERATE and COMPETITIVE, up to
+  # the 0.5 capacity ceiling at BASIC — keeping every sport and no session
+  # too short to be worth doing (runs 20+ min, rides 40+, swims 1000+ m).
+  # The old anchor shared three short easy sessions and the three fixed
+  # tests across all phases: BASIC weeks could never fit the tests and fell
+  # to ~0.3 of the load week, and the other tiers tested in every recovery
+  # week. The tests now live in the PEAK recovery week only (peak/recovery).
+  base/recovery:
+    slots:
+      - name: oly_base_rec_mon_swim
+        day: mon
+        activity: swim_recovery
+        metres: {basic: [1000, 1100], moderate: [1000, 1250], competitive: [1500, 1750]}
+        why: >-
+          An easy swim. Low effort, good form — keep your feel for the water
+          while the training load comes down.
+      - name: oly_base_rec_tue_bike
+        day: tue
+        activity: bike_endurance
+        minutes: {moderate: [40, 45], competitive: [45, 50]}
+        why: >-
+          A short, easy spin. The week keeps all three sports in their usual
+          rhythm; only the load comes down.
+      - name: oly_base_rec_wed_run
+        day: wed
+        activity: run_easy
+        minutes: {basic: [20, 25], moderate: [25, 30], competitive: [30, 35]}
+        why: >-
+          A short, easy run midweek. Running as often as usual at a fraction of
+          the load keeps your legs used to the work, so the next block picks up
+          where the last one left off.
+      - name: oly_base_rec_wed_swim
+        day: wed
+        activity: swim_drill
+        metres: {moderate: [1200, 1300], competitive: [1300, 1350]}
+        why: >-
+          A relaxed technique swim. A lighter week leaves you fresh enough to
+          swim well rather than just swim, which is when drills actually change
+          your stroke.
+      - name: oly_base_rec_sat_run
+        day: sat
+        activity: run_easy
+        minutes: {basic: [30, 35], moderate: [30, 35], competitive: [40, 45]}
+        why: >-
+          An easy run in a cutback week. The adaptations from the last few weeks
+          land now, while the load is down — so keep this one genuinely easy.
+      - name: oly_base_rec_sun_bike
+        day: sun
+        activity: bike_endurance
+        minutes: {basic: [50, 60], moderate: [55, 65], competitive: [70, 75]}
+        why: >-
+          A shorter weekend ride. Recovery weeks cut the volume but keep every
+          sport in the week, so your rhythm on the bike never lapses.
+
+  build/load:
+    contract:
+      bricks_per_week: [1, 1]
+    slots:
+      - name: oly_build_thu_long_run
+        day: thu
+        activity: run_long
+        minutes: {scaled: [75, 85]}
+        progression: olympic_long_run
+        # intent: The ceiling sits below the peak's fixed long run at every
+        # tier after the ramp's 5-minute rounding (a 90 top rounded BASIC's
+        # 58.5 up to 60, past the peak's 58), so the plan's longest run lands
+        # in PEAK.
+        why: >-
+          The long run keeps growing through the build. Fatigue-resistant
+          aerobic running is what lets you hold pace over the closing kilometres
+          of the 10 km, when the bike leg has already taken its toll.
+      - name: oly_build_sat_bike_long
+        day: sat
+        activity: bike_long
+        minutes: {scaled: [120, 145]}
+        progression: olympic_long_bike
+        # intent: Below the peak's fixed long ride at every tier after the
+        # ramp's 5-minute rounding (a 150 top rounded MODERATE's 127.5 up to
+        # 130, past the peak's 128).
+        why: >-
+          The long ride, now longer and with more purpose. The bike is the
+          biggest slice of your race day, and the endurance you build here is
+          what leaves you with legs to run on.
+      - name: oly_build_fri_swim_long
+        day: fri
+        activity: swim_endurance
+        metres: {basic: [1500, 1625], moderate: [1800, 2125], competitive: [2000, 2500]}
+        progression: olympic_long_swim
+        why: >-
+          A longer aerobic swim underwriting the faster swimming in the week.
+          You can only race 1500 m near your threshold if the distance itself is
+          unremarkable to you.
+      - name: oly_build_sun_bike
+        day: sun
+        activity: bike_endurance
+        minutes: {scaled: [60, 90]}
+        why: >-
+          The ride that sets up your brick. Steady aerobic effort, ridden so
+          that the run off it is the session that counts.
+      - name: oly_build_sun_brick
+        day: sun
+        activity: run_brick_short
+        minutes: {scaled: [20, 30]}
+        brick: true
+        why: >-
+          The transition run, longer than it was in base. Running well off the
+          bike is the skill that separates triathletes from good single-sport
+          athletes, and it comes from repeating the transition week after week
+          through the build.
+      - name: oly_build_mon_run_speed
+        day: mon
+        activity: run_speed
+        rotation: [run_speed, run_vo2max]
+        minutes: {scaled: [35, 45]}
+        why: >-
+          Fast running pointed at your 10 km, alternating week by week between short
+          fast repeats and three-to-four-minute intervals. Raising your top end from
+          both ends is what makes race pace feel controlled instead of frantic.
+      - name: oly_build_tue_bike_threshold
+        day: tue
+        activity: bike_threshold
+        rotation: [bike_threshold, bike_over_under, bike_vo2max, bike_sweet_spot]
+        minutes: {scaled: [40, 50]}
+        # intent: Over-unders (2026-09-30): 3 x (2 min just under, 1 min just over
+        # threshold) per rep, the classic way to train holding power while clearing
+        # the fatigue a surge leaves.
+        why: >-
+          Your hard ride of the week, with a different shape each week: threshold
+          intervals, over-unders that swing either side of threshold, short VO2max
+          efforts or longer sweet-spot blocks. A standard-distance bike leg is ridden hard and
+          close to your threshold, and working that boundary from several sides is what
+          keeps raising it.
+      - name: oly_build_tue_swim_css
+        day: tue
+        activity: swim_css
+        rotation: [swim_css, swim_threshold, swim_vo2max_short]
+        metres: {basic: [1500, 1500], moderate: [1800, 1800], competitive: [2000, 2000]}
+        # intent: swim_css (400 m warm-up) at every tier: the swim floor
+        # (1500/1800/2000 m by tier, R-SESS-039) puts every load and taper swim
+        # past the 1400 m where its set holds 8+ min at CSS. swim_css_short
+        # (200 m warm-up) stays in the recovery weeks, which carry no floor.
+        why: >-
+          Swim intervals around the pace you will race the 1500 m at: short threshold
+          repeats, longer ones at the same effort, or fast 50s on short rest, a
+          different shape each week. Repeated exposure is what makes that pace feel
+          sustainable rather than desperate.
+      - name: oly_build_wed_swim_drill
+        day: wed
+        activity: swim_drill
+        metres: {scaled: [1250, 1750]}
+        why: >-
+          Technique work stays in the week through the build. Your stroke
+          degrades first when you are tired — which is exactly when a race gets
+          decided — so good form keeps being rehearsed.
+
+  build/recovery:
+    slots:
+      - name: oly_build_rec_mon_swim
+        day: mon
+        activity: swim_recovery
+        metres: {basic: [1000, 1250], moderate: [1250, 1500], competitive: [1500, 2000]}
+        why: >-
+          An easy swim. Low effort, good form — keep your feel for the water
+          while the training load comes down.
+      - name: oly_build_rec_tue_bike
+        day: tue
+        activity: bike_endurance
+        minutes: {moderate: [45, 55], competitive: [50, 60]}
+        why: >-
+          A short, easy spin. The week keeps all three sports in their usual
+          rhythm; only the load comes down.
+      - name: oly_build_rec_wed_run
+        day: wed
+        activity: run_easy
+        minutes: {basic: [25, 30], moderate: [30, 35], competitive: [35, 40]}
+        why: >-
+          A short, easy run midweek. Running as often as usual at a fraction of
+          the load keeps your legs used to the work, so the next block picks up
+          where the last one left off.
+      - name: oly_build_rec_wed_swim
+        day: wed
+        activity: swim_drill
+        metres: {moderate: [1200, 1300], competitive: [1300, 1350]}
+        why: >-
+          A relaxed technique swim. A lighter week leaves you fresh enough to
+          swim well rather than just swim, which is when drills actually change
+          your stroke.
+      - name: oly_build_rec_sat_run
+        day: sat
+        activity: run_easy
+        minutes: {basic: [35, 40], moderate: [35, 45], competitive: [45, 55]}
+        why: >-
+          An easy run in a cutback week. The adaptations from the last few weeks
+          land now, while the load is down — so keep this one genuinely easy.
+      - name: oly_build_rec_sun_bike
+        day: sun
+        activity: bike_endurance
+        minutes: {basic: [60, 75], moderate: [60, 75], competitive: [75, 90]}
+        why: >-
+          A shorter weekend ride. Recovery weeks cut the volume but keep every
+          sport in the week, so your rhythm on the bike never lapses.
+
+  peak/load:
+    contract:
+      bricks_per_week: [1, 1]
+    slots:
+      - name: oly_peak_wed_long_run
+        day: wed
+        activity: run_long
+        minutes: {scaled: [90, 90]}
+        progression: olympic_long_run
+        why: >-
+          The long run holds near its longest now instead of growing. The
+          endurance is banked; the peak phase is for keeping it while
+          race-specific work takes priority.
+      - name: oly_peak_sat_bike_long
+        day: sat
+        activity: bike_long
+        minutes: {scaled: [150, 150]}
+        progression: olympic_long_bike
+        why: >-
+          The longest ride of your plan. From here the job shifts from building
+          to rehearsing — ride it at a controlled, race-relevant effort rather
+          than chasing more distance.
+      - name: oly_peak_fri_swim_long
+        day: fri
+        activity: swim_endurance
+        metres: {basic: [1500, 1500], moderate: [1800, 1912], competitive: [2000, 2250]}
+        progression: olympic_long_swim
+        why: >-
+          A steady, full-length swim. It keeps your feel for swimming
+          continuously while the sharper sets do the race-specific work.
+      - name: oly_peak_sun_bike
+        day: sun
+        activity: bike_endurance
+        minutes: {scaled: [60, 75]}
+        why: >-
+          The bike half of your peak-phase brick. Ride it close to race effort,
+          so the run that follows tells you the truth about your pacing.
+      - name: oly_peak_sun_brick
+        day: sun
+        activity: run_brick_short
+        minutes: {scaled: [20, 25]}
+        brick: true
+        why: >-
+          Race rehearsal in miniature: run off the bike at the effort you intend
+          to race. This is your clearest read on whether your bike pacing leaves
+          you a 10 km worth running.
+      - name: oly_peak_thu_run_speed
+        day: thu
+        activity: run_10k_race_pace
+        rotation: [run_10k_race_pace, run_speed]
+        minutes: {scaled: [35, 40]}
+        why: >-
+          Running at and above your race pace, alternating between longer repeats at 10
+          km pace and short fast ones. Volume is levelling off now, and these keep you
+          sharp and at home at race speed without leaving fatigue behind.
+      - name: oly_peak_tue_swim_css
+        day: tue
+        activity: swim_css
+        rotation: [swim_css, swim_vo2max_short]
+        metres: {basic: [1500, 1500], moderate: [1800, 1800], competitive: [2000, 2000]}
+        # intent: swim_css (400 m warm-up) at every tier: the swim floor
+        # (1500/1800/2000 m by tier, R-SESS-039) puts every load and taper swim
+        # past the 1400 m where its set holds 8+ min at CSS. swim_css_short
+        # (200 m warm-up) stays in the recovery weeks, which carry no floor.
+        why: >-
+          Race-pace swim work, alternating between threshold repeats and fast 50s on
+          short rest. By the peak phase the aim is familiarity: the first 1500 m of race
+          day should feel like something you have already done.
+      - name: oly_peak_tue_bike_threshold
+        day: tue
+        activity: bike_threshold
+        rotation: [bike_threshold, bike_vo2max]
+        minutes: {scaled: [40, 45]}
+        why: >-
+          Hard work on the bike, held into the peak phase and alternating between
+          threshold intervals and short VO2max efforts. The volume around it comes down
+          but the intensity stays; that combination is what makes you fast and fresh at
+          the same time.
+
+  peak/recovery:
+    slots:
+      # intent: 2026-09-25 basic minimums raised 5-10 min: sessions early in
+      # PEAK sit at their minimums, and after the biggest late-build week of a
+      # long plan the basic recovery week fell to 39-44 % of it; capacity
+      # still scales shorter plans' weeks to their ceiling.
+      - name: oly_peak_rec_mon_swim
+        day: mon
+        activity: swim_recovery
+        metres: {basic: [1000, 1100], moderate: [1250, 1500], competitive: [1500, 1750]}
+        why: >-
+          An easy swim. Low effort, good form — keep your feel for the water
+          while the training load comes down.
+      # intent: 2026-09-25. The fitness tests fire in this one recovery week:
+      # it is the only one at every plan length whose capacity holds all three
+      # fixed protocols (~2.45 h) next to the easy sessions, every plan tests
+      # once (1 of 2 or 1 of 3 recovery weeks, against the band's 0.40-0.50
+      # share), and the numbers set the race-specific block that follows.
+      # BASIC keeps an easy week: its 0.5 ceiling could never hold the tests.
+      - name: oly_peak_rec_tue_bike
+        day: tue
+        why: >-
+          A short, easy spin. The week keeps all three sports in their usual
+          rhythm; only the load comes down.
+        variants:
+          - activity: bike_endurance
+            minutes: {basic: [45, 50]}
+          - activity: bike_ftp_test
+            minutes: {moderate: [42, 42], competitive: [42, 42]}
+            why: >-
+              A bike threshold test. Every power zone and race-pace target you
+              get from here on is built from this number, so it is worth
+              measuring rather than assuming.
+      - name: oly_peak_rec_wed_run
+        day: wed
+        why: >-
+          A short, easy run midweek. Running as often as usual at a fraction of
+          the load keeps your legs used to the work, so the next block picks up
+          where the last one left off.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [30, 35]}
+          - activity: run_threshold_test
+            minutes: {moderate: [44, 44], competitive: [44, 44]}
+            why: >-
+              A run threshold test. A lighter week is the one place a hard test
+              fits without disrupting the training around it, and the number it
+              gives sets the paces every run in the next weeks is prescribed at.
+      - name: oly_peak_rec_fri_swim_test
+        day: fri
+        activity: swim_css_test
+        metres: {moderate: [2350, 2350], competitive: [2350, 2350]}
+        why: >-
+          A swim time trial to re-measure your threshold pace, taken from a 400
+          m and a 200 m effort. It sets every swim interval pace you will be
+          given in the coming weeks.
+      - name: oly_peak_rec_sat_run
+        day: sat
+        activity: run_easy
+        minutes: {basic: [35, 40], moderate: [30, 40], competitive: [40, 50]}
+        why: >-
+          An easy run in a cutback week. The adaptations from the last few weeks
+          land now, while the load is down — so keep this one genuinely easy.
+      - name: oly_peak_rec_sun_bike
+        day: sun
+        activity: bike_endurance
+        minutes: {basic: [60, 65], moderate: [60, 75], competitive: [80, 90]}
+        why: >-
+          A shorter weekend ride. Recovery weeks cut the volume but keep every
+          sport in the week, so your rhythm on the bike never lapses.
+
+  # 2026-08-27 (short-course calibration): the taper week was IM-shaped
+  # and measurably broken — it realized ~0.26 of peak volume against the
+  # 0.50-0.70 band (Bosquet: cut 40-60%, keep the rest), 5 sessions against
+  # a 9-session peak (frequency 0.56 vs the 0.85-1.15 band), and shed nearly
+  # all intensity (taper quality ~0.07-0.14 of peak vs a 0.50 floor). Short-course plans
+  # often carry no discrete taper week at all — the race week is the taper — so the
+  # anchor here is the doctrine band: sc §3 (40-60% volume cut, frequency
+  # and intensity maintained, race-pace touches). Re-authored to 8 sessions
+  # (0.89 of the 9-session peak) at ~0.55 of peak volume, quality carried by
+  # a short Wednesday 2x8 bike threshold (lattice floor 49', the same
+  # taper-keeps-threshold shape the half-IM taper uses), a Tuesday CSS
+  # touch, and the Friday strides. Thursday and Sunday stay empty.
+  taper/taper:
+    slots:
+      - name: oly_taper_tue_run
+        day: tue
+        activity: run_easy
+        minutes: {scaled: [35, 45]}
+        why: >-
+          A short, easy run. The training is already done — the volume falls
+          away now so the fatigue can drain off and leave the fitness behind.
+      - name: oly_taper_mon_bike
+        day: mon
+        activity: bike_endurance
+        minutes: {scaled: [50, 65]}
+        why: >-
+          A short spin. It keeps your legs turning and your position familiar
+          without asking anything of them.
+      - name: oly_taper_wed_bike_threshold
+        day: wed
+        activity: bike_threshold
+        minutes: {basic: [49, 52], moderate: [49, 55], competitive: [49, 60]}
+        # intent: The taper's bike quality touch (2026-08-27): a 2x8 min
+        # threshold ride at the activity's 49' lattice floor. sc §3 and Bosquet
+        # 2007: the taper cuts volume, never intensity — an Olympic race is run
+        # at threshold, so the race feel is kept with the smallest realizable
+        # dose.
+        why: >-
+          A short ride with a couple of strong efforts at race intensity. The
+          taper cuts volume, not sharpness — this keeps the race feel in your
+          legs while the fatigue drains.
+      - name: oly_taper_fri_swim
+        day: fri
+        activity: swim_endurance
+        metres: {basic: [1500, 1500], moderate: [1800, 1800], competitive: [2000, 2000]}
+        why: >-
+          An easy, unhurried swim. Enough to hold your feel for the water, not
+          enough to cost you anything on race day.
+      - name: oly_taper_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {scaled: [20, 25]}
+        why: >-
+          A handful of short accelerations. A taper cuts volume, not intensity —
+          these brief fast touches keep your legs awake so the easy days do not
+          leave you flat.
+      - name: oly_taper_tue_swim
+        day: tue
+        activity: swim_css
+        metres: {basic: [1500, 1500], moderate: [1800, 1800], competitive: [2000, 2000]}
+        # intent: The taper's swim quality touch (2026-08-27): a short CSS set
+        # replacing the old recovery swim, per sc §3's maintained-intensity rule.
+        # swim_css (400 m warm-up) at every tier: the swim floor
+        # (1500/1800/2000 m by tier, R-SESS-039) puts every load and taper swim
+        # past the 1400 m where its set holds 8+ min at CSS. swim_css_short
+        # (200 m warm-up) stays in the recovery weeks, which carry no floor.
+        why: >-
+          A short set at your usual hard-swim pace. One brief reminder of speed
+          in the water keeps the sharpness you built — the rest of the week
+          stays easy.
+      - name: oly_taper_sat_run
+        day: sat
+        activity: run_easy
+        minutes: {scaled: [25, 35]}
+        why: >-
+          A second short, easy run to keep the week's rhythm — frequency stays,
+          duration falls.
+      - name: oly_taper_sat_spin
+        day: sat
+        activity: bike_endurance
+        minutes: {scaled: [30, 40]}
+        why: >-
+          An easy spin after the run. It costs nothing and keeps the legs used
+          to backing sessions up before race week.
+
+  taper/race:
+    slots:
+      - name: oly_race_tue_run
+        day: tue
+        activity: run_easy
+        minutes: [30, 30]
+        why: >-
+          A short, easy run in race week. Nothing here makes you fitter; it
+          keeps you moving and keeps your head quiet.
+      - name: oly_race_mon_bike
+        day: mon
+        activity: bike_endurance
+        minutes: [40, 40]
+        why: >-
+          An easy spin to open race week — a good chance to check the bike over
+          as well as the legs.
+      - name: oly_race_fri_swim
+        day: fri
+        activity: swim_endurance
+        metres: [1250, 1250]
+        why: >-
+          A short, easy swim a couple of days out. Feel for the water, nothing
+          more — and if you are racing in open water, this is the swim to
+          rehearse your sighting in.
+      - name: oly_race_thu_strides
+        day: thu
+        activity: run_strides
+        minutes: [20, 20]
+        why: >-
+          A few short accelerations. After days of easy training they wake the
+          legs back up, so race pace does not feel foreign on the start line.
+      - name: oly_race_tue_swim
+        day: tue
+        activity: swim_recovery
+        metres: [1000, 1000]
+        why: >-
+          A relaxed swim. Easy laps, good technique, no clock — you are keeping
+          your feel for the water, not training.

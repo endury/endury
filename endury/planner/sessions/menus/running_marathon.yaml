@@ -1,0 +1,423 @@
+# running_marathon session menus. Format and validation ladder: AUTHORING.md.
+goal: running_marathon
+progressions:
+  # intent: Marathon long run; primary durability stimulus.
+  - marathon_long_run
+menus:
+  base/load:
+    contract:
+      must_contain: [run_long]
+      must_not_contain: [run_10k_race_pace, run_5k_race_pace, run_vo2max]
+    slots:
+      - name: mar_base_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [90, 135]}
+        progression: marathon_long_run
+        why: >-
+          The long run is the spine of marathon training — it teaches your legs,
+          and your fuelling, to keep working long after the fun stops. In these
+          early weeks it grows steadily and stays easy: durability has to come
+          before pace.
+      - name: mar_base_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {scaled: [45, 60]}
+        why: >-
+          Easy running is what makes the hard running possible — it builds the
+          aerobic machinery at almost no recovery cost. Keep it genuinely
+          conversational; nudging the easy days faster is the most common way
+          marathon plans quietly fail.
+      - name: mar_base_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {scaled: [40, 55]}
+        why: >-
+          A second easy run keeps you running often, which matters more for the
+          marathon than any single workout. It exists to accumulate aerobic
+          mileage, not to prove anything — run it slower than feels natural.
+      - name: mar_base_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {scaled: [40, 50]}
+        why: >-
+          Short, relaxed accelerations at the end of an easy run keep your legs
+          quick while the rest of this phase is slow and steady. They cost
+          nothing in freshness and stop months of easy mileage from flattening
+          your stride.
+      - name: mar_base_wed_tempo
+        day: wed
+        activity: run_aerobic_tempo
+        minutes: {scaled: [50, 75]}
+        why: >-
+          A steady aerobic tempo is the first real intensity of the plan —
+          comfortably strong, never hard. It nudges you toward the pace where
+          lactate clearance starts to matter, so the threshold and race-pace
+          work later has somewhere to build from.
+
+  # Recovery weeks are easy-only in BASE and PEAK; the threshold test lives
+  # in BUILD recovery weeks only. Gating by phase (not window) is what lands
+  # the recovery-week test share in its band at every tier x
+  # horizon — at the 12-week horizon both recovery weeks land at the same
+  # phase fraction, so no window could tell them apart instead.
+  base/recovery:
+    slots: &base_recovery
+      - name: mar_rec_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [60, 85]}
+        why: >-
+          The long run stays in an easier week, just shorter. It keeps your
+          legs used to Sunday's time on feet, so next week's longer run picks
+          up where the last one left off instead of starting over.
+      - name: mar_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {scaled: [50, 80]}
+        why: >-
+          Easier weeks are where the training you have already done turns into
+          fitness — fatigue clears faster than fitness fades, so backing off
+          leaves you stronger. Run easy, keep the habit, and resist topping up
+          the mileage.
+      - name: mar_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [40, 60]}
+        why: >-
+          A second easy run keeps the week's rhythm and your running mechanics
+          intact while the total load drops. The reduction is the training
+          effect here — don't undo it by pushing.
+      - name: mar_rec_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {scaled: [45, 70]}
+        why: >-
+          A third easy run keeps you running most days while the hard sessions
+          step aside for a week. Everything about this week should feel
+          comfortably under control.
+
+  build/load:
+    slots:
+      - name: mar_build_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [130, 175]}
+        progression: marathon_long_run
+        why: >-
+          Now the long run stops being time on feet and becomes marathon
+          rehearsal: fuelling, drinking, pacing, and the patience the back half
+          demands. It is the most specific session of your week, so everything
+          around it is arranged to leave you able to run it well.
+      - name: mar_build_tue_tempo
+        day: tue
+        activity: run_tempo
+        rotation: [run_tempo, run_progression]
+        minutes: {scaled: [55, 75]}
+        why: >-
+          Tempo running sits at the edge of what you could hold for about an
+          hour, and lifting that edge is what stops the marathon becoming a slow
+          fade. Race-specific intensity belongs in this phase, and this is the
+          session carrying it.
+      - name: mar_build_thu_threshold_early
+        day: thu
+        activity: run_threshold
+        minutes: {scaled: [50, 65]}
+        window: [0.0, 0.5]
+        group: mar_build_thu_quality
+        why: >-
+          Threshold intervals raise the pace you can sustain before lactate
+          outruns your ability to clear it — the ceiling that ultimately sets
+          your marathon pace. They come early in the build, while there is still
+          time for the gains to feed into race-pace work later.
+      - name: mar_build_thu_mp_late
+        day: thu
+        activity: run_full_mp
+        minutes: {scaled: [60, 85]}
+        window: [0.5, 1.0]
+        group: mar_build_thu_quality
+        why: >-
+          Running at goal marathon pace teaches your body the exact effort,
+          rhythm and fuelling of race day. It arrives in the second half of the
+          build on purpose: by then you have the threshold and the endurance to
+          make a real block at goal pace worth running.
+      - name: mar_build_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [40, 55]}
+        why: >-
+          An easy run between quality days keeps the blood moving and the
+          aerobic base growing without adding fatigue. If it feels like work you
+          have run it too fast — its job is to protect the next hard session.
+      - name: mar_build_wed_strides
+        day: wed
+        activity: run_strides
+        minutes: {scaled: [45, 60]}
+        # intent: 2026-09-25, was a progression run (35 % of its time at tempo
+        # or harder) between Tuesday's tempo/progression and Thursday's
+        # threshold/marathon-pace run: three quality days in a row put 23-25 %
+        # of BUILD time at tempo or harder, against the 6-8 % a marathon plan needs.
+        # Hard/easy alternation now:
+        # quality Tue and Thu, easy Wed and Fri, long Sun. Strides rather
+        # than a plain easy run keep a few minutes of fast, relaxed running in
+        # the week (under 8 min at zone 4-5, so not a hard day).
+        why: >-
+          An easy run between the week's two key sessions, finished with a few
+          short, relaxed strides. The easy miles build most of your marathon
+          fitness; the strides keep your legs quick without costing Thursday
+          anything.
+
+  build/recovery:
+    slots:
+      - name: mar_rec_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [60, 85]}
+        why: >-
+          The long run stays in an easier week, just shorter. It keeps your
+          legs used to Sunday's time on feet, so next week's longer run picks
+          up where the last one left off instead of starting over.
+      - name: mar_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {scaled: [50, 80]}
+        why: >-
+          Easier weeks are where the training you have already done turns into
+          fitness — fatigue clears faster than fitness fades, so backing off
+          leaves you stronger. Run easy, keep the habit, and resist topping up
+          the mileage.
+      - name: mar_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [40, 60]}
+        why: >-
+          A second easy run keeps the week's rhythm and your running mechanics
+          intact while the total load drops. The reduction is the training
+          effect here — don't undo it by pushing.
+      # intent: 2026-09-25. BASIC runs a third easy run here instead: its 0.5
+      # recovery ceiling never holds the 55-min protocol next to the other
+      # runs, so the test always dropped and left three runs at ~0.45 of the
+      # load week.
+      - name: mar_rec_wed_test
+        day: wed
+        why: >-
+          A short test on an easier week catches you fresh enough to give an
+          honest number, and refreshes the paces every other session is built
+          from. Marathon training is anchored on your threshold pace — if it
+          drifts and nobody measures it, every workout after this aims at the
+          wrong target.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [29, 46]}
+            why: >-
+              A third easy run keeps you running most days while the hard
+              sessions step aside for a week. Everything about this week should
+              feel comfortably under control.
+          - activity: run_threshold_test
+            minutes: {moderate: [37, 37], competitive: [44, 44]}
+
+  peak/load:
+    slots:
+      - name: mar_peak_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {basic: [107, 124], moderate: [140, 170], competitive: [165, 190]}
+        progression: marathon_long_run
+        # intent: MODERATE tops out at 170 (scaled(165, 190) gave 162): a 2:42
+        # ceiling left the moderate runner's longest
+        # run under 2:45 at every horizon. COMPETITIVE stays at 190, inside
+        # run_long's catalog window.
+        why: >-
+          This is the biggest long run of the plan and the closest thing to a
+          dress rehearsal — same shoes, same drinks, same gels, same start time
+          if you can manage it. After this, the building is done and the job
+          becomes arriving fresh.
+      - name: mar_peak_tue_mp
+        day: tue
+        activity: run_full_mp
+        minutes: {scaled: [65, 90]}
+        why: >-
+          Sharpening happens at race-specific effort, so marathon pace becomes
+          the main quality session of the week. By now goal pace should feel
+          controlled and repeatable rather than a stretch — that feeling is the
+          whole point of this phase.
+      - name: mar_peak_thu_tempo
+        day: thu
+        activity: run_tempo
+        minutes: {scaled: [50, 65]}
+        why: >-
+          A moderate tempo keeps your threshold sharp while total volume starts
+          coming down. It is short by design: enough to maintain the edge, not
+          enough to dig a hole this close to race day.
+      - name: mar_peak_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [40, 55]}
+        why: >-
+          Easy running between the two hardest days keeps you moving without
+          adding load. Fitness is banked by now and fatigue is being managed, so
+          this run stays deliberately unremarkable.
+      - name: mar_peak_wed_strides
+        day: wed
+        activity: run_strides
+        minutes: {scaled: [35, 40]}
+        why: >-
+          Short accelerations keep your legs snappy as the emphasis shifts from
+          building to sharpening. They cost almost nothing and stop the coming
+          taper from feeling flat and sluggish.
+
+  peak/recovery:
+    slots: *base_recovery
+
+  # This taper was re-authored against the taper_volume_drop band (0.58-0.64): the
+  # previous easy-only taper realized
+  # only ~27% of peak volume and 60% of peak frequency. The Sunday long run
+  # and one short quality touch stay. It keeps the peak week's layout
+  # too (marathon pace Tue, strides Wed, tempo Thu), only shorter: with the
+  # tempo alone the taper held ~24% of peak quality minutes.
+  # intent: Two-step taper (tlc §7; em §6, an exponential taper): the
+  # marathon always runs two taper weeks, and the generator sizes a slot from
+  # its minimum in the first week of a phase run towards its maximum in the
+  # last, so one variant per slot made the second taper week the larger one
+  # (the default moderate 20-week plan: 3.61 h then 4.01 h, long run 75 then
+  # 85 min). Each shrinking slot is split at frac 0.34, as the Ironman taper
+  # is: step 1 books about what the second week used to, step 2 about what
+  # the first week used to, and step 2's maximum stays at or under step 1's
+  # minimum, so the week falls whatever the solver does. The taper mean
+  # against the peak stays inside the marathon band's 0.58-0.64
+  # (bench_dossiers/taper_peaking.md; tlc §7's Ironman tapers 0.50-0.75)
+  # from 16 weeks on. Moderate takes a few minutes off each step (3.88 h
+  # then 3.43 h at 20 weeks) so its 12- and 14-week plans, where the solver
+  # used to hold the second week near its minimum, taper no shallower than
+  # before.
+  taper/taper:
+    slots:
+      - name: mar_taper_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {basic: [50, 60], moderate: [80, 100], competitive: [90, 115]}
+        window: [0.0, 0.34]
+        group: mar_taper_sun_long
+        # intent: A real long run stays through the taper; dropping it was the largest single contributor
+        # to the 27%-of-peak taper. Moderate/competitive trimmed 15 min
+        # (2026-09-25) to pay for the longer quality runs: the taper long run
+        # read 0.53 of the longest against the 0.44 it should read.
+        why: >-
+          The taper cuts how much you run, not what your running looks like — so
+          the long run stays, just shorter. Keeping one solid run a week holds
+          on to the endurance you spent months building while the fatigue drains
+          away.
+      - name: mar_taper_sun_long_run_p2
+        day: sun
+        activity: run_long
+        minutes: {basic: [40, 50], moderate: [60, 80], competitive: [75, 90]}
+        window: [0.34, 1.0]
+        group: mar_taper_sun_long
+        why: >-
+          The last long run before the marathon, shorter again than last
+          week's. It keeps the rhythm of your Sunday run without asking your
+          legs for anything they will need to recover from.
+      - name: mar_taper_tue_mp
+        day: tue
+        activity: run_full_mp
+        minutes: {basic: [35, 36], moderate: [48, 55], competitive: [60, 65]}
+        window: [0.0, 0.34]
+        group: mar_taper_tue_mp
+        # intent: Marathon pace is most of the peak week's quality; keeping
+        # it, shorter, is what holds the taper's intensity (tlc §7,
+        # "intensity maintained in short touches"). Basic starts at 33, not
+        # the 26 a scaled [40, 55] gives it: 10 + 10 min of warm-up and
+        # cool-down put the session's floor at ~30 min. Moderate/competitive
+        # raised 2026-09-25: at 34-47 min the taper kept 43 % of the peak
+        # week's quality minutes (Bosquet 2007: volume falls, intensity
+        # holds); basic's heavier taper cost race-day freshness.
+        why: >-
+          Marathon pace stays in the week, just shorter than at the peak. Goal
+          pace should feel familiar and controlled on race morning, and a
+          short run at it keeps it that way while the fatigue drains away.
+      - name: mar_taper_tue_mp_p2
+        day: tue
+        activity: run_full_mp
+        minutes: {basic: [33, 35], moderate: [38, 48], competitive: [45, 55]}
+        window: [0.34, 1.0]
+        group: mar_taper_tue_mp
+        why: >-
+          A last, shorter run at marathon pace. It is there to keep goal pace
+          familiar, not to build anything, so it stops well before it feels
+          like work.
+      - name: mar_taper_wed_strides
+        day: wed
+        activity: run_strides
+        minutes: {scaled: [30, 35]}
+        why: >-
+          A few relaxed accelerations keep your stride quick and remind your
+          legs what fast feels like. Small, sharp, and essentially free in
+          recovery terms.
+      - name: mar_taper_thu_tempo
+        day: thu
+        activity: run_tempo
+        minutes: {basic: [30, 36], moderate: [42, 50], competitive: [50, 60]}
+        window: [0.0, 0.34]
+        group: mar_taper_thu_tempo
+        # intent: Maintaining intensity while volume falls matches tlc §7's
+        # "intensity maintained in short touches".
+        why: >-
+          Cutting the intensity along with the volume is how a taper goes wrong
+          and you arrive flat. A short touch of tempo keeps your threshold sharp
+          and costs you almost nothing in freshness.
+      - name: mar_taper_thu_tempo_p2
+        day: thu
+        activity: run_tempo
+        minutes: {basic: [22, 30], moderate: [32, 42], competitive: [40, 50]}
+        window: [0.34, 1.0]
+        group: mar_taper_thu_tempo
+        why: >-
+          The tempo stays in the week, shorter than last week's. Keeping a
+          touch of threshold is what stops you arriving at the start line
+          feeling flat.
+      - name: mar_taper_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {basic: [25, 29], moderate: [30, 38], competitive: [40, 45]}
+        window: [0.0, 0.34]
+        group: mar_taper_fri_easy
+        why: >-
+          A short easy run to keep the routine intact and the legs loose.
+          Anything longer only adds fatigue you no longer have time to absorb.
+      - name: mar_taper_fri_easy_p2
+        day: fri
+        activity: run_easy
+        minutes: {basic: [15, 25], moderate: [20, 30], competitive: [25, 35]}
+        window: [0.34, 1.0]
+        group: mar_taper_fri_easy
+        why: >-
+          A short easy run to keep the routine intact and the legs loose.
+          Anything longer only adds fatigue you no longer have time to absorb.
+
+  # Race week scales with the tier's peak (the band holds race
+  # week at 0.20-0.40 of peak volume): a tier-invariant duration kept BASIC
+  # in band but fell under the 0.20 floor once the peak grew.
+  taper/race:
+    slots:
+      - name: mar_race_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [40, 40], moderate: [45, 45], competitive: [55, 55]}
+        why: >-
+          Race week is about arriving rested without going stale, so you keep
+          running — briefly and easily. Nothing you do now can make you fitter;
+          plenty of things could make you tired.
+      - name: mar_race_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [25, 25], moderate: [30, 30], competitive: [30, 30]}
+        why: >-
+          A short shakeout to keep the legs turning over and the nerves in
+          check. Easy means easy — every match gets saved for race day.
+      - name: mar_race_sat_strides
+        day: sat
+        activity: run_strides
+        minutes: {basic: [20, 20], moderate: [20, 20], competitive: [25, 25]}
+        why: >-
+          A handful of quick accelerations the day before wakes up your legs
+          without touching your freshness. It is the difference between starting
+          the marathon feeling sharp and feeling like you just got out of bed.

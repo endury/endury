@@ -1,0 +1,138 @@
+# running_maintenance session menus. Format and validation ladder: AUTHORING.md.
+#
+# Maintenance retains fitness by keeping intensity and cutting volume
+# (Mujika & Padilla 2000): every tier keeps at least one weekly quality
+# touch plus a moderate long run, at roughly half the tier's race-prep peak
+# volume. Week-over-week variety comes from activity rotations — the block
+# has no race-specificity constraint, so the quality slots rotate through
+# the fun end of the registry (fartlek, hills, tempo, threshold, VO2max).
+# Nothing is progressive: the block holds the tier's maintenance volume
+# instead of ramping.
+#
+# Recovery weeks carry the threshold retest, so every deload doubles as a
+# fitness checkpoint ("did I hold?").
+goal: running_maintenance
+menus:
+  maintain/load:
+    contract:
+      must_contain: [run_long]
+      weekly_quality_sessions: [1, 2]
+    slots:
+      - name: maint_run_sun_long
+        day: sun
+        activity: run_long
+        minutes: {basic: [60, 80], moderate: [75, 90], competitive: [90, 110]}
+        # intent: Moderate long run holds aerobic durability without ramping.
+        why: >-
+          The long run is your best defence against losing aerobic fitness, so
+          it stays in the week even with no race on the calendar. It holds at a
+          moderate length rather than growing — this block is about keeping what
+          you built, not chasing more.
+      # Two tier-disjoint variants: BASIC rotates fartlek/tempo at a
+      # shorter duration (hill repeats need >=40 min to clear their
+      # catalog TSS floor), MODERATE/COMPETITIVE get the full three-way
+      # rotation.
+      - name: maint_run_tue_quality
+        day: tue
+        why: >-
+          Aerobic fitness fades slowly; speed and the top end fade fast, and one
+          honest hard run a week is what keeps them. The flavour changes from
+          week to week so the block never gets stale, but the job is always the
+          same — go and run properly hard.
+        variants:
+          - activity: run_fartlek
+            rotation: [run_fartlek, run_tempo]
+            minutes: {basic: [30, 40]}
+          - activity: run_fartlek
+            rotation: [run_fartlek, run_hill_repeats, run_tempo]
+            minutes: {moderate: [40, 50], competitive: [45, 50]}
+            # intent: Weekly intensity touch that retains VO2max/threshold at
+            # reduced volume; three-way rotation keeps the block varied.
+      - name: maint_run_thu_quality
+        day: thu
+        activity: run_threshold
+        rotation: [run_threshold, run_vo2max]
+        minutes: {moderate: [35, 45], competitive: [40, 50]}
+        why: >-
+          A second quality run gives the week an edge one session alone can't:
+          controlled threshold work some weeks, sharper intervals others. Two
+          intensity touches a week is what stops the sharpness you built from
+          quietly draining away.
+      - name: maint_run_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [30, 40]}
+        why: >-
+          An easy run here keeps you running three days a week without adding
+          meaningful fatigue. In a maintenance block frequency is what preserves
+          fitness — the days you show up matter more than how hard any one of
+          them is.
+      - name: maint_run_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {competitive: [45, 75]}
+        why: >-
+          Extra easy running for a week that can carry it. It costs almost
+          nothing in freshness and keeps your aerobic base topped up between the
+          two hard days.
+      - name: maint_run_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {basic: [30, 40], moderate: [40, 55], competitive: [45, 55]}
+        why: >-
+          An easy run to keep the legs turning over between quality days. Run it
+          genuinely relaxed — its whole job is to add aerobic time while leaving
+          you fresh for the weekend.
+      - name: maint_run_sat_strides
+        day: sat
+        activity: run_strides
+        minutes: {moderate: [30, 36], competitive: [30, 36]}
+        why: >-
+          A handful of short, fast accelerations inside an easy run keeps your
+          legs remembering how to move quickly. It costs almost nothing in
+          fatigue and it's the difference between coming out of this block fit
+          and coming out of it flat.
+
+  maintain/recovery:
+    slots:
+      - name: maint_run_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {scaled: [25, 35]}
+        why: >-
+          Recovery weeks pull the volume right back so accumulated fatigue can
+          clear. Keep this short and easy — you're absorbing the last few weeks,
+          not adding to them.
+      - name: maint_run_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [20, 30]}
+        why: >-
+          A second short run keeps the habit and the movement pattern alive
+          through the down week. Easy, short, and you should finish feeling
+          better than when you started.
+      - name: maint_run_rec_wed_test
+        day: wed
+        activity: run_threshold_test
+        minutes: {scaled: [44, 44]}
+        why: >-
+          Every recovery week carries a test, so this block keeps answering the
+          only question that matters when you're maintaining: am I holding on to
+          it? Rested legs give an honest number — a half-hearted test tells you
+          nothing.
+      # intent: R-SESS-035. BASIC's two easy runs plus the test already land
+      # this week at its 0.50 recovery fraction; MODERATE/COMPETITIVE hold a
+      # higher fraction (0.60/0.65 — a lighter deload for a bigger week), which
+      # the two short runs alone can't reach, so a cut-back long run carries
+      # the rest.
+      # The long run stays at most three quarters of the load week's (R-SESS-034's
+      # fraction), so COMPETITIVE lands near 0.56 of its load week, not 0.65:
+      # a down week's long run as long as the load week's is not a cut-back.
+      - name: maint_run_rec_sun_long
+        day: sun
+        activity: run_long
+        minutes: {moderate: [30, 50], competitive: [40, 80]}
+        why: >-
+          A cut-back long run keeps your longest session from vanishing in a
+          down week. It's well short of what you ran last week, but it's still
+          out there — the down week is about easing off, not stopping.

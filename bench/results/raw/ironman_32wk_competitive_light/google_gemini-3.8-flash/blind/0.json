@@ -1,0 +1,15 @@
+{
+ "model": "google/gemini-3.8-flash",
+ "ok": true,
+ "text": "{\"weeks\":[{\"week\":1,\"phase\":\"base\",\"mode\":\"load\",\"total_minutes\":340,\"sessions\":[{\"day\":\"tue\",\"sport\":\"bike\",\"type\":\"easy\",\"minutes\":45,\"steps\":[[1,10],[2,30],[1,5]],\"notes\":\"Smooth cadence 90rpm\"},{\"day\":\"wed\",\"sport\":\"swim\",\"type\":\"easy\",\"minutes\":25,\"metres\":1000,\"steps\":[[1,200],[2,600],[1,200]],\"notes\":\"Focus on balance and exhale\"},{\"day\":\"thu\",\"sport\":\"run\",\"type\":\"easy\",\"minutes\":30,\"steps\":[[1,10],[2,15],[1,5]],\"notes\":\"Keep HR strictly zone 2\"},{\"day\":\"fri\",\"sport\":\"swim\",\"type\":\"technique\",\"minutes\":30,\"metres\":1100,\"steps\":[[1,200],{\"reps\":6,\"on\":[2,100],\"off\":[1,50]},[1,0]],\"notes\":\"Catch and pull drill focus\"},{\"day\":\"sat\",\"sport\":\"bike\",\"type\":\"long\",\"minutes\":60,\"steps\":[[1,10],[2,45],[1,5]],\"notes\":\"Aerobic base building\"},{\"day\":\"sat\",\"sport\":\"run\",\"type\":\"easy\",\"minutes\":20,\"steps\":[[2,15],[1,5]],\"notes\":\"Gentle transition off bike\"},{\"day\":\"sun\",\"sport\":\"bike\",\"type\":\"recovery\",\"minutes\":40,\"steps\":[[1,40]],\"notes\":\"Flush the legs\"},{\"day\":\"sun\",\"sport\":\"run\",\"type\":\"long\",\"minutes\":40,\"steps\":[[1,10],[2,25],[1,5]],\"notes\":\"Comfortable endurance pace\"},{\"day\":\"fri\",\"sport\":\"run\",\"type\":\"easy\",\"minutes\":50,\"steps\":[[1,10],[2,35],[1,5]]}]}]}",
+ "finish_reason": "stop",
+ "prompt_tokens": 934,
+ "completion_tokens": 1848,
+ "reasoning_tokens": 1419,
+ "cost_usd": 0.0076305,
+ "latency_s": 12.06542933313176,
+ "provider": "Google",
+ "served_model": "google/gemini-3.8-flash",
+ "error": null,
+ "brief_sha": "654ab7308fb6f444"
+}

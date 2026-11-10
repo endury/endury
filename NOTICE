@@ -1,0 +1,16 @@
+Endury
+Copyright (C) 2026 Kim Wabersich and Endury contributors
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+Not covered by that licence: the Inter font (SIL Open Font License 1.1), the
+Code of Conduct (Creative Commons Attribution 4.0), the saved AI answers in
+bench/results/raw/ (see bench/results/README.md), and the name and icon of
+Endury as a mark. THIRD_PARTY_NOTICES.md lists the software the site serves.

@@ -1,0 +1,886 @@
+# trail_100k session menus. Format and validation ladder: AUTHORING.md.
+#
+# Week shape: Monday and Friday off (an optional spin and ride),
+# Tuesday/Thursday aerobic volume, Wednesday the one quality day, and a
+# Saturday + Sunday weekend block. The mid-week quality slot is where trail
+# specificity lives (sustained climb repeats, then downhill repeats once
+# there is a base under them, tr §7.1/§9.4), and the weekend block is where
+# the 100K's defining structure lives: a long trail run followed by a
+# shorter back-to-back run on pre-fatigued legs (tr §6/§13.7).
+#
+# BASIC (reviewed with the maintainer) keeps this week with
+# variety on its recurring days: Tuesday easy one week and a steady (BASE) or
+# progression run (BUILD, PEAK) the next; the Wednesday climb alternates a
+# power hike and hill repeats before the descent rotation. Its Sunday is a
+# short easy run except on two back-to-back weekends, one mid-BUILD and the
+# rehearsal weekend (tr §6.1/§13.7: two or three blocks a cycle, never
+# weekly); the rehearsal is 4:00-4:30 and the threshold test comes every
+# other BUILD recovery week.
+#
+# Volume targets are tr §13.4's per-tier peak bands (8-10 / 10-12 /
+# 12-15 h/wk); phase shape follows a 100K skeleton via tr §4.1 (base 4-7 ->
+# early specific 6-9 -> peak specific 8-12 h/wk).
+#
+# Tiers are authored explicitly rather than derived with `scaled` on most
+# slots: the trail activities carry hard realizable spans (RUN_VERT_HIKE
+# 44-212 min, RUN_DOWNHILL_REPEATS 49-89 min, RUN_TRAIL_B2B from 39 min),
+# and a 0.65 BASIC derivation drops straight through those floors —
+# prescribing a session the card renderer then silently resizes.
+#
+# intent: Key sessions (`key:`, session_generator R-SESS-033). The climbing
+# session and the long run are what make this a trail plan, so a week too
+# short for its menu keeps them at their size and shrinks, then drops, the
+# other runs instead. The number is the largest share of a squeezed week
+# the session may take; a week too small for that share drops the session
+# as before. The shares are hypotheses, not measurements: climbing 0.25 on
+# hard work being ~20 % of sessions and ~10 % of hours (tr §10.2); long run
+# 0.5 on longest session ~50 % of weekly time (tr §8.3); the race-sim long
+# run 0.67 as at 50K (tr §5.4 inside tr §3.2's peak-block floor). The
+# back-to-back is not keyed: it rotates with an easy run by design.
+# Recovery and race-week menus carry no key.
+#
+# intent: Eased long runs (`eases:`, session_generator R-SESS-034). The
+# recovery Saturday (the week's long run, as an easy run), the taper long
+# run and the taper Sunday are not on the ramp, so their bounds would outrun
+# an athlete still climbing it; `eases:` caps them at 0.75 of the longest
+# long run the plan has booked (the athlete's recent longest before the
+# first), the top of tr §13.5's "the rest at 50-75 % of the ceiling".
+goal: trail_100k
+progressions:
+  # intent: Trail 100K long run — prescribed in time on feet, not distance, and
+  # grown on a single decaying ladder from BASE to PEAK. It is the plan's only
+  # vehicle for race-terrain vert, descent volume and gut training, but not
+  # where most of the adaptation lives: tr §5.2/§3.1 put total volume first and
+  # record successful longest runs spanning 20-80 % of race distance.
+  - trail_100k_long_run
+menus:
+  # BASE — aerobic volume, climb strength, the back-to-back introduced late.
+  # Descent work is barred from BASE by contract, not only by window
+  # geometry: eccentric loading needs an aerobic base under it (tr
+  # §9.2/§9.4), and the repeated-bout protection it buys washes out after
+  # nine weeks, so spending it in BASE wastes it.
+  base/load:
+    contract:
+      must_contain: [run_trail_long]
+      must_not_contain: [run_10k_race_pace, run_5k_race_pace, run_downhill_repeats, run_vo2max]
+      min_sport_sessions: {running: 5}
+      weekly_quality_sessions: [1, 1]
+    slots:
+      # Lower bounds are deliberately well under the phase-end ceiling: the
+      # generator floors every session at its `min` and lets the shared
+      # progression drive growth above it, so a high BASE floor would
+      # flatten the first two months of the ladder into one repeated
+      # duration.
+      - name: t100_base_sat_long_run
+        day: sat
+        activity: run_trail_long
+        key: 0.5
+        minutes: {basic: [75, 150], moderate: [90, 185], competitive: [105, 215]}
+        progression: trail_100k_long_run
+        why: >-
+          The long trail run is the backbone of the whole plan. Hours on real
+          terrain are what teach your legs, your gut and your head to keep
+          working when the race is still only half done. It grows in small steps
+          and it is measured in time, not distance — and it is the session to
+          rehearse your food, your kit and your climbing on.
+      - name: t100_base_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {moderate: [58, 80], competitive: [70, 95]}
+        why: >-
+          Most of this plan is easy aerobic running, and it is supposed to feel
+          unremarkable. These runs build the engine that carries you through a
+          day-long race, and they leave you fresh enough that the climb day and
+          the weekend block actually land. If you could not hold a conversation,
+          you ran it too hard.
+      - name: t100_basic_base_tue_rhythm
+        day: tue
+        activity: run_easy
+        rotation: [run_easy, run_aerobic_tempo]
+        minutes: {basic: [48, 65]}
+        # intent: BASIC's rhythm run: easy
+        # one week, a steady aerobic tempo the next (a progression run in
+        # BUILD and PEAK), the trail 20K and 50K BASIC pattern kept moderate
+        # for an ultra: no fartlek or threshold, and neither counts as a
+        # quality session beside the Wednesday climb.
+        why: >-
+          Tuesday is your rhythm run: easy one week, the next a steady,
+          comfortably firm stretch at the effort you will race long at. It
+          builds the aerobic base the long weekends rest on.
+      - name: t100_base_wed_vert_hike
+        day: wed
+        activity: run_vert_hike
+        key: 0.25
+        minutes: {moderate: [56, 85], competitive: [65, 100]}
+        # intent: Sustained climb repeats are the plan's primary quality
+        # session: climbing consumes 60-75 % of race time, so intensity
+        # prescribed on the flat trains the minority of the race. Power-hiked at
+        # RPE, not paced — grade makes pace meaningless.
+        why: >-
+          Climbing eats 60-75 % of your race clock, so this is where the week's
+          hard work belongs — intervals on flat ground would train the smaller
+          half of your day. Run it by effort, never by pace: the gradient
+          decides the pace. Power-hiking the steep sections here is a race skill
+          you are training, not a surrender.
+      - name: t100_basic_base_wed_climb
+        day: wed
+        activity: run_vert_hike
+        rotation: [run_vert_hike, run_hill_repeats]
+        key: 0.25
+        minutes: {basic: [50, 55]}
+        # intent: BASIC's climb day alternates the power hike with hill
+        # repeats; the Saturday long run
+        # carries the long climbing. Bounds within both cards (hill repeats
+        # 50-58).
+        why: >-
+          Wednesday is your climbing day. One week a steady power hike, the
+          gait a 100K spends hours in; the next short, hard hill repeats that
+          build a strong, springy stride.
+      - name: t100_base_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [42, 58], moderate: [50, 70], competitive: [60, 82]}
+        why: >-
+          Most of this plan is easy aerobic running, and it is supposed to feel
+          unremarkable. These runs build the engine that carries you through a
+          day-long race, and they leave you fresh enough that the climb day and
+          the weekend block actually land. If you could not hold a conversation,
+          you ran it too hard.
+      # The second weekend day starts as a plain easy run and only becomes a
+      # back-to-back in the last ~40 % of BASE. tr §6.3: back-to-backs are
+      # the highest-risk structure in the trail literature relative to how
+      # thinly they are evidenced, and plans that prescribe them build up gradually over
+      # the base months.
+      - name: t100_base_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {moderate: [45, 60], competitive: [55, 72]}
+        window: [0.0, 0.6]
+        group: t100_base_sun_second_day
+        why: >-
+          For now the second weekend day is just an easy run. The back-to-back
+          weekend is the most demanding thing this plan will ask of you, so you
+          grow into it over the base months rather than starting the year on it.
+      - name: t100_base_sun_b2b
+        day: sun
+        activity: run_trail_b2b
+        minutes: {moderate: [70, 92], competitive: [85, 110]}
+        window: [0.6, 1.0]
+        group: t100_base_sun_second_day
+        # intent: The defining 100K structure: Saturday's long trail run
+        # followed by a deliberately easy Sunday run on pre-fatigued legs — the
+        # state the second half of a 100K is run in, bought without the recovery
+        # cost of one session twice the length. Day 2 lands at roughly half day
+        # 1's clock — the aggressive end of tr §6.1's 'cut 25-50 % off day 1'
+        # band, which tr §6.3 argues for given how thin the evidence is.
+        why: >-
+          Saturday long, Sunday shorter on already-tired legs — this pair is the
+          100K's signature weekend. Sunday is where you rehearse moving well in
+          the state the second half of the race is run in, and you buy that
+          rehearsal without the recovery cost of one enormous day. Keep Sunday
+          genuinely easy: the fatigue you start with is the point, not the
+          effort you add.
+      - name: t100_basic_base_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {basic: [38, 50]}
+        # intent: BASIC holds its back-to-backs for BUILD and PEAK: two or
+        # three blocks a cycle, 3-6 weeks out (tr §6.1, §13.7), and caution
+        # for athletes without much mileage behind them (tr §6.3).
+        why: >-
+          A short, easy run the day after your long run. In base Sunday stays
+          light, so the long run gets your best legs and your body absorbs it.
+      - &t100_mon_spin
+        name: t100_mon_spin
+        day: mon
+        activity: bike_recovery
+        minutes: {basic: [40, 50], moderate: [45, 55], competitive: [50, 60]}
+        optional: true
+        # intent: Optional cross-training, the maintainer's call:
+        # a ride adds aerobic time without the impact that limits how much a
+        # runner can run. It sits outside the load model (session_generator
+        # R-SESS-040), so the running plan is the same with or without it, and
+        # it goes only on a day the menu leaves free of running.
+        why: >-
+          A very easy spin the day after the weekend's long running. It moves
+          stiff legs without any of the impact of running, so the week starts
+          fresher, not more tired.
+      - &t100_fri_ride
+        name: t100_fri_ride
+        day: fri
+        activity: bike_endurance
+        minutes: {basic: [45, 60], moderate: [55, 70], competitive: [60, 80]}
+        optional: true
+        why: >-
+          More aerobic time without more pounding: on the bike your heart and
+          lungs work as they would on an easy run while your legs skip the impact.
+          Keep it easy; your long weekend starts tomorrow and matters more.
+
+  # RECOVERY — easy only in BASE and PEAK; the threshold test in BUILD.
+  # Held at ~50 % of the phase's load week (tr §3.4: every 3rd-4th week at
+  # ~50 % of total time). Recovery weeks keep a real Saturday aerobic
+  # anchor and downgrade Sunday to active recovery — the back-to-back is
+  # what a cutback week removes, so no RUN_TRAIL_B2B appears in any
+  # recovery menu.
+  #
+  # The bounds are phase-specific because a recovery week is defined
+  # relative to the week it follows. One fixed-bound menu sized for PEAK
+  # would land at 79-95 % of the preceding BASE load week — a "recovery"
+  # week in name only, and it would mean the athlete never deloads for the
+  # first ten weeks. base/recovery below is that menu at ~0.62x; PEAK's
+  # recovery menu keeps the original numbers, ~50 % of a PEAK load week.
+  base/recovery:
+    slots:
+      - name: t100_recbase_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [30, 38], moderate: [35, 45], competitive: [40, 52]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - name: t100_recbase_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [26, 34], moderate: [30, 40], competitive: [35, 46]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - name: t100_recbase_sat_easy
+        day: sat
+        activity: run_easy
+        minutes: {basic: [48, 60], moderate: [55, 70], competitive: [62, 80]}
+        eases: trail_100k_long_run
+        why: >-
+          Even in a cutback week Saturday keeps a real aerobic run on real
+          terrain — you hold the rhythm and the habit, just not the length. What
+          this week removes is the back-to-back, not the long run.
+      - name: t100_recbase_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {basic: [22, 28], moderate: [25, 32], competitive: [28, 38]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - name: t100_recbase_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {basic: [24, 32], moderate: [28, 38], competitive: [32, 44]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - *t100_mon_spin
+      - &t100_rec_fri_spin
+        name: t100_rec_fri_spin
+        day: fri
+        activity: bike_recovery
+        minutes: {basic: [40, 50], moderate: [45, 55], competitive: [50, 60]}
+        optional: true
+        why: >-
+          A very easy spin in a lighter week. It keeps you moving without giving
+          your legs anything to recover from; if you would rather rest, rest.
+
+  # BUILD — the pair becomes a real block; descent work enters late. Two
+  # authored quality variants, one of which fires per week: the climb
+  # session or the descent session, never both (tr §10.4 — the hard budget
+  # is spent across uphill, descent and threshold work, not accumulated as
+  # separate allowances).
+  build/load:
+    contract:
+      must_contain: [run_trail_b2b, run_trail_long]
+      min_sport_sessions: {running: 5}
+      weekly_quality_sessions: [1, 3]
+    slots:
+      - name: t100_build_sat_long_run
+        day: sat
+        activity: run_trail_long
+        key: 0.5
+        minutes: {basic: [150, 195], moderate: [180, 235], competitive: [205, 265]}
+        progression: trail_100k_long_run
+        why: >-
+          The long trail run is the backbone of the whole plan. Hours on real
+          terrain are what teach your legs, your gut and your head to keep
+          working when the race is still only half done. It grows in small steps
+          and it is measured in time, not distance — and it is the session to
+          rehearse your food, your kit and your climbing on.
+      - name: t100_build_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {moderate: [70, 95], competitive: [82, 110]}
+        why: >-
+          Most of this plan is easy aerobic running, and it is supposed to feel
+          unremarkable. These runs build the engine that carries you through a
+          day-long race, and they leave you fresh enough that the climb day and
+          the weekend block actually land. If you could not hold a conversation,
+          you ran it too hard.
+      # The mid-week quality day is three windows on one mutually-exclusive
+      # slot group, and the three windows tile the phase with no gap — a
+      # gap would silently delete the week's only quality session.
+      #
+      # Two spacing guards, both structural. Inside the descent window the
+      # rotation alternates descent and climb, so two descent bouts are
+      # never in consecutive weeks. And the window closes before the end of
+      # BUILD so BUILD's last week is always a climb week: otherwise it
+      # could sit directly against a descent week at the top of PEAK, which
+      # is exactly the sub-two-week gap tr §9.3 says buys no additional
+      # protection.
+      - name: t100_basic_build_tue_rhythm
+        day: tue
+        activity: run_easy
+        rotation: [run_easy, run_progression]
+        minutes: {basic: [58, 78]}
+        why: >-
+          Tuesday's rhythm run: easy one week, the next a progression run that
+          starts easy and finishes at a firm, steady effort.
+      - name: t100_build_wed_vert_hike_early
+        day: wed
+        activity: run_vert_hike
+        key: 0.25
+        minutes: {moderate: [75, 102], competitive: [85, 120]}
+        window: [0.0, 0.3]
+        group: t100_build_wed_quality
+        # intent: Sustained climb repeats are the plan's primary quality
+        # session: climbing consumes 60-75 % of race time, so intensity
+        # prescribed on the flat trains the minority of the race. Power-hiked at
+        # RPE, not paced — grade makes pace meaningless.
+        why: >-
+          Climbing eats 60-75 % of your race clock, so this is where the week's
+          hard work belongs — intervals on flat ground would train the smaller
+          half of your day. Run it by effort, never by pace: the gradient
+          decides the pace. Power-hiking the steep sections here is a race skill
+          you are training, not a surrender.
+      - name: t100_basic_build_wed_climb
+        day: wed
+        activity: run_hill_repeats
+        rotation: [run_hill_repeats, run_vert_hike]
+        key: 0.25
+        minutes: {basic: [50, 55]}
+        window: [0.0, 0.3]
+        group: t100_build_wed_quality
+        why: >-
+          Your climbing day carries on into the build, alternating hard hill
+          repeats with a steady power hike. Downhill repeats join it soon.
+      - name: t100_build_wed_descent
+        day: wed
+        activity: run_downhill_repeats
+        key: 0.25
+        rotation: [run_downhill_repeats, run_vert_hike]
+        minutes: {basic: [55, 66], moderate: [58, 72], competitive: [62, 80]}
+        window: [0.3, 0.85]
+        group: t100_build_wed_quality
+        # intent: Downhill repeats, rotated week-about with the climb session so
+        # two descent bouts are never closer than two weeks. Eccentric
+        # conditioning is a strength stimulus, not an aerobic one, and it needs
+        # an aerobic base under it — hence mid-BUILD onward only, never in BASE
+        # and never in the taper.
+        why: >-
+          Descending is what wrecks quads over 100K, and the best preparation is having descended hard beforehand — one honest downhill
+          session makes the next one hurt far less. These bouts alternate with
+          the climb session so two never land in consecutive weeks, and they
+          only start once there is an aerobic base under them: this is strength
+          work with a genuine recovery cost, not another aerobic day.
+      - name: t100_build_wed_vert_hike_late
+        day: wed
+        activity: run_vert_hike
+        key: 0.25
+        minutes: {basic: [62, 85], moderate: [75, 102], competitive: [85, 120]}
+        window: [0.85, 1.0]
+        group: t100_build_wed_quality
+        # intent: Sustained climb repeats are the plan's primary quality
+        # session: climbing consumes 60-75 % of race time, so intensity
+        # prescribed on the flat trains the minority of the race. Power-hiked at
+        # RPE, not paced — grade makes pace meaningless.
+        why: >-
+          Climbing eats 60-75 % of your race clock, so this is where the week's
+          hard work belongs — intervals on flat ground would train the smaller
+          half of your day. Run it by effort, never by pace: the gradient
+          decides the pace. Power-hiking the steep sections here is a race skill
+          you are training, not a surrender.
+      - name: t100_build_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [52, 70], moderate: [62, 85], competitive: [72, 98]}
+        why: >-
+          Most of this plan is easy aerobic running, and it is supposed to feel
+          unremarkable. These runs build the engine that carries you through a
+          day-long race, and they leave you fresh enough that the climb day and
+          the weekend block actually land. If you could not hold a conversation,
+          you ran it too hard.
+      # Every other week, by the same week-parity rotation the descent slot
+      # uses: tr §6.1's table row is literally "not scheduled every week"
+      # and tr §13.7 wants 2-3 blocks per cycle. Firing on every load week
+      # would put three consecutive 11 h weeks each carrying a 4 h45 +
+      # 2 h20 pair on the calendar with no down week between them. Day 2 is
+      # sized at 58-67% of day 1 (tr §6.1's own 100K worked pair, Sat 3-4 h
+      # / Sun 2-2.5 h), not the sub-50% the earlier bounds realized.
+      - name: t100_build_sun_b2b
+        day: sun
+        activity: run_trail_b2b
+        rotation: [run_trail_b2b, run_easy]
+        minutes: {moderate: [122, 152], competitive: [140, 175]}
+        # intent: The defining 100K structure: Saturday's long trail run
+        # followed by a deliberately easy Sunday run on pre-fatigued legs — the
+        # state the second half of a 100K is run in, bought without the recovery
+        # cost of one session twice the length. Day 2 lands at roughly half day
+        # 1's clock — the aggressive end of tr §6.1's 'cut 25-50 % off day 1'
+        # band, which tr §6.3 argues for given how thin the evidence is.
+        why: >-
+          Saturday long, Sunday shorter on already-tired legs — this pair is the
+          100K's signature weekend. Sunday is where you rehearse moving well in
+          the state the second half of the race is run in, and you buy that
+          rehearsal without the recovery cost of one enormous day. Keep Sunday
+          genuinely easy: the fatigue you start with is the point, not the
+          effort you add.
+      - name: t100_basic_build_sun_second_day
+        day: sun
+        # intent: One back-to-back weekend in BUILD for BASIC, the PEAK
+        # rehearsal weekend the other: tr §6.1/§13.7's two or three blocks a
+        # cycle, never weekly, day two 25-50 % shorter than day one. The
+        # window lands it once, at least two weeks before the rehearsal, at
+        # 12 of the 15 horizons from 14 to 28 weeks; at 16, 17 and 20 weeks
+        # no BUILD load week falls inside it and the rehearsal weekend is the
+        # only one. The easy runs either side split at its edges so the
+        # back-to-back wins the group there.
+        why: >-
+          The day after your long run.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [45, 60]}
+            window: [0.0, 0.5]
+            group: t100_basic_build_sun
+            why: >-
+              A short, easy run the day after your long run. Most weekends keep
+              Sunday light, so the long run gets your best legs and your body
+              absorbs it.
+          - activity: run_trail_b2b
+            minutes: {basic: [90, 120]}
+            window: [0.5, 0.7]
+            group: t100_basic_build_sun
+            why: >-
+              Your back-to-back weekend: an easy trail run on legs still tired
+              from yesterday's long run. It rehearses the second half of your
+              race without the cost of one enormous day. Keep it genuinely
+              easy, and take the next two days easy too.
+          - activity: run_easy
+            minutes: {basic: [45, 60]}
+            window: [0.7, 1.0]
+            group: t100_basic_build_sun
+            why: >-
+              A short, easy run the day after your long run. Most weekends keep
+              Sunday light, so the long run gets your best legs and your body
+              absorbs it.
+      - *t100_mon_spin
+      - *t100_fri_ride
+
+  build/recovery:
+    slots:
+      - name: t100_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [45, 60], moderate: [55, 72], competitive: [62, 82]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - name: t100_rec_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [40, 55], moderate: [48, 65], competitive: [55, 75]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - name: t100_rec_sat_easy
+        day: sat
+        activity: run_easy
+        minutes: {basic: [75, 95], moderate: [88, 112], competitive: [100, 128]}
+        eases: trail_100k_long_run
+        why: >-
+          Even in a cutback week Saturday keeps a real aerobic run on real
+          terrain — you hold the rhythm and the habit, just not the length. What
+          this week removes is the back-to-back, not the long run.
+      - name: t100_rec_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {basic: [35, 45], moderate: [40, 52], competitive: [45, 60]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - name: t100_rec_wed_test
+        day: wed
+        activity: run_threshold_test
+        minutes: {moderate: [37, 37], competitive: [44, 44]}
+        why: >-
+          A short, honest threshold test, deliberately placed in a lighter week
+          when you are fresh enough to produce a real number. It is how your
+          training zones stay tied to the fitness you have now rather than the
+          fitness you had three months ago.
+      - name: t100_basic_rec_wed_test
+        day: wed
+        activity: run_threshold_test
+        rotation: [run_threshold_test, run_easy]
+        minutes: {basic: [45, 55]}
+        # intent: BASIC tests every other BUILD recovery week, not every one
+        # (three tests in six weeks at 24 weeks); an easy run in between.
+        why: >-
+          A short, honest test effort in a lighter week, when you are rested
+          enough for the number to mean something. It keeps your training
+          zones tied to the runner you are now.
+      - *t100_mon_spin
+      - *t100_rec_fri_spin
+
+  # PEAK — routine long runs at the 4-5 h ceiling, one race simulation. Two
+  # authored quality variants on one mutually-exclusive slot group; exactly
+  # one fires per week.
+  peak/load:
+    contract:
+      must_contain: [run_trail_b2b, run_trail_long]
+      min_sport_sessions: {running: 5}
+      weekly_quality_sessions: [1, 3]
+    slots:
+      # tr §13.5 routine ceiling. BASIC is NOT the 0.65 derivation of
+      # COMPETITIVE here: tr §5.4's four-hour floor is the gate on
+      # rehearsing race nutrition "for just about any ultramarathon
+      # runner", and a recreational 100K entrant needs it as much as a
+      # competitive one, so BASIC's PEAK ceiling is hand-lifted to reach
+      # 4 h.
+      - name: t100_peak_sat_long_run
+        day: sat
+        activity: run_trail_long
+        key: 0.5
+        minutes: {basic: [195, 240], moderate: [230, 280], competitive: [250, 305]}
+        progression: trail_100k_long_run
+        group: t100_peak_sat_long
+        why: >-
+          The long trail run is the backbone of the whole plan. Hours on real
+          terrain are what teach your legs, your gut and your head to keep
+          working when the race is still only half done. It grows in small steps
+          and it is measured in time, not distance — and it is the session to
+          rehearse your food, your kit and your climbing on.
+      - name: t100_peak_sat_race_sim
+        day: sat
+        activity: run_trail_long
+        key: 0.67
+        minutes: {basic: [240, 270], moderate: [305, 340], competitive: [315, 365]}
+        progression: trail_100k_long_run
+        group: t100_peak_sat_long
+        race_sim: true
+        # intent: The one race-simulation weekend: a 5-6 h day on race-like
+        # terrain, entirely easy effort, full race fuelling and kit. It fires on
+        # the single PEAK week nearest five weeks out, which is also where tr
+        # §6.1 puts the biggest back-to-back pair — so Saturday's simulation and
+        # Sunday's B2B are the same rehearsal, and the plan never schedules two
+        # of them.
+        why: >-
+          Your dress rehearsal: the longest day of your plan, on terrain like the
+          race, all of it at easy effort, with the exact food, kit and pacing you
+          intend to use on the day. It sits about five weeks out — far enough back that
+          you can absorb it, close enough that what you learn still applies.
+          Whatever goes wrong here is information, not a bad day.
+      - name: t100_peak_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {moderate: [85, 108], competitive: [100, 125]}
+        why: >-
+          Most of this plan is easy aerobic running, and it is supposed to feel
+          unremarkable. These runs build the engine that carries you through a
+          day-long race, and they leave you fresh enough that the climb day and
+          the weekend block actually land. If you could not hold a conversation,
+          you ran it too hard.
+      # The PEAK quality day is two windows on one slot group. The descent
+      # window opens after the top of PEAK — the race-simulation week is
+      # chosen ~5 weeks out and lands there, and tr §5.5 buffers that
+      # session with easy days on both sides rather than an eccentric bout
+      # three days before it — and then runs to the end of the phase. A
+      # window spanning the whole run keeps bouts >=2 weeks apart via the
+      # rotation, and a window covering >=3 PEAK weeks always lands one in
+      # the final PEAK week — which a 2-week taper puts 3 weeks out,
+      # exactly tr §13.7's target. The rotation is what keeps the climb
+      # session in the calendar on the off weeks and running unbroken into
+      # the taper (tr §7.3/§11.3: vertical adaptation is easy-come-
+      # easy-go, and removing it late removes exactly the adaptation that
+      # decays fastest).
+      - name: t100_basic_peak_tue_rhythm
+        day: tue
+        activity: run_easy
+        rotation: [run_easy, run_progression]
+        minutes: {basic: [55, 80]}
+        why: >-
+          Tuesday's rhythm run: easy one week, the next a progression run that
+          starts easy and finishes at a firm, steady effort.
+      - name: t100_peak_wed_vert_hike_early
+        day: wed
+        activity: run_vert_hike
+        key: 0.25
+        minutes: {basic: [58, 96], moderate: [88, 112], competitive: [100, 128]}
+        window: [0.0, 0.25]
+        group: t100_peak_wed_quality
+        # intent: Sustained climb repeats are the plan's primary quality
+        # session: climbing consumes 60-75 % of race time, so intensity
+        # prescribed on the flat trains the minority of the race. Power-hiked at
+        # RPE, not paced — grade makes pace meaningless.
+        why: >-
+          Climbing eats 60-75 % of your race clock, so this is where the week's
+          hard work belongs — intervals on flat ground would train the smaller
+          half of your day. Run it by effort, never by pace: the gradient
+          decides the pace. Power-hiking the steep sections here is a race skill
+          you are training, not a surrender.
+      - name: t100_peak_wed_descent
+        day: wed
+        activity: run_downhill_repeats
+        key: 0.25
+        rotation: [run_downhill_repeats, run_vert_hike]
+        minutes: {basic: [55, 68], moderate: [60, 75], competitive: [65, 85]}
+        window: [0.25, 1.0]
+        group: t100_peak_wed_quality
+        # intent: Downhill repeats, rotated week-about with the climb session so
+        # two descent bouts are never closer than two weeks. Eccentric
+        # conditioning is a strength stimulus, not an aerobic one, and it needs
+        # an aerobic base under it — hence mid-BUILD onward only, never in BASE
+        # and never in the taper.
+        why: >-
+          Descending is what wrecks quads over 100K, and the best preparation is having descended hard beforehand — one honest downhill
+          session makes the next one hurt far less. These bouts alternate with
+          the climb session so two never land in consecutive weeks, and they
+          only start once there is an aerobic base under them: this is strength
+          work with a genuine recovery cost, not another aerobic day.
+      - name: t100_peak_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [48, 82], moderate: [75, 95], competitive: [90, 112]}
+        why: >-
+          Most of this plan is easy aerobic running, and it is supposed to feel
+          unremarkable. These runs build the engine that carries you through a
+          day-long race, and they leave you fresh enough that the climb day and
+          the weekend block actually land. If you could not hold a conversation,
+          you ran it too hard.
+      # Day 2 is sized at 58-67% of day 1, tr §6.1's own 100K worked pair
+      # (Sat 3-4 h / Sun 2-2.5 h), not the 47-50% the earlier bounds
+      # realized — under half turns the pair into a long run plus a medium
+      # run rather than a pre-fatigued-legs rehearsal. The rotation is what
+      # pays for it: fewer, bigger blocks (tr §6.1: "not scheduled every
+      # week").
+      - name: t100_peak_sun_b2b
+        day: sun
+        activity: run_trail_b2b
+        rotation: [run_trail_b2b, run_easy]
+        minutes: {moderate: [158, 195], competitive: [178, 215]}
+        # intent: The defining 100K structure: Saturday's long trail run
+        # followed by a deliberately easy Sunday run on pre-fatigued legs — the
+        # state the second half of a 100K is run in, bought without the recovery
+        # cost of one session twice the length. Day 2 lands at roughly half day
+        # 1's clock — the aggressive end of tr §6.1's 'cut 25-50 % off day 1'
+        # band, which tr §6.3 argues for given how thin the evidence is.
+        why: >-
+          Saturday long, Sunday shorter on already-tired legs — this pair is the
+          100K's signature weekend. Sunday is where you rehearse moving well in
+          the state the second half of the race is run in, and you buy that
+          rehearsal without the recovery cost of one enormous day. Keep Sunday
+          genuinely easy: the fatigue you start with is the point, not the
+          effort you add.
+      - name: t100_basic_peak_sun_second_day
+        day: sun
+        # intent: BASIC's biggest back-to-back rides on the rehearsal weekend,
+        # about five weeks out (tr §6.1: the biggest pair 4-5 weeks out); the
+        # other PEAK Sundays stay short.
+        why: >-
+          The day after your long run.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [45, 60]}
+            group: t100_basic_peak_sun
+            why: >-
+              A short, easy run the day after your long run. Most weekends keep
+              Sunday light, so the long run gets your best legs and your body
+              absorbs it.
+          - activity: run_trail_b2b
+            minutes: {basic: [120, 150]}
+            group: t100_basic_peak_sun
+            race_sim: true
+            why: >-
+              The second day of your rehearsal weekend: a long, easy trail run
+              on legs tired from yesterday's big day, the closest thing to the
+              second half of your race. Slow is the point. Take the next two
+              days easy.
+      - *t100_mon_spin
+      - *t100_fri_ride
+
+  peak/recovery:
+    slots:
+      - name: t100_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [45, 60], moderate: [55, 72], competitive: [62, 82]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - name: t100_rec_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [40, 55], moderate: [48, 65], competitive: [55, 75]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - name: t100_rec_sat_easy
+        day: sat
+        activity: run_easy
+        minutes: {basic: [75, 95], moderate: [88, 112], competitive: [100, 128]}
+        eases: trail_100k_long_run
+        why: >-
+          Even in a cutback week Saturday keeps a real aerobic run on real
+          terrain — you hold the rhythm and the habit, just not the length. What
+          this week removes is the back-to-back, not the long run.
+      - name: t100_rec_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {basic: [35, 45], moderate: [40, 52], competitive: [45, 60]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - name: t100_rec_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {basic: [38, 52], moderate: [45, 62], competitive: [52, 70]}
+        why: >-
+          This is a cutback week: the adaptation from the last block happens
+          now, not while you were doing the work. Keep these runs short and
+          genuinely easy even if the legs feel good — topping up a recovery week
+          is how a good block turns into a fortnight of digging out.
+      - *t100_mon_spin
+      - *t100_rec_fri_spin
+
+  # TAPER — one taper-mode week (taper_weeks=2, the second is race week).
+  # The generator reads a single taper week at every spec's *minimum*
+  # (session_generator's documented interpolation wart), so the lower
+  # bounds here are the taper week itself and the upper bounds are only the
+  # QP's ceiling. Volume lands at ~60 % of the tier's peak, the shallow
+  # protocol for the taper week and the aggressive number reserved for race
+  # week only. The catalog marks both RUN_TRAIL_B2B and RUN_DOWNHILL_REPEATS
+  # taper_ok=False; the contract says the same thing where a reviewer reads
+  # it. A second long run on pre-fatigued legs is exactly what a taper
+  # drops, and a descent bout inside the last two weeks lands its DOMS peak
+  # on race week. RUN_VERT_HIKE is required for the opposite reason (tr
+  # §11.3/§7.3): vertical specificity is the one thing a mountain taper
+  # must not drop.
+  taper/taper:
+    contract:
+      must_contain: [run_trail_long, run_vert_hike]
+      must_not_contain: [run_downhill_repeats, run_trail_b2b]
+      min_sport_sessions: {running: 4}
+    slots:
+      - name: t100_taper_sat_long_run
+        day: sat
+        activity: run_trail_long
+        key: 0.5
+        minutes: {basic: [138, 162], moderate: [160, 192], competitive: [190, 220]}
+        eases: trail_100k_long_run
+        # intent: The long run persists, shortened, and stays on the same
+        # terrain. Dropping it — or moving it to flat ground — is the explicit
+        # anti-example in the trail taper literature, because vertical
+        # adaptation is the fastest thing an athlete loses.
+        why: >-
+          The long run stays, and it stays on the same terrain — it is simply
+          shorter. Climbing fitness is the first thing you lose when you stop
+          using it, so swapping the hills for flat ground now would quietly undo
+          the very thing you spent months building.
+      - name: t100_taper_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [62, 78], moderate: [70, 88], competitive: [82, 98]}
+        why: >-
+          Taper runs keep your rhythm without adding fatigue. The fitness is
+          already banked — these days exist to keep you moving and keep your
+          head calm, not to add anything to the bank.
+      - name: t100_taper_wed_vert_hike
+        day: wed
+        activity: run_vert_hike
+        key: 0.25
+        minutes: {basic: [46, 56], moderate: [52, 64], competitive: [60, 72]}
+        # intent: Intensity is preserved while the volume of intensity is cut —
+        # the zone never changes, the minutes at it do. It stays the climb
+        # session: RUN_VERT_HIKE's rep lattice floors at ~44 min (2x8 min work
+        # plus 10/10 warm-up and cool-down) and the catalog marks it taper_ok,
+        # so a taper-sized dose is well inside its range. Handing the slot to a
+        # flat tempo run was the marathon taper's mistake transplanted onto a
+        # mountain race: it left the final two weeks before a 100K with zero
+        # vert, and it introduced a session type the plan had never run before —
+        # tr §11.3's 'intensity is preserved' presupposes the intensity already
+        # existed.
+        why: >-
+          The climb session stays in the taper, at the same effort, for far
+          fewer minutes. You keep the sharpness and the feel for steep ground
+          while the fatigue drains away — dropping the hills altogether is how
+          runners reach the start line rested but flat.
+      # RUN_STRIDES realizes 27.5-36 min and nothing else, so it is authored
+      # as a tier-invariant band rather than a scaled one.
+      - name: t100_taper_thu_strides
+        day: thu
+        activity: run_strides
+        minutes: [30, 36]
+        why: >-
+          A handful of short, relaxed strides keeps your legs quick at almost no
+          cost. In a taper the risk is not losing fitness, it is going stale —
+          this is the cheap insurance against that.
+      - name: t100_taper_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {basic: [72, 86], moderate: [80, 96], competitive: [92, 108]}
+        eases: trail_100k_long_run
+        why: >-
+          Taper runs keep your rhythm without adding fatigue. The fitness is
+          already banked — these days exist to keep you moving and keep your
+          head calm, not to add anything to the bank.
+
+  # RACE WEEK — race menus assume a Sunday race, so no Sunday slot. Held at
+  # 15-18 % of the tier's peak (tr §11.2's aggressive race-week number).
+  # The last run is Friday, not Saturday: a 100K starts before dawn after a
+  # day of travel, drop-bag prep and bib collection, so the day before it
+  # is already part of the race.
+  taper/race:
+    contract:
+      must_not_contain: [run_downhill_repeats, run_trail_b2b]
+    slots:
+      - name: t100_race_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [40, 40], moderate: [45, 45], competitive: [52, 52]}
+        why: >-
+          Race-week running is tiny on purpose: nothing you do now can make you
+          fitter, and plenty of it could make you slower. Move enough to feel
+          normal, then stop.
+      - name: t100_race_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [28, 28], moderate: [32, 32], competitive: [35, 35]}
+        why: >-
+          Race-week running is tiny on purpose: nothing you do now can make you
+          fitter, and plenty of it could make you slower. Move enough to feel
+          normal, then stop.
+      - name: t100_race_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {basic: [28, 28], moderate: [30, 30], competitive: [32, 32]}
+        # intent: A short opener two days out, then a clear Saturday. tr
+        # §11.2's shallow protocol ends in '2-3 short shakeout runs'.
+        why: >-
+          A short opener two days out, then a completely clear Saturday. Friday
+          wakes the legs up; Saturday belongs to travel, kit, drop bags and
+          sleep — a 100K starts long before dawn, so the day before it is
+          already part of the race.

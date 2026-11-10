@@ -1,0 +1,363 @@
+# running_10k session menus. Format and validation ladder: AUTHORING.md.
+goal: running_10k
+progressions:
+  # intent: 10K long run.
+  - running_10k_long_run
+menus:
+  base/load:
+    contract:
+      must_contain: [run_long]
+    slots:
+      - name: 10k_base_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [60, 75]}
+        progression: running_10k_long_run
+        why: >-
+          The long run is the backbone of 10K fitness — it builds the aerobic
+          engine that decides how much of the race you can run strongly before
+          it turns into a grind. Base is where that engine gets built, one
+          steady step longer at a time.
+      - name: 10k_base_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {scaled: [30, 40]}
+        why: >-
+          Most of your aerobic adaptation comes from easy running, not from the
+          hard days. Keep this genuinely conversational — run it too quick and
+          it stops being easy without ever becoming quality.
+      - name: 10k_base_thu_strides
+        day: thu
+        activity: run_strides
+        minutes: {scaled: [30, 40]}
+        why: >-
+          Short, relaxed accelerations inside an easy run keep your legs fluent
+          at speed for almost no fatigue. They belong in base so that when real
+          intensity arrives later, your stride already knows how to go fast.
+      - name: 10k_base_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [25, 35]}
+        why: >-
+          A second easy run adds aerobic volume at very little cost. Early in
+          the plan, running more often beats running any single day harder.
+
+  # Recovery weeks (2026-09-25): each phase authors its own recovery week,
+  # sized against the load weeks each tier actually gets in that phase —
+  # about 0.6 of the preceding load week at MODERATE and COMPETITIVE, up to
+  # the 0.5 capacity ceiling at BASIC — with no run under 20 minutes. The old
+  # shared anchor put the threshold test in every recovery week: BASIC could
+  # never fit it and ran two 15-16 min easy runs, and a build recovery week
+  # without its test fell to ~0.4 of the load week. The test now fires in the
+  # PEAK recovery week only (peak/recovery); base and build recovery weeks
+  # are easy.
+  base/recovery:
+    slots:
+      - name: 10k_base_rec_sun_long_run
+        day: sun
+        why: >-
+          The long run stays in an easier week, just shorter. It keeps your
+          legs used to Sunday's time on feet, so next week's longer run picks
+          up where the last one left off instead of starting over.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [25, 30]}
+            # intent: 2026-09-25. BASIC's recovery week (1.1-1.5 h) cannot
+            # hold a long run above run_long's 32-min card floor next to two
+            # 20-min runs, so its Sunday run is easy running instead.
+            why: >-
+              A slightly longer easy run keeps Sunday's rhythm in a lighter
+              week. It holds your time on feet ticking over without asking
+              anything of your legs.
+          - activity: run_long
+            minutes: {moderate: [40, 45], competitive: [45, 50]}
+      - name: 10k_base_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [20, 20], moderate: [25, 25], competitive: [25, 30]}
+        why: >-
+          A recovery week is where the last block of work becomes actual
+          fitness. Keep this short and easy — you adapt while you back off, not
+          while you grind.
+      - name: 10k_base_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {basic: [20, 20], moderate: [25, 25], competitive: [25, 30]}
+        why: >-
+          A second short easy run to keep the habit and the blood flowing. The
+          urge to make up for a lighter week is exactly what this week protects
+          you from.
+
+  build/load:
+    slots:
+      - name: 10k_build_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [75, 90]}
+        progression: running_10k_long_run
+        why: >-
+          The long run keeps growing through the build because a 10K rewards
+          holding a hard pace deep into the race, and that durability is bought
+          here. It is also what lets you absorb two hard sessions a week without
+          falling apart.
+      - name: 10k_build_tue_tempo
+        day: tue
+        activity: run_tempo
+        rotation: [run_tempo, run_threshold]
+        minutes: {scaled: [35, 50]}
+        why: >-
+          A 10K is essentially a long push right at the edge of what you can
+          sustain, so raising that edge is the most race-specific thing you can
+          do. Sustained comfortably-hard running is how you move it, and the
+          build is where it becomes the week's centrepiece.
+      - name: 10k_build_thu_vo2max
+        day: thu
+        activity: run_vo2max
+        rotation: [run_vo2max, run_fartlek]
+        minutes: {scaled: [30, 40]}
+        why: >-
+          Hard intervals near your aerobic ceiling lift VO2max, which sets the
+          roof over the threshold pace Tuesday is busy raising. It is expensive
+          work with weeks-long benefits, which is exactly why it is concentrated
+          here in the build rather than spread thin.
+      - name: 10k_build_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [25, 35]}
+        why: >-
+          Easy running whose only job is to let the hard sessions either side of
+          it stick. Run it slower than feels satisfying — that is the point of
+          it.
+      - name: 10k_build_sat_fartlek
+        day: sat
+        activity: run_fartlek
+        minutes: {scaled: [30, 40]}
+        why: >-
+          Unstructured surges by feel — real quality, but freer than the week's
+          two key sessions. It teaches you to change gear mid-run, which is
+          precisely what a 10K asks of you when someone goes past at halfway.
+
+  build/recovery:
+    slots:
+      - name: 10k_build_rec_sun_long_run
+        day: sun
+        why: >-
+          The long run stays in an easier week, just shorter. It keeps your
+          legs used to Sunday's time on feet, so next week's longer run picks
+          up where the last one left off instead of starting over.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [25, 35]}
+            why: >-
+              A slightly longer easy run keeps Sunday's rhythm in a lighter
+              week. It holds your time on feet ticking over without asking
+              anything of your legs.
+          - activity: run_long
+            minutes: {moderate: [45, 55], competitive: [50, 60]}
+      - name: 10k_build_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [20, 25], moderate: [25, 30], competitive: [30, 35]}
+        why: >-
+          A recovery week is where the last block of work becomes actual
+          fitness. Keep this short and easy — you adapt while you back off, not
+          while you grind.
+      - name: 10k_build_rec_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {moderate: [25, 30], competitive: [25, 30]}
+        why: >-
+          Another short, easy run. Running most days at a fraction of the usual
+          load keeps your legs used to the work while the hard sessions step
+          aside for a week.
+      - name: 10k_build_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {basic: [20, 20], moderate: [25, 30], competitive: [25, 30]}
+        why: >-
+          A second short easy run to keep the habit and the blood flowing. The
+          urge to make up for a lighter week is exactly what this week protects
+          you from.
+
+  peak/load:
+    slots:
+      - name: 10k_peak_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {basic: [60, 62], moderate: [76, 80], competitive: [90, 95]}
+        progression: running_10k_long_run
+        # intent: Each floor meets the build long run's top after the ramp's
+        # 5-minute rounding (58 -> 60, 76 -> 75, 90), so the plan's longest
+        # run lands in PEAK. scaled(85, 90) sat below it at every tier, and a
+        # slot without a progression books its floor.
+        why: >-
+          The long run levels off in peak rather than growing — you keep the
+          durability you built, but not at the cost of the freshness the sharp
+          sessions now need.
+      - name: 10k_peak_tue_tempo
+        day: tue
+        activity: run_tempo
+        minutes: {scaled: [35, 45]}
+        why: >-
+          Sustained running close to race effort is the nearest thing to a 10K
+          rehearsal you can do. In peak it becomes the key session: the fitness
+          is built, and now you teach it to hold the pace you actually want on
+          the day.
+      - name: 10k_peak_thu_vo2max
+        day: thu
+        activity: run_vo2max
+        minutes: {scaled: [30, 40]}
+        why: >-
+          A final dose of top-end work while there is still time to absorb it.
+          Peak keeps the intensity but shrinks the amount — sharpening rather
+          than building.
+      - name: 10k_peak_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [25, 35]}
+        why: >-
+          Easy running to keep the legs moving between the sharp sessions. This
+          close to the race, recovery is part of the training, not a break from
+          it.
+
+  # intent: 2026-09-25. The threshold test fires in this one recovery week:
+  # every plan length has exactly one PEAK recovery week, its ceiling holds
+  # the 55-min protocol next to three easy runs, and the number sets the race
+  # pace for the final block. BASIC keeps an easy week: its 0.5 ceiling could
+  # never hold the test.
+  peak/recovery:
+    slots:
+      # intent: 2026-09-25 basic minimums raised 5-10 min: sessions early in
+      # PEAK sit at their minimums, and after the biggest late-build week of a
+      # long plan the basic recovery week fell to 39-44 % of it; capacity
+      # still scales shorter plans' weeks to their ceiling.
+      - name: 10k_peak_rec_sun_long_run
+        day: sun
+        why: >-
+          The long run stays in an easier week, just shorter. It keeps your
+          legs used to Sunday's time on feet, so next week's longer run picks
+          up where the last one left off instead of starting over.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [40, 45]}
+            why: >-
+              A slightly longer easy run keeps Sunday's rhythm in a lighter
+              week. It holds your time on feet ticking over without asking
+              anything of your legs.
+          - activity: run_long
+            minutes: {moderate: [32, 40], competitive: [45, 50]}
+      - name: 10k_peak_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [25, 30], moderate: [20, 25], competitive: [25, 30]}
+        why: >-
+          A recovery week is where the last block of work becomes actual
+          fitness. Keep this short and easy — you adapt while you back off, not
+          while you grind.
+      - name: 10k_peak_rec_wed_test
+        day: wed
+        activity: run_threshold_test
+        minutes: {moderate: [44, 44], competitive: [44, 44]}
+        why: >-
+          An honest short time trial to re-measure your threshold pace, so every
+          zone in this plan keeps matching the runner you are now. It lands in a
+          recovery week because you are fresh enough to give a true reading
+          without damaging the block.
+      - name: 10k_peak_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {basic: [25, 30], moderate: [20, 25], competitive: [25, 30]}
+        why: >-
+          A second short easy run to keep the habit and the blood flowing. The
+          urge to make up for a lighter week is exactly what this week protects
+          you from.
+
+  # The taper was one easy run and strides: it held ~4% of its biggest
+  # week's quality minutes, ~22% of its volume and half its sessions. It
+  # now keeps the peak week's layout (Sunday long run, Tuesday tempo,
+  # Thursday VO2max, Friday easy) at taper length. Runners on ~1 h/week read
+  # worse: capacity drops every hard session from their build weeks, so the
+  # taper tempo out-holds their peak.
+  taper/taper:
+    slots:
+      - name: 10k_taper_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [60, 70]}
+        why: >-
+          The long run stays, shorter than at the peak. It holds on to the
+          durability you built while the fatigue drains out before race week.
+      - name: 10k_taper_tue_tempo
+        day: tue
+        activity: run_tempo
+        minutes: {scaled: [40, 45]}
+        why: >-
+          A short tempo keeps the sustained, comfortably-hard effort of your
+          race familiar. A taper cuts volume, not intensity — remove the hard
+          running entirely and you turn up flat.
+      - name: 10k_taper_thu_vo2max
+        day: thu
+        # intent: VO2max at its floor (4 x 3 min, 44 min) is the short touch
+        # of race-pace intensity (tlc §7). Basic runs strides instead: its
+        # biggest week holds only ~12 quality minutes, so the floor session
+        # on top of the tempo would carry more than that week did.
+        why: >-
+          A few short accelerations keep the legs sharp while everything else
+          winds down. Fast for seconds, not minutes, and essentially free in
+          recovery terms.
+        variants:
+          - activity: run_strides
+            minutes: {basic: [13, 16]}
+          - activity: run_vo2max
+            minutes: {moderate: [44, 44], competitive: [44, 44]}
+            why: >-
+              The fewest hard intervals that still count — enough to keep your
+              top gear, the one a 10K leans on, sharp for race day, and far too
+              little to leave you tired.
+      - name: 10k_taper_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [25, 30]}
+        why: >-
+          Easy running to keep your rhythm going into race week. The fitness is
+          already banked — the job now is to arrive fresh.
+
+  taper/race:
+    # intent: 10K race weeks keep 0.40-0.60 of the peak week
+    # (docs/research/endurance_methodology.md §6, Race Week in Road Running),
+    # and the bigger tiers keep a short pace run early in the week. One flat
+    # week for every tier booked 0.21-0.38 of the default peaks, so every tier
+    # now runs an easy Friday and moderate and competitive a short tempo. The
+    # fuller week arrives at the 10K's target race-day freshness
+    # (GOAL_FRESHNESS_TAPER_WEEKS, macro_tables.py). Three sessions at most: a
+    # fourth crowded the strides out of a small athlete's week.
+    slots:
+      - name: 10k_race_tue_run
+        day: tue
+        why: >-
+          Short and easy — enough running to feel normal, nothing more. No
+          session this week can make you fitter, but plenty of them could make
+          you slower.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [25, 25]}
+          - activity: run_tempo
+            minutes: {moderate: [30, 30], competitive: [30, 30]}
+            why: >-
+              A short spell at a comfortably hard effort, early enough in the
+              week to be gone by race day. It keeps the pace familiar
+              without denting your freshness.
+      - name: 10k_race_thu_strides
+        day: thu
+        activity: run_strides
+        minutes: [20, 20]
+        why: >-
+          A handful of relaxed accelerations to wake the legs up and remind them
+          what race turnover feels like. Fast for seconds, not minutes.
+      - name: 10k_race_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {basic: [20, 20], moderate: [25, 25], competitive: [35, 35]}
+        why: >-
+          An easy run to keep your legs turning over before the weekend. The
+          fitness is banked; this is only about staying loose.

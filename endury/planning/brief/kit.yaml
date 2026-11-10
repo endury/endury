@@ -1,0 +1,61 @@
+# Kit lines for the brief sheet (endury/planning/brief/fuel.py), by sport
+# and by the coolest recent session temperature in °C. The first band whose
+# `below_c` is above the temperature wins; `null` is "any warmer".
+#
+# Every string is shown to the athlete as written. Riding is dressed a band
+# colder than running at the same temperature: the wind of riding speed and
+# the lower heat output of a seated effort cool a rider faster (common
+# coaching practice; no single measured source). Swimming has no kit line.
+running:
+  - below_c: 0
+    lines:
+      - "A warm base layer, tights and a wind jacket"
+      - "Warm gloves and a hat"
+      - "Shoes with grip if the ground is frozen"
+  - below_c: 5
+    lines:
+      - "Long sleeve base layer and tights"
+      - "Gloves and a hat or buff"
+      - "A light wind jacket"
+  - below_c: 10
+    lines:
+      - "Long sleeve or a shirt with arm warmers"
+      - "Thin gloves and a buff"
+      - "A light wind jacket in the pack"
+  - below_c: 15
+    lines:
+      - "A shirt and shorts, with a light layer for the start"
+      - "A wind jacket in the pack on long or high routes"
+  - below_c: 22
+    lines:
+      - "A shirt and shorts"
+      - "A cap and sunglasses if it is bright"
+  - below_c: null
+    lines:
+      - "The lightest shirt you own, a cap and sun cream"
+      - "Have more water with you than you expect to need, or plan a refill"
+cycling:
+  - below_c: 0
+    lines:
+      - "Winter jacket, thermal tights and overshoes"
+      - "Insulated gloves and a cap under the helmet"
+      - "Watch for ice; think about riding indoors"
+  - below_c: 5
+    lines:
+      - "Thermal jacket and long tights"
+      - "Full gloves, overshoes and a cap under the helmet"
+  - below_c: 10
+    lines:
+      - "Long sleeve jersey with a gilet, and knee or leg warmers"
+      - "Full gloves and overshoes"
+  - below_c: 15
+    lines:
+      - "Jersey with arm and knee warmers"
+      - "A gilet or wind jacket in the pocket"
+  - below_c: 22
+    lines:
+      - "Jersey and shorts, with a gilet for the descents"
+  - below_c: null
+    lines:
+      - "The lightest jersey you own and sun cream"
+      - "Two full bottles and a plan for refills"

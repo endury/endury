@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # The browser takes these from Pyodide's lock, not poetry.lock; they move with a Pyodide bump.
+    ignore:
+      - dependency-name: "pydantic"
+      - dependency-name: "openai"
+      - dependency-name: "cvxpy"
+      - dependency-name: "httpx"
+      - dependency-name: "pyyaml"
+    groups:
+      python-dependencies:
+        update-types:
+          - "minor"
+          - "patch"

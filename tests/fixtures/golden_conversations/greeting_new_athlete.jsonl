@@ -1,0 +1,3 @@
+{"setup": {"athlete": {"name": "", "experience_level": "", "primary_sport": ""}}}
+{"role": "user", "content": "Hi, I'm new here!"}
+{"role": "assistant", "content": "Welcome! What's your name?", "expect_contains": ["name"], "expect_not_contains": ["error"]}

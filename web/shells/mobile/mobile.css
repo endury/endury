@@ -1,0 +1,342 @@
+/* Endury — mobile shell composition (390×820 reference): app bar +
+   week strip, agenda feed, full-screen coach, plan/inputs drawers. Only
+   layout lives here. */
+
+.cbm-app { height: 100%; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+
+/* App bar */
+.cbm-appbar {
+  padding: calc(var(--cb-sp-2) + env(safe-area-inset-top)) var(--cb-sp-5) var(--cb-sp-3);
+  display: flex; flex-direction: column; gap: var(--cb-sp-3); flex: none;
+  border-bottom: 1px solid var(--cb-border); z-index: 5; background: transparent;
+}
+.cbm-appbar-top { display: flex; align-items: center; justify-content: space-between; gap: var(--cb-sp-3); }
+.cbm-race-pill {
+  display: inline-flex; align-items: center; gap: var(--cb-sp-1); max-width: 100%;
+  background: var(--cb-surface-2); border: 1px solid var(--cb-border-strong);
+  border-radius: var(--cb-r-pill); padding: var(--cb-sp-1) var(--cb-sp-1-5) var(--cb-sp-1) var(--cb-sp-2-5); cursor: pointer;
+  font-family: inherit; color: var(--cb-accent); font-size: var(--cb-fs-meta); font-weight: 600;
+}
+.cbm-race-pill span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cbm-weeknav { display: flex; align-items: center; gap: var(--cb-sp-2); margin-top: var(--cb-sp-1-5); }
+.cbm-weeknav-title { font-size: var(--cb-fs-title); font-weight: 600; letter-spacing: -.01em; }
+.cbm-arrow {
+  width: 22px; height: 22px; border-radius: var(--cb-r-chip); border: 1px solid var(--cb-border);
+  background: var(--cb-surface-2); color: var(--cb-accent); display: flex;
+  align-items: center; justify-content: center; cursor: pointer; flex: none; padding: 0;
+}
+.cbm-subline { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); margin-top: var(--cb-sp-0-5); }
+.cbm-appbar-right { display: flex; align-items: center; gap: var(--cb-sp-3); }
+.cbm-ringwrap { display: flex; flex-direction: column; align-items: center; gap: var(--cb-sp-1); }
+/* Pinned size, the one app-bar exception to the mobile
+   scale: this uppercase caption plus its 16px "?" button sits in
+   .cbm-appbar-right, a row measured at 354px of 354px
+   content — micro's 11px widens "WEEKLY LOAD" ~14px and squeezes the
+   17px week-nav title, which has no ellipsis. */
+.cbm-ringlabel { font-size: 9px; color: var(--cb-text-muted); letter-spacing: .05em; text-transform: uppercase; }
+/* The web rail's "?" affordance (cbw-hint-btn), ported: mobile has no
+   hover, so its TSS glosses need a real tap target, not a hover title. */
+.cbm-hint-btn {
+  width: 16px; height: 16px; padding: 0; margin-left: 6px; vertical-align: 1px;
+  border-radius: 50%; border: 1px solid var(--cb-border-strong); background: none;
+  color: var(--cb-text-muted); font-size: var(--cb-fs-label); font-weight: 700; line-height: 1;
+  cursor: pointer; font-family: inherit;
+}
+.cbm-iconbtn {
+  width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--cb-border);
+  background: var(--cb-surface-2); color: var(--cb-accent);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+
+/* Week strip */
+.cbm-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--cb-sp-1); }
+.cbm-day {
+  display: flex; flex-direction: column; align-items: center; gap: var(--cb-sp-1-5);
+  padding: var(--cb-sp-2) 0 var(--cb-sp-1-5); border-radius: var(--cb-r-tile); cursor: pointer; font-family: inherit;
+  background: var(--cb-surface-2); border: 1px solid var(--cb-border);
+  transition: transform .12s, box-shadow var(--cb-dur-fast);
+}
+.cbm-day:active { transform: scale(.94); }
+.cbm-day.is-selected { background: var(--cb-accent); border: 1.5px solid var(--cb-accent); }
+/* Anchor marks itself structurally (stronger border), so gold on
+   the calendar means "a race" and nothing else — see web.css is-anchor. */
+.cbm-day.is-anchor:not(.is-selected) { border: 1.5px solid var(--cb-border-strong); }
+/* Today keeps its mark once another day is selected, as web's day column
+   does; it outranks the anchor's border. */
+.cbm-day.is-today:not(.is-selected) { border: 1.5px solid var(--cb-accent); }
+.cbm-day-dow { font-size: var(--cb-fs-micro); color: var(--cb-text-muted); }
+.cbm-day.is-selected .cbm-day-dow { color: var(--cb-accent-ink); font-weight: 600; }
+.cbm-day-num { font-size: var(--cb-fs-body); font-weight: 600; color: var(--cb-text); }
+.cbm-day.is-selected .cbm-day-num, .cbm-day.is-today .cbm-day-num { font-weight: 700; }
+.cbm-day.is-selected .cbm-day-num { color: var(--cb-accent-ink); }
+.cbm-day-dots { display: flex; gap: var(--cb-sp-0-5); height: 5px; align-items: center; }
+.cbm-day-dot { width: 4px; height: 4px; border-radius: 50%; }
+
+/* Detail/compact density switch */
+/* Built from the shared .cb-select grammar — the only
+   "pick one of N" vocabulary this shell speaks — and parked on the app
+   bar's last row, directly above the surface it switches. The three rows
+   of .cbm-appbar-top have no horizontal slack left at 390px. Month view
+   folds into compact density (see the continuous feed section below). */
+/* The density segment is the fixed anchor of the row: it must not shrink
+   when the sync slot needs the room. */
+.cbm-viewseg { display: flex; gap: var(--cb-sp-1-5); flex: none; }
+/* The refresh pill shares the row: the only header slot with slack left. */
+.cbm-viewrow { display: flex; align-items: center; justify-content: space-between; }
+.cbm-viewrow-right { display: flex; align-items: center; gap: var(--cb-sp-2); min-width: 0; }
+/* Flex child that must be allowed to shrink below its text's natural width
+   so the label ellipsizes instead of pushing Refresh off the row. */
+.cbm-sync-slot { display: flex; min-width: 0; }
+
+/* Status strips */
+.cbm-genstrip {
+  padding: var(--cb-sp-2) var(--cb-sp-5); border-bottom: 1px solid var(--cb-border);
+  display: flex; align-items: center; gap: var(--cb-sp-2-5); flex: none;
+}
+.cbm-genstrip .bar { flex: 1; height: 4px; border-radius: var(--cb-r-bar); background: var(--cb-border); overflow: hidden; }
+.cbm-genstrip .fill { position: relative; overflow: hidden; height: 100%; border-radius: var(--cb-r-bar); background: var(--cb-accent); transition: width var(--cb-dur-med); }
+/* The planner's stages arrive seconds apart: a sweep keeps the bar visibly alive between them. */
+.cbm-genstrip .fill::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(from var(--cb-text) r g b / .45), transparent);
+  animation: cb-sweep 1.1s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .cbm-genstrip .fill::after { animation: none; } }
+.cbm-genstrip span { font-size: var(--cb-fs-label); color: var(--cb-text-muted); white-space: nowrap; }
+.cbm-previewbar {
+  padding: var(--cb-sp-2-5) var(--cb-sp-5); border-bottom: 1px solid rgb(from var(--cb-accent) r g b / .35);
+  background: rgb(from var(--cb-accent) r g b / .07); display: flex; align-items: center; gap: var(--cb-sp-2-5); flex: none;
+}
+.cbm-previewbar .t { font-size: var(--cb-fs-meta); font-weight: 700; }
+.cbm-previewbar .d { font-size: var(--cb-fs-micro); color: var(--cb-text-muted); margin-top: var(--cb-sp-0-5); line-height: 1.4; }
+.cbm-previewbar .w { font-size: var(--cb-fs-micro); color: var(--cb-warn); margin-top: var(--cb-sp-0-5); line-height: 1.4; }
+.cbm-btn-ghost {
+  font-size: var(--cb-fs-meta); font-weight: 500; color: var(--cb-text-muted); background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border); border-radius: var(--cb-r-tile); padding: var(--cb-sp-2) var(--cb-sp-2-5);
+  cursor: pointer; font-family: inherit; flex: none;
+}
+.cbm-btn-accent {
+  font-size: var(--cb-fs-meta); font-weight: 600; color: var(--cb-accent-ink); background: var(--cb-accent);
+  border: none; border-radius: var(--cb-r-tile); padding: var(--cb-sp-2) var(--cb-sp-2-5); cursor: pointer; font-family: inherit; flex: none;
+}
+
+/* Continuous agenda feed */
+.cbm-feed {
+  position: relative;
+  flex: 1; overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--cb-sp-3-5) var(--cb-sp-5) calc(88px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: var(--cb-sp-4);
+  scrollbar-width: none;
+}
+.cbm-feed::-webkit-scrollbar { width: 0; height: 0; }
+/* Skip-link targets for IntersectionObserver — no visible height needed. */
+.cbm-sentinel { flex: none; height: 1px; }
+.cbm-weekgroup { display: flex; flex-direction: column; gap: var(--cb-sp-2); }
+.cbm-weekgroup.is-skeleton { opacity: .5; }
+/* Range · phase · done/planned TSS, pinned above its own week's day list
+   while scrolling through it. Sticky offsets start below the feed's
+   padding-top, so the head grows its painted box over that strip (the
+   padding/negative-margin pair is layout-neutral) or cards scroll through
+   it. The fixed height is what .cbm-daysec-head's `top` pins against. */
+.cbm-weekhead {
+  position: sticky; top: calc(var(--cb-sp-3-5) * -1); z-index: 2; background: var(--cb-bg);
+  height: calc(30px + var(--cb-sp-3-5));
+  padding-top: var(--cb-sp-3-5); margin-top: calc(var(--cb-sp-3-5) * -1);
+  display: flex; align-items: center; gap: var(--cb-sp-2);
+}
+/* The shared pill tops itself (align-self: flex-start); centre it in the fixed-height head. */
+.cbm-weekhead .cb-phase-pill { align-self: center; }
+.cbm-weekhead-range { font-size: var(--cb-fs-meta); font-weight: 700; color: var(--cb-text); }
+.cbm-weekhead-tss { font-size: var(--cb-fs-label); color: var(--cb-text-muted); margin-left: auto; }
+/* The agenda's coaching-guidance line is the largest block of prose on the
+   phone's primary screen (measured: 62% of the surface's characters), but
+   it rides --cb-fs-label, a size meant for uppercase eyebrows. Give it the
+   metric tier on mobile; the muted ink still ranks it under the title. */
+.cbm-feed .cb-card__note { font-size: var(--cb-fs-meta); }
+.cbm-daysec { display: flex; flex-direction: column; gap: var(--cb-sp-2); }
+.cbm-daysec.is-skeleton { min-height: 44px; }
+/* The padding/negative-margin pair keeps a band of background under the
+   pinned label so card text never scrolls flush against it. */
+.cbm-daysec-head {
+  position: sticky; top: 30px; z-index: 1; background: var(--cb-bg);
+  padding-bottom: var(--cb-sp-1-5); margin-bottom: calc(var(--cb-sp-1-5) * -1);
+  display: flex; align-items: center; gap: var(--cb-sp-2);
+}
+.cbm-daysec-label { font-size: var(--cb-fs-meta); font-weight: 700; letter-spacing: .05em; color: var(--cb-text-muted); }
+.cbm-daysec.is-selected .cbm-daysec-label { color: var(--cb-text); }
+.cbm-tag {
+  font-size: var(--cb-fs-label); font-weight: 600; border-radius: var(--cb-r-pill); padding: var(--cb-sp-0-5) var(--cb-sp-1-5);
+}
+.cbm-tag--today { color: var(--cb-accent-ink); background: var(--cb-accent); }
+.cbm-tag--anchor { color: var(--cb-text); background: var(--cb-surface-2); box-shadow: inset 0 0 0 1px var(--cb-border-strong); }
+.cbm-tag--race { color: var(--cb-accent-ink); background: var(--cb-race-a); }
+button.cbm-tag { border: 0; font-family: inherit; cursor: pointer; }
+/* The race day's name, opening its sheet; reads as the plain muted line it replaces. */
+.cbm-linkbtn { border: 0; background: none; padding: 0; font: inherit; color: inherit; text-align: left; text-decoration: underline; cursor: pointer; }
+.cbm-daysec-tss { font-size: var(--cb-fs-label); color: var(--cb-text-muted); margin-left: auto; }
+/* Rendered as a <button> when it carries the TSS gloss (see index.js) —
+   strip the native button chrome so it still reads as the plain label. */
+button.cbm-daysec-tss { background: none; border: none; padding: 0; font-family: inherit; cursor: pointer; }
+/* Compact density: one line per day, no cards. */
+.cbm-daysec--compact { flex-direction: row; align-items: center; gap: var(--cb-sp-2); }
+.cbm-daysec--compact .cbm-daysec-label { flex: none; }
+/* Floats above the coach FAB (56px, --cb-sp-4 from the edge) while the
+   cursor week isn't today's — the `hidden` attribute drives visibility. */
+.cbm-today-pill {
+  position: absolute; right: var(--cb-sp-4);
+  bottom: calc(var(--cb-sp-4) + 56px + var(--cb-sp-3) + env(safe-area-inset-bottom));
+  z-index: 20; border: none; cursor: pointer; font-family: inherit;
+  background: var(--cb-accent); color: var(--cb-accent-ink);
+  font-size: var(--cb-fs-meta); font-weight: 600;
+  border-radius: var(--cb-r-pill); padding: var(--cb-sp-1-5) var(--cb-sp-3);
+  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+}
+
+/* Coach: full-screen, on/off */
+/* Two states only — hidden behind the FAB, or covering the whole app. A
+   third (collapsed/half) state would compete with the feed for scroll and
+   drag, and lose messages of history above the iOS keyboard. visibility
+   rides the transition so the hidden panel is unfocusable without a
+   display toggle (which would kill the slide). */
+.cbm-sheet {
+  position: absolute; inset: 0; z-index: 30;
+  background: linear-gradient(180deg, var(--cb-sheet-top), var(--cb-sheet-bot));
+  display: flex; flex-direction: column;
+  transform: translateY(100%); visibility: hidden;
+  transition: transform var(--cb-dur-med) var(--cb-ease), visibility 0s var(--cb-dur-med);
+}
+.cbm-sheet.is-open {
+  transform: none; visibility: visible;
+  transition: transform var(--cb-dur-med) var(--cb-ease), visibility 0s;
+}
+.cbm-coach-fab {
+  position: absolute; right: var(--cb-sp-4); bottom: calc(var(--cb-sp-4) + env(safe-area-inset-bottom)); z-index: 20;
+  width: 56px; height: 56px; border-radius: var(--cb-r-pill); border: none;
+  background: var(--cb-accent); color: var(--cb-accent-ink);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0,0,0,.45);
+}
+.cbm-coach-fab.has-unread::after {
+  content: ''; position: absolute; top: 2px; right: 2px; width: 12px; height: 12px;
+  border-radius: 50%; background: var(--cb-good-bright); border: 2px solid var(--cb-bg);
+}
+/* The coach owns the whole screen, so its head and composer are the only
+   chrome competing with the log — and a full-screen log can spend a few
+   pixels on controls you can actually hit. The head pills go 23px tall to
+   40, the two icon-only squares (26x22 and 30x30) to 36, and the composer's
+   send 34 to 44; the log pays 24px of 721 at the 390x844 reference (3%).
+   Widths stay measured — earlier changes spent this row's slack already,
+   and a label one tier up would cost ~10px the row does not have — so the
+   gap and side padding drop one step to pay for the wider squares and the
+   14px icons: 360px of content at a 360px viewport, the floor the wizard is
+   measured against. The app bar's .cbm-refresh-btn keeps the dense
+   metrics; that row has zero slack. */
+.cbm-sheet-head { padding: calc(var(--cb-sp-3) + env(safe-area-inset-top)) var(--cb-sp-4) var(--cb-sp-2-5); display: flex; align-items: center; gap: var(--cb-sp-1-5); flex: none; }
+.cbm-sheet-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cb-good-bright); }
+.cbm-sheet-name { font-size: var(--cb-fs-body); font-weight: 600; letter-spacing: .02em; }
+.cbm-digest-btn,
+.cbm-memory-btn,
+.cbm-newchat-btn,
+.cbm-refresh-btn {
+  display: flex; align-items: center; gap: var(--cb-sp-1); font-size: var(--cb-fs-label);
+  font-weight: 600; color: var(--cb-accent); background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border); border-radius: var(--cb-r-pill); padding: var(--cb-sp-1) var(--cb-sp-2-5);
+  cursor: pointer; font-family: inherit;
+}
+.cbm-digest-btn { margin-left: auto; }
+/* Icon-only and muted: starting over is a rare, quiet action next to the
+   two labelled ones — and the sheet head has no room for a third label. */
+.cbm-newchat-btn { color: var(--cb-text-muted); padding: var(--cb-sp-1) var(--cb-sp-1-5); flex: none; }
+.cbm-sheet-head .cbm-digest-btn,
+.cbm-sheet-head .cbm-memory-btn { min-height: 40px; }
+.cbm-sheet-head .cbm-newchat-btn { width: 36px; height: 36px; padding: 0; justify-content: center; }
+/* Overrides the 30px square shared with .cbm-drawer-close (below): a drawer
+   is dismissed by the scrim too, the full-screen chat only by this button. */
+.cbm-sheet-head .cbm-sheet-close { width: 36px; height: 36px; }
+.cbm-sheet-close { flex: none; }
+.cbm-msgs {
+  flex: 1; overflow-y: auto; padding: var(--cb-sp-1-5) var(--cb-sp-5) var(--cb-sp-3);
+  display: flex; flex-direction: column; gap: var(--cb-sp-4); scrollbar-width: none;
+}
+.cbm-msgs::-webkit-scrollbar { width: 0; }
+.cbm-inputwrap { padding: var(--cb-sp-2) var(--cb-sp-4) calc(var(--cb-sp-3-5) + env(safe-area-inset-bottom)); flex: none; }
+.cbm-inputrow {
+  display: flex; align-items: flex-end; gap: var(--cb-sp-2); background: var(--cb-surface-2);
+  border: 1.5px solid var(--cb-border); border-radius: var(--cb-r-sheet); padding: var(--cb-sp-2);
+}
+/* "What you can ask": example questions, opened beside the draft. */
+.cbm-ideas-btn {
+  width: 44px; height: 44px; border-radius: 50%; background: none; border: none;
+  color: var(--cb-text-muted); display: flex; align-items: center; justify-content: center;
+  flex: none; cursor: pointer;
+}
+.cbm-ideas-btn:hover { color: var(--cb-accent); }
+.cbm-inputrow textarea {
+  flex: 1; background: none; border: none; outline: none; resize: none;
+  font-family: var(--cb-font); font-size: var(--cb-fs-input); color: var(--cb-text);
+  line-height: 1.5; max-height: 80px; padding: var(--cb-sp-2-5) 0;
+}
+.cbm-send {
+  width: 44px; height: 44px; border-radius: 50%; background: var(--cb-accent); border: none;
+  color: var(--cb-accent-ink); display: flex; align-items: center; justify-content: center;
+  flex: none; cursor: pointer; transition: transform var(--cb-dur-fast);
+}
+.cbm-send:active { transform: scale(.96); }
+
+/* Drawers + scrim */
+.cbm-scrim {
+  position: absolute; inset: 0; background: rgba(0,0,0,.5); z-index: 40;
+  transition: opacity var(--cb-dur-med); opacity: 0; pointer-events: none; border: none; padding: 0;
+}
+.cbm-scrim.open { opacity: 1; pointer-events: auto; }
+.cbm-drawer {
+  position: absolute; top: 0; bottom: 0; z-index: 41;
+  background: linear-gradient(180deg, var(--cb-surface-2), var(--cb-sheet-bot));
+  display: flex; flex-direction: column;
+  transition: transform var(--cb-dur-drawer) var(--cb-ease);
+}
+.cbm-drawer--left {
+  left: 0; right: 36px; border-right: 1px solid var(--cb-border-strong);
+  border-radius: 0 var(--cb-r-sheet) var(--cb-r-sheet) 0;
+  transform: translateX(-100%);
+}
+.cbm-drawer--right {
+  right: 0; left: 36px; border-left: 1px solid var(--cb-border-strong);
+  border-radius: var(--cb-r-sheet) 0 0 var(--cb-r-sheet);
+  transform: translateX(100%);
+}
+.cbm-drawer.open { transform: translateX(0); }
+/* Shadows only while open: a closed drawer's would fall on the feed's edges. */
+.cbm-drawer--left.open { box-shadow: 24px 0 50px rgba(0,0,0,.5); }
+.cbm-drawer--right.open { box-shadow: -24px 0 50px rgba(0,0,0,.5); }
+.cbm-drawer-head {
+  padding: calc(var(--cb-sp-5-5) + env(safe-area-inset-top)) var(--cb-sp-5-5) var(--cb-sp-3-5);
+  display: flex; align-items: center; justify-content: space-between; flex: none;
+}
+.cbm-drawer-title { font-size: var(--cb-fs-title); font-weight: 600; }
+.cbm-drawer-close,
+.cbm-sheet-close {
+  width: 30px; height: 30px; border-radius: var(--cb-r-tile); border: 1px solid var(--cb-border);
+  background: var(--cb-surface-3); color: var(--cb-text-muted);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.cbm-drawer-body {
+  flex: 1; overflow-y: auto; padding: 0 var(--cb-sp-5-5) 40px;
+  display: flex; flex-direction: column; gap: var(--cb-sp-4); scrollbar-width: none;
+}
+.cbm-drawer-body::-webkit-scrollbar { width: 0; }
+/* The ambition row is three flex:1 tiles whose min-content width is set by
+   the longest label, "Competitive": at --cb-fs-body 15px that floors the
+   third tile at 106px, and 3 tiles + 2 gaps no longer fit the 283px drawer
+   column at a 360px viewport (390px is fine). Trim the tiles' side padding
+   rather than pin the label back — the sub-caption is already --cb-fs-micro,
+   so shrinking the label would flatten the card's two-line hierarchy. */
+.cbm-drawer .cb-select--stacked { padding-left: var(--cb-sp-1-5); padding-right: var(--cb-sp-1-5); }
+
+/* Plan sync chip row (under the app bar) — appears only when workouts are
+   out of sync; the happy-path status lives in the app bar's sync slot. */
+.cbm-sync-row {
+  display: flex;
+  align-items: center;
+  padding: var(--cb-sp-2) var(--cb-sp-4);
+}

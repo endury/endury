@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables and other secrets
+.env
+.env.*
+!.env.example
+.dev.vars
+*.pem
+id_rsa
+secrets.json
+legal.json
+
+# Export files (generated data) — anchored, or it also shadows tests/export/
+/export/
+
+# Source code packages (third-party)
+
+# Local generated artifacts
+.DS_Store
+.coverage
+.coverage.*
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+endury*.db
+endury*.db-shm
+endury*.db-wal
+artifacts/
+reports/
+screenshots/
+/site/
+/.wrangler/
+/backups/
+# Ignore local Claude Code config, but TRACK the shared settings.json and its
+# session-start hook. Keeps settings.local.json and everything else local-only.
+.claude/*
+!.claude/settings.json
+!.claude/hooks/
+.mcp.json
+/.pyodide/

@@ -1,0 +1,1884 @@
+# The rulebook: every band a plan is graded on, with its evidence.
+#
+# One file, two uses. Endury's quality gate grades its own plans on every rule
+# here. The benchmark grades any contestant's plan on the rules that read the
+# generic plan table; a rule with `benchmark: false` reads Endury's own plan
+# structure instead and is never asked of an AI language model.
+#
+# The benchmark rules were assembled 2026-09-25 from five research dossiers
+# (one per rule family) whose sources were each checked against Crossref
+# (papers) or a publisher's ISBN listing (books); `verified` records that
+# check, which says a book exists, not that its content was read, so what a
+# book's `states` reports is second-hand. Grades: A a meta-analysis or trial, B a cohort or validated model, C
+# two or more independent coaching texts, D one source or a convention, S a
+# structural rule of the plan itself. `missing` is the distance scored when
+# the plan lacks the feature (no taper, no long ride); a rule without it is
+# left out when the plan carries no such data (no steps).
+#
+# A band is `low`/`high`, or a `by_tier` map of them, for every goal the rule
+# covers; a goal's own entry under `by_goal` replaces it. `goals` lists the
+# race goals a rule covers and is left out when it covers every one. `ramp` is
+# the span outside the band over which the distance rises to 1, or `width` for
+# the band's own width. A goal's own band carries `why` and may carry `evidence`; where
+# no study sets the number, the band is the maintainer's judgement. `weight` is the
+# rule's weight in the gate's composite, 1 when left out. The trail 50K bands
+# rest on docs/research/trail_running.md, most of it one coach's opinion.
+#
+# A `why` cites the research pages in docs/research/ by a short name and
+# section: tlc is triathlon_long_course.md, tri is triathlon.md, tr is
+# trail_running.md, em is endurance_methodology.md, sc is short_course.md.
+version: '6'
+rules:
+- name: recovery_cadence
+  family: periodisation
+  reading: recovery_cadence
+  reads: recovery-labelled weeks over load-plus-recovery weeks
+  grade: C
+  band:
+    low: 0.2
+    high: 0.3
+  ramp: 0.1
+  missing: 1.0
+  school_specific: true
+  note: A 3:1 to 4:1 cadence, the plan's own mode labels. Until 2026-10-06 the basic tier was graded
+    at 2:1 (0.27-0.36), the beginners' cadence of the sources; at 2:1 a basic trail 20K averaged the
+    athlete's recent volume over 12 weeks and its long run topped out at 43 percent of the race, and
+    the trail research deloads every third or fourth week, so every tier now plans and is graded at 3:1.
+  sources:
+  - citation: Issurin VB (2010). New Horizons for the Methodology and Physiology of Training Periodization.
+      Sports Med 40(3):189-206.
+    doi: 10.2165/11319770-000000000-00000
+    states: Concentrated training blocks run 2-4 weeks before a deload/transition, framing the 2:1/3:1
+      cadence in residual-training-effect terms.
+    verified: crossref
+  - citation: 'Bompa TO, Buzzichelli C (2018). Periodization: Theory and Methodology of Training (6th
+      ed). Human Kinetics. ISBN 9781492544807.'
+    isbn: '9781492544807'
+    states: Prescribes 3:1 loading:unloading mesocycles as standard, 2:1 for athletes with reduced recovery
+      capacity (masters, high life stress).
+    verified: isbn
+  - citation: Friel J (2024). The Triathlete's Training Bible (5th ed). VeloPress. ISBN 9781646046072.
+    isbn: '9781646046072'
+    states: Same 3:1/2:1 cadence recommendation, tied explicitly to athlete recovery capacity rather than
+      a fixed rule for everyone.
+    verified: isbn
+- name: recovery_week_depth
+  family: periodisation
+  reading: recovery_week_depth
+  reads: recovery-week hours over the preceding load week, mean
+  grade: C
+  band:
+    low: 0.5
+    high: 0.7
+  ramp: 0.2
+  school_specific: true
+  sources:
+  - citation: Issurin VB (2010). New Horizons for the Methodology and Physiology of Training Periodization.
+      Sports Med 40(3):189-206.
+    doi: 10.2165/11319770-000000000-00000
+    states: Anaerobic/speed residual effects decay in ~5-8 days, so a deload should cut volume enough
+      to dissipate fatigue while keeping some quality touches.
+    verified: crossref
+  - citation: Friel J (2024). The Triathlete's Training Bible (5th ed). VeloPress. ISBN 9781646046072.
+    isbn: '9781646046072'
+    states: Recovery weeks cut volume to roughly 50-70% of the preceding load week while frequency is
+      preserved.
+    verified: isbn
+  - citation: 'Bompa TO, Buzzichelli C (2018). Periodization: Theory and Methodology of Training (6th
+      ed). Human Kinetics. ISBN 9781492544807.'
+    isbn: '9781492544807'
+    states: Unloading microcycles reduce volume substantially (consistent with the 50-70% range) while
+      maintaining movement frequency for coordination.
+    verified: isbn
+- name: phase_share_base
+  family: periodisation
+  reading: phase_share_base
+  reads: base weeks over base-plus-build-plus-peak weeks
+  grade: C
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      ironman:
+        low: 0.35
+        high: 0.55
+        why: Wide enough for short-prep (~40 %) and standard-prep (~50 %) Ironman builds (tlc §3).
+      half_ironman:
+        low: 0.18
+        high: 0.58
+        why: The horizon-aware half-distance shares (tlc §3), widened by the maintainer;
+          a floor on what may be condemned, not a target.
+  ramp: 0.2
+  missing: 1.0
+  school_specific: true
+  note: Traditional periodisation's shares; block periodisation does not use these phases. Not the trail
+    goals, whose phase ratios in the trail research are the planner's own example numbers.
+  sources:
+  - citation: Issurin VB (2010). New Horizons for the Methodology and Physiology of Training Periodization.
+      Sports Med, 40(3), 189-206.
+    doi: 10.2165/11319770-000000000-00000
+    states: Proposes concentrated 2-4 week training blocks by ability rather than a smooth classical phase
+      progression, citing differing residual-effect half-lives.
+    verified: crossref
+  - citation: 'Bompa TO & Buzzichelli C (2018). Periodization: Theory and Methodology of Training, 6th
+      ed. Human Kinetics.'
+    isbn: '9781492544807'
+    states: General Preparation (Base-equivalent) phase should dominate early in a macrocycle before narrowing
+      to specific/competitive phases.
+    verified: isbn
+- name: phase_share_build
+  family: periodisation
+  reading: phase_share_build
+  reads: build weeks over base-plus-build-plus-peak weeks
+  grade: C
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      ironman:
+        low: 0.27
+        high: 0.45
+        why: Wide enough for short-prep (~40 %) and standard-prep (~32 %) Ironman builds (tlc §3).
+      half_ironman:
+        low: 0.27
+        high: 0.55
+        why: The horizon-aware half-distance shares (tlc §3), widened by the maintainer;
+          permits more build than the Ironman band.
+  ramp: 0.18
+  missing: 1.0
+  school_specific: true
+  sources:
+  - citation: Issurin VB (2010). New Horizons for the Methodology and Physiology of Training Periodization.
+      Sports Med, 40(3), 189-206.
+    doi: 10.2165/11319770-000000000-00000
+    states: Proposes concentrated 2-4 week training blocks by ability rather than a smooth classical phase
+      progression, citing differing residual-effect half-lives.
+    verified: crossref
+  - citation: 'Bompa TO & Buzzichelli C (2018). Periodization: Theory and Methodology of Training, 6th
+      ed. Human Kinetics.'
+    isbn: '9781492544807'
+    states: General Preparation (Base-equivalent) phase should dominate early in a macrocycle before narrowing
+      to specific/competitive phases.
+    verified: isbn
+- name: weekly_volume_ramp
+  family: periodisation
+  reading: weekly_volume_ramp
+  reads: largest hours ratio between consecutive load weeks
+  grade: C
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  - trail_20k
+  band:
+    low: 0.0
+    high: 1.3
+  ramp: 0.2
+  school_specific: false
+  note: The 10 percent rule has no trial support; the injury cohorts flag jumps above 30 percent.
+  sources:
+  - citation: 'Buist I, Bredeweg SW, van Mechelen W, Lemmink KAPM, Pepping GJ, Diercks RL (2008). No Effect
+      of a Graded Training Program on the Number of Running-Related Injuries in Novice Runners: A Randomized
+      Controlled Trial. Am J Sports Med 36(1):33-39.'
+    doi: 10.1177/0363546507307505
+    states: 'RCT: a 13-week ''graded'' (~10%-rule) program showed no injury-rate reduction vs. an 8-week
+      standard program.'
+    verified: crossref
+  - citation: Nielsen RO, Parner ET, Nohr EA, Sorensen H, Lind M, Rasmussen S (2014). Excessive Progression
+      in Weekly Running Distance and Risk of Running-Related Injuries. J Orthop Sports Phys Ther 44(10):739-747.
+    doi: 10.2519/jospt.2014.5164
+    states: 'Cohort: >30% increase in weekly distance over 2 weeks raised risk for some (not all) injury
+      types; risk did not rise linearly below that.'
+    verified: crossref
+  - citation: Damsted C, Glad S, Nielsen RO, Sorensen H, Malisoux L (2018). Is There Evidence for an Association
+      Between Changes in Training Load and Running-Related Injuries? A Systematic Review. Int J Sports
+      Phys Ther 13(6):931-942.
+    doi: 10.26603/ijspt20180931
+    states: 'Systematic review: ''compiled evidence for an association between change in training load
+      and running-related injury does not exist.'''
+    verified: crossref
+  - citation: 'Ramskov D, Rasmussen S, Sorensen H, Parner ET, Lind M, Nielsen RO (2018). Progression in
+      Running Intensity or Volume and Specific Injuries: Run Clever, a Randomized Trial. J Orthop Sports
+      Phys Ther 48(10):740-748.'
+    doi: 10.2519/jospt.2018.8062
+    states: RCT testing intensity- vs. volume-based progression rules found neither prevented running
+      injuries better than the other.
+    verified: crossref
+- name: first_week_fit
+  family: periodisation
+  reading: first_week_fit
+  reads: week-1 hours over the athlete's recent weekly hours
+  grade: D
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 0.7
+    high: 1.15
+  ramp: 0.3
+  school_specific: false
+  sources:
+  - citation: Nielsen RO, Parner ET, Nohr EA, Sorensen H, Lind M, Rasmussen S (2014). Excessive Progression
+      in Weekly Running Distance and Risk of Running-Related Injuries. J Orthop Sports Phys Ther 44(10):739-747.
+    doi: 10.2519/jospt.2014.5164
+    states: The injury signal in this cohort was strongest for runners whose distance jumped sharply relative
+      to their own recent baseline, not for any absolute volume.
+    verified: crossref
+  - citation: Friel J (2024). The Triathlete's Training Bible (5th ed). VeloPress. ISBN 9781646046072.
+    isbn: '9781646046072'
+    states: A new training block should start at or just below the athlete's current fitness/volume, not
+      below it enough to waste weeks, nor above it.
+    verified: isbn
+- name: first_long_session_fit
+  family: periodisation
+  reading: first_long_session_fit
+  reads: first long run or ride over the athlete's longest recent one, worst of the two; not the swim, whose first session the pool sets and whose evidence is running cohorts
+  grade: B
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  - trail_20k
+  band:
+    low: 0.8
+    high: 1.15
+  ramp: 0.3
+  school_specific: false
+  note: A 5,200-runner cohort found the single session over the athlete's recent longest was the one load
+    metric that predicted injury, with 10 to 30 percent spikes already elevated; one cohort, so the pooled
+    caution of Damsted 2018 stands.
+  sources:
+  - citation: 'Buist I, Bredeweg SW, van Mechelen W, Lemmink KAPM, Pepping GJ, Diercks RL (2008). No Effect
+      of a Graded Training Program on the Number of Running-Related Injuries in Novice Runners: A Randomized
+      Controlled Trial. Am J Sports Med 36(1):33-39.'
+    doi: 10.1177/0363546507307505
+    states: 'RCT: a 13-week ''graded'' (~10%-rule) program showed no injury-rate reduction vs. an 8-week
+      standard program.'
+    verified: crossref
+  - citation: Nielsen RO, Parner ET, Nohr EA, Sorensen H, Lind M, Rasmussen S (2014). Excessive Progression
+      in Weekly Running Distance and Risk of Running-Related Injuries. J Orthop Sports Phys Ther 44(10):739-747.
+    doi: 10.2519/jospt.2014.5164
+    states: 'Cohort: >30% increase in weekly distance over 2 weeks raised risk for some (not all) injury
+      types; risk did not rise linearly below that.'
+    verified: crossref
+  - citation: Damsted C, Glad S, Nielsen RO, Sorensen H, Malisoux L (2018). Is There Evidence for an Association
+      Between Changes in Training Load and Running-Related Injuries? A Systematic Review. Int J Sports
+      Phys Ther 13(6):931-942.
+    doi: 10.26603/ijspt20180931
+    states: 'Systematic review: ''compiled evidence for an association between change in training load
+      and running-related injury does not exist.'''
+    verified: crossref
+  - citation: 'Ramskov D, Rasmussen S, Sorensen H, Parner ET, Lind M, Nielsen RO (2018). Progression in
+      Running Intensity or Volume and Specific Injuries: Run Clever, a Randomized Trial. J Orthop Sports
+      Phys Ther 48(10):740-748.'
+    doi: 10.2519/jospt.2018.8062
+    states: RCT testing intensity- vs. volume-based progression rules found neither prevented running
+      injuries better than the other.
+    verified: crossref
+  - citation: Frandsen JSB, Hulme A, Parner ET, et al. (2025). How much running is too much? Identifying
+      high-risk running sessions in a 5200-person cohort study. Br J Sports Med 59(17):1203-1210.
+    doi: 10.1136/bjsports-2024-109380
+    verified: crossref
+    states: Only a session's distance over the athlete's longest run of the prior 30 days predicted injury;
+      10 to 30 percent spikes carried a hazard ratio near 1.6.
+- name: peak_weekly_hours
+  family: periodisation
+  reading: peak_weekly_hours
+  reads: hours of the biggest training week, race week excluded
+  grade: B
+  goals:
+  - half_ironman
+  - ironman
+  - trail_50k
+  band:
+    by_goal:
+      ironman:
+        by_tier:
+          basic:
+            low: 10.0
+            high: 14.0
+          moderate:
+            low: 12.0
+            high: 16.0
+          competitive:
+            low: 14.0
+            high: 18.0
+        why: 'Weekly hours by athlete level (tlc §4): recreational 10-14, competitive age-group 14-18,
+          moderate between them.'
+      half_ironman:
+        by_tier:
+          basic:
+            low: 8.0
+            high: 12.0
+          moderate:
+            low: 11.0
+            high: 15.0
+          competitive:
+            low: 14.0
+            high: 18.0
+        why: 4 h bands floored just below each tier's peaks; a top-tier 70.3 build trains about
+          the hours of a full-distance one (tlc §8).
+      trail_50k:
+        by_tier:
+          basic:
+            low: 5.0
+            high: 7.0
+          moderate:
+            low: 7.0
+            high: 9.0
+          competitive:
+            low: 9.0
+            high: 12.0
+        why: The trail research's peak weekly hours for a 50K, by tier, anchored on two coaches' floors.
+        evidence: tr §13.4, trail 50K row. The floors are Torrence's 4-6 h/wk first 50K and the CTS 6
+          h/wk peak block (tr §3.2, §4.1); the split into tiers is the research document's own [EX] imposition.
+  ramp: width
+  school_specific: false
+  note: The marathon has no tiered literature band and is reported as a fact.
+  sources:
+  - citation: Sinisgalli R, de Lira CAB, Vancini RL, Puccinelli PJ, Hill L, Knechtle B, Nikolaidis PT
+      & Andrade MS (2021). Impact of training volume and experience on amateur Ironman triathlon performance.
+      Physiol Behav, 232, 113344.
+    doi: 10.1016/j.physbeh.2021.113344
+    states: 99 amateur Ironman finishers trained 9-20 h/week pre-race; more than ~14 h/week showed no
+      extra performance benefit.
+    verified: crossref
+  - citation: Knechtle B, Wirth A, Baumann B, Knechtle P, Rosemann T & Senn O (2010). Differential Correlations
+      Between Anthropometry, Training Volume, and Performance in Male and Female Ironman Triathletes.
+      J Strength Cond Res.
+    doi: 10.1519/JSC.0b013e3181c643b6
+    states: 27 male and 16 female amateur Ironman finishers averaged 14.8 h/week and 13.9 h/week training,
+      respectively.
+    verified: crossref
+  - citation: Vickers AJ & Vertosick EA (2016). An empirical study of race times in recreational endurance
+      runners. BMC Sports Sci Med Rehabil, 8, 51.
+    doi: 10.1186/s13102-016-0052-y
+    states: '2,303 recreational runners: weekly training mileage was strongly and independently associated
+      with race time at all distances, including marathon.'
+    verified: crossref
+  - citation: Friel J (2024). The Triathlete's Training Bible (5th ed). VeloPress. ISBN 9781646046072.
+    isbn: '9781646046072'
+    states: 'Peak weekly hours scale with athlete level: recreational lowest, competitive age-group highest,
+      for both half- and full-distance racing.'
+    verified: isbn
+  - citation: Dixon M (2017). Fast-Track Triathlete. VeloPress. ISBN 9781937715748.
+    isbn: '9781937715748'
+    states: Time-efficient Ironman preparation is workable at roughly 10-14 h/week peak for busy age-groupers,
+      at the low end of the recreational tier.
+    verified: isbn
+- name: taper_duration
+  family: taper
+  reading: taper_duration_days
+  reads: days of taper-and-race-labelled weeks before race day
+  grade: B
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 8
+    high: 21
+  ramp: 7.0
+  school_specific: false
+  sources:
+  - citation: Mujika I, Padilla S (2003). Scientific Bases for Precompetition Tapering Strategies. Med
+      Sci Sports Exerc 35(7):1182-1187.
+    doi: 10.1249/01.MSS.0000074448.73931.11
+    states: Reviews taper studies converging on ~2-week (8-14 day) tapers as typical/optimal for most
+      events.
+    verified: crossref
+  - citation: Mujika I (2009). Tapering and Peaking for Optimal Performance. Human Kinetics.
+    isbn: 978-0-7360-7484-1
+    states: Synthesises the 8-14 day convention and extends it to up to 3 weeks (21 days) for Ironman-distance
+      events.
+    verified: isbn
+  - citation: 'Wang Z, Wang Y, Gao W, Zhong Y (2023). Effects of tapering on performance in endurance
+      athletes: a systematic review and meta-analysis. PLOS ONE 18(5):e0282838.'
+    doi: 10.1371/journal.pone.0282838
+    states: 2023 update pools taper studies; duration is a moderator but no single day-count is shown
+      superior within the 4-28 day range studied.
+    verified: crossref
+- name: taper_volume_drop
+  family: taper
+  reading: taper_volume_drop
+  reads: mean taper-week hours over the peak load week; a one-week taper is read together with its
+    race week
+  grade: D
+  band:
+    low: 0.5
+    high: 0.7
+    why: Fallback for goals without their own band, extrapolated from the full-distance taper; the wide
+      ramp keeps shallower goals rankable.
+    by_goal:
+      trail_20k:
+        low: 0.4
+        high: 0.6
+        why: 'The two taper reviews'' optimum, retaining 40 to 59 percent of the peak week over the whole
+          taper: with one taper week the reading is the mean of that week and race week, which the long-course bands (taper weeks alone) do not describe.'
+        evidence: 'Measured 2026-10-06 on the trail 20K basic plans: 0.45-0.60 at 12-20 weeks for athletes
+          at 0.75-1.5 of the default volume.'
+      ironman:
+        low: 0.5
+        high: 0.7
+        why: Round edges inside a 0.50-0.75 spread, so a plan that never really tapers still fires.
+      half_ironman:
+        low: 0.4
+        high: 0.94
+        why: 'Half-distance tapers (nine days to two weeks) are held at 0.55-0.94 of the peak week
+          in their taper weeks alone, the maintainer''s range. A half plan with one taper week is read with its race week, a mean
+          the taper-week bands do not describe, so the floor is the taper trials'' optimum: a 41 to 60
+          percent cut over the whole taper, retaining 0.40 (since 2026-10-11; 0.55 before).'
+      running_marathon:
+        low: 0.58
+        high: 0.64
+        why: Marathon tapers keep the taper mean far shallower than a deep cut.
+      running_half_marathon:
+        low: 0.4
+        high: 0.6
+        why: 'The two taper reviews'' optimum, retaining 40 to 59 percent of the peak week over the whole
+          taper, as for the trail 20K: with one taper week the reading is the mean of that week and race
+          week, which the full-distance fallback (taper weeks alone) does not describe.'
+        evidence: 'Measured 2026-11-09 on the half-marathon moderate plans: 0.43-0.52 at 8-24 weeks for
+          athletes at 0.85-1.5 of the default volume.'
+  ramp: 0.4
+  missing: 1.0
+  school_specific: false
+  note: 'The direction is the taper trials'': Bosquet''s optimum is a 41 to 60 percent cut. Real tapers run shallower, so the grade is the bands'' and not the trials''.
+    The cut is the whole taper''s mean and the bands describe two- and three-week tapers, so a
+    one-week taper is read with its race week (since 2026-10-06; before that the week two weeks out
+    was graded alone against them).'
+  sources:
+  - citation: 'Bosquet L, Montpetit J, Arvisais D, Mujika I (2007). Effects of Tapering on Performance:
+      A Meta-Analysis. Med Sci Sports Exerc 39(8):1358-1365.'
+    doi: 10.1249/mss.0b013e31806010e0
+    states: Meta-analytic optimum is a 41-60% volume reduction (i.e., retaining ~40-59% of peak), the
+      single most robust taper finding in the literature.
+    verified: crossref
+  - citation: Mujika I, Padilla S (2003). Scientific Bases for Precompetition Tapering Strategies. Med
+      Sci Sports Exerc 35(7):1182-1187.
+    doi: 10.1249/01.MSS.0000074448.73931.11
+    states: Independently converges on 40-60% volume reduction across the tapering studies it reviews.
+    verified: crossref
+- name: taper_session_frequency
+  family: taper
+  reading: taper_session_frequency
+  reads: mean taper-week sessions over peak-week sessions
+  grade: A
+  band:
+    low: 0.8
+    high: 1.5
+  ramp: 0.3
+  missing: 1.0
+  school_specific: false
+  note: 'The evidence is for keeping the frequency, not against a taper with a session more than the
+    peak week: a small athlete''s peak week can hold one run fewer than the taper (the fourth run goes
+    optional), which read 1.33 against a 1.2 ceiling (2026-10-11; the ceiling was 1.2). The ceiling
+    still fires on a taper that adds sessions wholesale.'
+  sources:
+  - citation: 'Bosquet L, Montpetit J, Arvisais D, Mujika I (2007). Effects of Tapering on Performance:
+      A Meta-Analysis. Med Sci Sports Exerc 39(8):1358-1365.'
+    doi: 10.1249/mss.0b013e31806010e0
+    states: Maintained training frequency carried its own significant effect size (0.35 +/- 0.17, p<0.001)
+      independent of the volume cut.
+    verified: crossref
+- name: taper_intensity_kept
+  family: taper
+  reading: taper_intensity_kept
+  reads: mean quality-session minutes at zone 3 and up per taper week over the peak load week's; a quality
+    session spends at least a third of its time at zone 3 or above
+  grade: A
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 0.4
+    high: 1.05
+  ramp: 0.4
+  missing: 1.0
+  school_specific: false
+  note: 'The taper trials held the pace and power of the remaining quality work while volume fell around
+    it, so the reading counts only quality sessions and leaves out the race-pace minutes inside long sessions,
+    which the taper is meant to cut. The floor is the volume rule''s: quality minutes may fall as far as
+    the trials cut volume, a 41 to 60 percent cut, and no further (since 2026-10-11; 0.5 before).'
+  sources:
+  - citation: 'Bosquet L, Montpetit J, Arvisais D, Mujika I (2007). Effects of Tapering on Performance:
+      A Meta-Analysis. Med Sci Sports Exerc 39(8):1358-1365.'
+    doi: 10.1249/mss.0b013e31806010e0
+    states: Maintained intensity carried a significant effect size (0.33 +/- 0.14, p<0.001) on its own,
+      independent of the volume cut.
+    verified: crossref
+  - citation: Mujika I, Padilla S (2003). Scientific Bases for Precompetition Tapering Strategies. Med
+      Sci Sports Exerc 35(7):1182-1187.
+    doi: 10.1249/01.MSS.0000074448.73931.11
+    states: Reduce volume, not intensity — dropping intensity accelerates detraining of neuromuscular
+      and metabolic adaptations.
+    verified: crossref
+  - citation: Shepley B, MacDougall JD, Cipriano N, Sutton JR, Tarnopolsky MA, Coates G (1992). Physiological
+      effects of tapering in highly trained athletes. J Appl Physiol 72(2):706-711.
+    doi: 10.1152/jappl.1992.72.2.706
+    verified: crossref
+    states: 'Seven-day tapers in trained runners: the high-intensity, low-volume taper kept race-pace
+      repeats and improved performance most.'
+  - citation: Houmard JA, Scott BK, Justice CL, Chenier TC (1994). The effects of taper on performance
+      in distance runners. Med Sci Sports Exerc 26(5):624-631.
+    doi: 10.1249/00005768-199405000-00016
+    verified: crossref
+    states: An 85 percent volume cut with interval sessions kept at intensity improved 5 km performance.
+  - citation: Neary JP, Bhambhani YN, McKenzie DC (2003). Effects of different stepwise reduction taper
+      protocols on cycling performance. Can J Appl Physiol 28(4):576-587.
+    doi: 10.1139/h03-044
+    verified: crossref
+    states: Cyclists' tapers cutting volume by 30, 50 or 80 percent at maintained intensity; the 50 percent
+      cut performed best.
+- name: taper_shape
+  family: taper
+  reading: taper_shape
+  reads: last taper week's hours over the first taper week's, plans with two or more taper weeks
+  grade: C
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    low: 0.5
+    high: 0.85
+  ramp: 0.3
+  school_specific: false
+  sources:
+  - citation: Mujika I, Padilla S (2003). Scientific Bases for Precompetition Tapering Strategies. Med
+      Sci Sports Exerc 35(7):1182-1187.
+    doi: 10.1249/01.MSS.0000074448.73931.11
+    states: Reviews modelling and dose-response evidence favouring exponential (progressive) taper shapes
+      over linear or step reductions.
+    verified: crossref
+  - citation: Thomas L, Busso T (2005). A Theoretical Study of Taper Characteristics to Optimize Performance.
+      Med Sci Sports Exerc 37(9):1615-1621.
+    doi: 10.1249/01.mss.0000177461.94156.4b
+    states: Simulation using a nonlinear fitness-fatigue model finds fast exponential decay (time constant
+      ~5 days) outperforms slower or linear/step tapers.
+    verified: crossref
+- name: race_week_volume
+  family: taper
+  reading: race_week_volume
+  reads: race-week hours over the peak load week
+  grade: D
+  band:
+    low: 0.19
+    high: 0.4
+    why: Fallback for goals without their own band, the full-distance envelope.
+    by_goal:
+      trail_20k:
+        low: 0.25
+        high: 0.5
+        why: '[EX] Bridged between the 10K''s race weeks (0.35-0.60) and the marathon''s (0.20-0.40). A basic athlete''s race week is two or three short runs,
+          about 1.4 h, which the full-distance ceiling (0.40) condemned against a 3.4 h peak.'
+        evidence: 'Measured 2026-10-06 on the trail 20K basic plans: 0.30-0.41 at 12-20 weeks for
+          athletes at 0.75-1.5 of the default volume.'
+      ironman:
+        low: 0.19
+        high: 0.4
+        why: The full envelope; a guard against a race week that forgets to taper or strands
+          the athlete.
+      half_ironman:
+        low: 0.27
+        high: 0.5
+        why: The maintainer's range for half-distance race weeks.
+      running_marathon:
+        low: 0.2
+        high: 0.45
+        why: The maintainer's range for marathon race weeks, nothing under the taper literature's 20 %.
+      running_half_marathon:
+        low: 0.25
+        high: 0.55
+        why: The maintainer's range for half-marathon race weeks.
+      running_10k:
+        low: 0.35
+        high: 0.6
+        why: The maintainer's range for 10K race weeks.
+  ramp: 0.2
+  missing: 1.0
+  school_specific: false
+  note: The direction is the taper literature's; the numbers are the maintainer's envelope.
+  sources:
+  - citation: Mujika I, Padilla S (2003). Scientific Bases for Precompetition Tapering Strategies. Med
+      Sci Sports Exerc 35(7):1182-1187.
+    doi: 10.1249/01.MSS.0000074448.73931.11
+    states: Race week sits at the deepest point of a two-step or exponential taper; sessions become short
+      activation/openers only.
+    verified: crossref
+- name: form_floor
+  family: taper
+  reading: min_tsb_7d
+  reads: the lowest trailing seven-day mean of daily form
+  grade: B
+  weight: 1.5
+  band:
+    low: -30
+    high: null
+  ramp: 15.0
+  school_specific: true
+  note: The value is a convention; the overreaching consensus is about sustained load, so a hard weekend's
+    one-day dip is functional overreaching and the floor reads the weekly mean.
+  sources:
+  - citation: Allen H, Coggan A, McGregor S (2019). Training and Racing with a Power Meter (3rd ed). VeloPress.
+      ISBN 9781937715939.
+    isbn: '9781937715939'
+    states: Popularised -30 TSB as the conventional floor of productive overload before a training-camp-style
+      block should end.
+    verified: isbn
+  - citation: Meeusen R, Duclos M, Foster C, Fry A, Gleeson M, Nieman D, Raglin J, Rietjens G, Steinacker
+      J, Urhausen A (2013). Prevention, Diagnosis and Treatment of the Overtraining Syndrome. Eur J Sport
+      Sci 13(1):1-24.
+    doi: 10.1080/17461391.2012.730061
+    states: Sustained, unrecovered negative training-stress balance is the physiological substrate the
+      FOR/NFOR/OTS continuum describes, though this consensus statement gives no PMC-specific numeric
+      cutoff.
+    verified: crossref
+- name: monotony
+  family: load
+  reading: monotony
+  reads: 'mean weekly monotony over load weeks: mean daily load over its standard deviation, rest days as
+    zero. Foster''s signal is monotony persistently above 2, so the plan is read on average, not on its
+    one flattest week (since 2026-10-11)'
+  grade: B
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 0.0
+    high: 2.0
+  ramp: 1.0
+  school_specific: false
+  sources:
+  - citation: Foster C (1998). Monitoring Training in Athletes with Reference to Overtraining Syndrome.
+      Med Sci Sports Exerc 30(7):1164-1168.
+    doi: 10.1097/00005768-199807000-00023
+    states: In a season-long case series of US speedskaters, weeks with monotony persistently above ~2.0
+      preceded illness/injury/performance-decrement episodes.
+    verified: crossref
+  - citation: Foster C, Florhaug JA, Franklin J, Gottschall L, Hrovatin LA, Parker S, Doleshal P, Dodge
+      C (2001). A New Approach to Monitoring Exercise Training. J Strength Cond Res 15(1):109-115.
+    doi: 10.1519/00124278-200102000-00019
+    states: Validates session-RPE x duration as a practical daily-load unit, the input the monotony/strain
+      calculation needs to be computed day by day.
+    verified: crossref
+- name: tid_low_share
+  family: intensity
+  reading: tid_low_share
+  reads: share of step minutes in zones 1 and 2 over load and recovery weeks
+  grade: B
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      running_marathon:
+        low: 0.75
+        high: 0.85
+      half_ironman:
+        low: 0.7
+        high: 0.85
+      ironman:
+        low: 0.7
+        high: 0.9
+  ramp: 0.1
+  school_specific: true
+  note: Time-in-zone bands, which read less polarised than session-goal counts. Long-course race pace
+    sits in zone 2 by construction, and the method alone moves a reading by ten points, so the Ironman
+    ceiling is 0.90.
+  sources:
+  - citation: 'Seiler S, Kjerland GØ (2006). Quantifying training intensity distribution in elite endurance
+      athletes: is there evidence for an ''optimal'' distribution? Scand J Med Sci Sports 16(1):49-56.'
+    doi: 10.1111/j.1600-0838.2004.00418.x
+    states: Elite XC skiers train ~75-80% below LT1 (session-goal method); pyramidal by session count,
+      near-polarised by session-goal duration.
+    verified: crossref
+  - citation: Seiler S (2010). What is best practice for training intensity and duration distribution
+      in endurance athletes? Int J Sports Physiol Perform 5(3):276-291.
+    doi: 10.1123/ijspp.5.3.276
+    states: Proposes the three-zone (LT1/LT2) model; ~80/5/15 as the recurring elite pattern across sports,
+      session-goal method.
+    verified: crossref
+  - citation: Stöggl T, Sperlich B (2014). Polarized training has greater impact on key endurance variables
+      than threshold, high-intensity, or high-volume training. Front Physiol 5:33.
+    doi: 10.3389/fphys.2014.00033
+    states: 'RCT: polarised (9 wk) beat pyramidal, threshold and high-volume-low-intensity for VO2max
+      and time-trial gains in trained cyclists.'
+    verified: crossref
+  - citation: Esteve-Lanao J, Foster C, Seiler S, Lucia A (2007). Impact of training intensity distribution
+      on performance in endurance athletes. J Strength Cond Res 21(3):943-949.
+    doi: 10.1519/R-19725.1
+    states: In trained runners, a more-polarised group outperformed a group whose easy volume drifted
+      into zone 2 threshold intensity.
+    verified: crossref
+  - citation: 'Muñoz I, Cejuela R, Seiler S, Larumbe E, Esteve-Lanao J (2014). Training-intensity distribution
+      during an Ironman season: relationship with competition performance. Int J Sports Physiol Perform
+      9(2):332-339.'
+    doi: 10.1123/ijspp.2012-0352
+    states: Age-group Ironman triathletes trained pyramidally (not polarised); those closer to polarised
+      had faster race times.
+    verified: crossref
+  - citation: 'Kenneally M, Casado A, Santos-Concejero J (2018). The effect of periodization and training
+      intensity distribution on middle- and long-distance running performance: a systematic review. Int
+      J Sports Physiol Perform 13(9):1114-1121.'
+    doi: 10.1123/ijspp.2017-0327
+    states: Reviews studies in marathon-adjacent distance runners; pyramidal distribution is the more
+      commonly observed pattern in elite marathon training than polarised.
+    verified: crossref
+  - citation: 'Casado A, González-Mohíno F, González-Ravé JM, Foster C (2022). Training periodization,
+      methods, intensity distribution, and volume in highly trained and elite distance runners: a systematic
+      review. Int J Sports Physiol Perform 17(6):820-833.'
+    doi: 10.1123/ijspp.2021-0435
+    states: Elite distance runners (incl. marathon) most often show pyramidal TID; polarised appears mainly
+      in shorter-duration event specialists.
+    verified: crossref
+  - citation: 'Treff G, Winkert K, Sareban M, Steinacker JM, Sperlich B (2019). The polarization-index:
+      a simple calculation to distinguish polarized from non-polarized training intensity distributions.
+      Front Physiol 10:707.'
+    doi: 10.3389/fphys.2019.00707
+    states: Defines a log-ratio index (zone1/(zone2*zone3)) with a >2.00 cutoff for classifying a week
+      as polarised; a measurement-methodology tool, not itself a prescription.
+    verified: crossref
+  - citation: Burnley M, Bearden SE, Jones AM (2022). Polarized training is not optimal for endurance
+      athletes. Med Sci Sports Exerc 54(6):1032-1034.
+    doi: 10.1249/MSS.0000000000002869
+    states: Commentary arguing pyramidal/mixed distributions are equally or better supported than polarised
+      as a general prescription; disputes polarised-superiority claims.
+    verified: crossref
+  - citation: 'Sylta O, Tonnessen E, Seiler S (2014). From heart-rate data to training quantification:
+      a comparison of 3 methods of training-intensity analysis. Int J Sports Physiol Perform 9(1):100-107.'
+    doi: 10.1123/ijspp.2013-0298
+    verified: crossref
+    states: 'On identical training, time in zone read 96 percent zone 1 against 87 percent by session
+      goal: a ten-point gap from the method alone.'
+- name: tid_high_share
+  family: intensity
+  reading: tid_high_share
+  reads: share of step minutes in zones 4 and 5 over load and recovery weeks
+  grade: B
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      running_marathon:
+        low: 0.05
+        high: 0.15
+      half_ironman:
+        low: 0.08
+        high: 0.15
+      ironman:
+        low: 0.03
+        high: 0.1
+  ramp: 0.05
+  school_specific: true
+  sources:
+  - citation: 'Seiler S, Kjerland GØ (2006). Quantifying training intensity distribution in elite endurance
+      athletes: is there evidence for an ''optimal'' distribution? Scand J Med Sci Sports 16(1):49-56.'
+    doi: 10.1111/j.1600-0838.2004.00418.x
+    states: Elite XC skiers train ~75-80% below LT1 (session-goal method); pyramidal by session count,
+      near-polarised by session-goal duration.
+    verified: crossref
+  - citation: Seiler S (2010). What is best practice for training intensity and duration distribution
+      in endurance athletes? Int J Sports Physiol Perform 5(3):276-291.
+    doi: 10.1123/ijspp.5.3.276
+    states: Proposes the three-zone (LT1/LT2) model; ~80/5/15 as the recurring elite pattern across sports,
+      session-goal method.
+    verified: crossref
+  - citation: Stöggl T, Sperlich B (2014). Polarized training has greater impact on key endurance variables
+      than threshold, high-intensity, or high-volume training. Front Physiol 5:33.
+    doi: 10.3389/fphys.2014.00033
+    states: 'RCT: polarised (9 wk) beat pyramidal, threshold and high-volume-low-intensity for VO2max
+      and time-trial gains in trained cyclists.'
+    verified: crossref
+  - citation: Esteve-Lanao J, Foster C, Seiler S, Lucia A (2007). Impact of training intensity distribution
+      on performance in endurance athletes. J Strength Cond Res 21(3):943-949.
+    doi: 10.1519/R-19725.1
+    states: In trained runners, a more-polarised group outperformed a group whose easy volume drifted
+      into zone 2 threshold intensity.
+    verified: crossref
+  - citation: 'Muñoz I, Cejuela R, Seiler S, Larumbe E, Esteve-Lanao J (2014). Training-intensity distribution
+      during an Ironman season: relationship with competition performance. Int J Sports Physiol Perform
+      9(2):332-339.'
+    doi: 10.1123/ijspp.2012-0352
+    states: Age-group Ironman triathletes trained pyramidally (not polarised); those closer to polarised
+      had faster race times.
+    verified: crossref
+  - citation: 'Kenneally M, Casado A, Santos-Concejero J (2018). The effect of periodization and training
+      intensity distribution on middle- and long-distance running performance: a systematic review. Int
+      J Sports Physiol Perform 13(9):1114-1121.'
+    doi: 10.1123/ijspp.2017-0327
+    states: Reviews studies in marathon-adjacent distance runners; pyramidal distribution is the more
+      commonly observed pattern in elite marathon training than polarised.
+    verified: crossref
+  - citation: 'Casado A, González-Mohíno F, González-Ravé JM, Foster C (2022). Training periodization,
+      methods, intensity distribution, and volume in highly trained and elite distance runners: a systematic
+      review. Int J Sports Physiol Perform 17(6):820-833.'
+    doi: 10.1123/ijspp.2021-0435
+    states: Elite distance runners (incl. marathon) most often show pyramidal TID; polarised appears mainly
+      in shorter-duration event specialists.
+    verified: crossref
+  - citation: 'Treff G, Winkert K, Sareban M, Steinacker JM, Sperlich B (2019). The polarization-index:
+      a simple calculation to distinguish polarized from non-polarized training intensity distributions.
+      Front Physiol 10:707.'
+    doi: 10.3389/fphys.2019.00707
+    states: Defines a log-ratio index (zone1/(zone2*zone3)) with a >2.00 cutoff for classifying a week
+      as polarised; a measurement-methodology tool, not itself a prescription.
+    verified: crossref
+  - citation: Burnley M, Bearden SE, Jones AM (2022). Polarized training is not optimal for endurance
+      athletes. Med Sci Sports Exerc 54(6):1032-1034.
+    doi: 10.1249/MSS.0000000000002869
+    states: Commentary arguing pyramidal/mixed distributions are equally or better supported than polarised
+      as a general prescription; disputes polarised-superiority claims.
+    verified: crossref
+- name: hard_sessions_per_week
+  family: intensity
+  reading: hard_sessions_per_week_build
+  reads: sessions with at least 8 minutes in zones 4 and 5, mean per build load week
+  grade: C
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      running_marathon:
+        low: 1.0
+        high: 3.0
+      half_ironman:
+        low: 1.5
+        high: 4.0
+      ironman:
+        low: 1.5
+        high: 4.0
+  ramp: 1.0
+  school_specific: false
+  note: The marathon texts converge on one threshold-or-harder session a week for age-groupers, the second
+    quality day at marathon pace, which is zone 3 here; a three-sport week spreads hard sessions over
+    different muscles, so the ceiling is four.
+  sources:
+  - citation: Seiler S (2010). What is best practice for training intensity and duration distribution
+      in endurance athletes? Int J Sports Physiol Perform 5(3):276-291.
+    doi: 10.1123/ijspp.5.3.276
+    states: Elite endurance athletes typically carry 2 (sometimes 3) genuinely hard sessions per week
+      across a training week, the rest easy.
+    verified: crossref
+  - citation: Friel J (2024). The Triathlete's Training Bible (5th ed.). VeloPress.
+    isbn: 978-1-646046-07-2
+    states: Prescribes 2 (occasionally 3 in BUILD) quality/above-threshold sessions per week per sport,
+      capped to protect recovery.
+    verified: isbn
+  - citation: Daniels J (2021). Daniels' Running Formula (4th ed.). Human Kinetics.
+    isbn: '9781718203662'
+    verified: isbn
+    states: One interval-pace session a week, capped near 8 percent of weekly mileage; threshold work
+      is the more frequent quality day.
+- name: hard_day_spacing
+  family: intensity
+  reading: hard_day_adjacent_same_sport
+  reads: hard sessions of one sport on consecutive days, count
+  grade: C
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 0
+    high: 0
+  ramp: 3.0
+  school_specific: true
+  note: The 48-hour convention; some marathon schools stack on purpose.
+  sources:
+  - citation: Daniels J (2021). Daniels' Running Formula (4th ed.). Human Kinetics.
+    isbn: 978-1-71820-366-2
+    states: 'Hard/easy alternation is a foundational principle: a quality (Q) day is followed by easy
+      running, never by another quality day of the same discipline.'
+    verified: isbn
+  - citation: Friel J (2024). The Triathlete's Training Bible (5th ed.). VeloPress.
+    isbn: 978-1-646046-07-2
+    states: Recommends at least 48 hours between two high-intensity/key workouts in the same sport to
+      allow adequate recovery.
+    verified: isbn
+- name: vo2max_in_base
+  family: intensity
+  reading: vo2max_in_base
+  reads: sessions with at least 8 minutes in zone 5 per base week
+  grade: C
+  weight: 1.5
+  goals:
+  - running_5k
+  - running_10k
+  - running_half_marathon
+  - running_marathon
+  - sprint_triathlon
+  - olympic_triathlon
+  - half_ironman
+  - ironman
+  band:
+    low: 0
+    high: 0
+    by_goal:
+      half_ironman:
+        low: 0
+        high: 1.0
+        why: Triathletes hold about 8 % of preparation-phase time above LT2, and short intervals give
+          that dose cheaply (em §4).
+        evidence: 'Base colour (2026-09-30): about one short interval session every other week per sport,
+          so at most one a week across the three sports.'
+      ironman:
+        low: 0
+        high: 1.0
+        why: Triathletes hold about 8 % of preparation-phase time above LT2, and short intervals give
+          that dose cheaply (em §4).
+        evidence: 'Base colour (2026-09-30): about one short interval session every other week per sport,
+          so at most one a week across the three sports.'
+      sprint_triathlon:
+        low: 0
+        high: 1.0
+        why: Triathletes hold about 8 % of preparation-phase time above LT2, and short intervals give
+          that dose cheaply (em §4).
+        evidence: 'Base colour (2026-09-30): about one short interval session every other week per sport,
+          so at most one a week across the three sports.'
+      olympic_triathlon:
+        low: 0
+        high: 1.0
+        why: Triathletes hold about 8 % of preparation-phase time above LT2, and short intervals give
+          that dose cheaply (em §4).
+        evidence: 'Base colour (2026-09-30): about one short interval session every other week per sport,
+          so at most one a week across the three sports.'
+  ramp: 0.5
+  school_specific: true
+  note: Version 2 reads a rate per base week and lets a triathlon base carry up to one zone-5 session
+    a week, the preparation-phase dose elite triathletes hold; the marathon keeps the traditional base
+    of none. Polarised and reverse schools keep some zone-5 work year-round.
+  sources:
+  - citation: Friel J (2024). The Triathlete's Training Bible (5th ed.). VeloPress.
+    isbn: '9781646046072'
+    verified: isbn
+    states: 'Traditional periodisation: base builds aerobic endurance, force and speed skills; VO2max
+      intervals arrive in build.'
+  - citation: Mujika I, Padilla S (2003). Scientific bases for precompetition tapering strategies. Med
+      Sci Sports Exerc 35(7):1182-1187.
+    doi: 10.1249/01.MSS.0000074448.73931.11
+    verified: crossref
+    states: 'Residual training effects: high-intensity adaptations decay fastest, so they are placed nearest
+      the race.'
+  - citation: Issurin VB (2010). New horizons for the methodology and physiology of training periodization.
+      Sports Med 40(3):189-206.
+    doi: 10.2165/11319770-000000000-00000
+    verified: crossref
+    states: Block periodisation concentrates intensity in late blocks; the base-first order is one school.
+  - citation: Sperlich B, Matzka M, Holmberg HC (2023). The proportional distribution of training by
+      elite endurance athletes at different intensities during different phases of the season. Front
+      Sports Act Living 5:1258585.
+    doi: 10.3389/fspor.2023.1258585
+    verified: crossref
+    states: Elite triathletes spend about 8 % of preparation-phase training time above LT2, and about
+      16 % in the competition phase.
+  - citation: Rønnestad BR, Hansen J, Nygaard H, Lundby C (2020). Superior performance improvements
+      in elite cyclists following short-interval vs effort-matched long-interval training. Scand J Med
+      Sci Sports 30(5):849-857.
+    doi: 10.1111/sms.13627
+    verified: crossref
+    states: Short 30/15 intervals raise VO2max and performance more than effort-matched long intervals.
+- name: long_ride_peak
+  family: specificity
+  reading: long_ride_peak_hours
+  reads: hours of the longest ride labelled long, else the longest ride
+  grade: C
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      ironman:
+        low: 4.5
+        high: 6.0
+        why: The longest Ironman ride reaches 4.5-6 h (tlc §4).
+      half_ironman:
+        low: 3.0
+        high: 4.25
+        why: The 3-4 h longest half ride (tlc §8) widened to 4.25 h.
+  ramp: 2.0
+  missing: 1.0
+  school_specific: false
+  sources:
+  - citation: Friel J & Byrn G (2009). Going Long, 2nd ed. VeloPress.
+    isbn: '9781934030066'
+    states: Prescribes the season's longest ride at 5-6 h (Ironman) or up to 100 miles for time-limited
+      athletes.
+    verified: isbn
+  - citation: 'Vleck VE, Bentley DJ, Millet GP & Cochrane T (2010). Triathlon Event Distance Specialization:
+      Training and Injury Effects. J Strength Cond Res, 24(1), 30-36.'
+    doi: 10.1519/JSC.0b013e3181bd4cc8
+    states: British national-squad Ironman-distance triathletes reported longer weekly 'long bike' sessions
+      than Olympic-distance triathletes.
+    verified: crossref
+- name: long_run_peak
+  family: specificity
+  reading: long_run_peak_hours
+  reads: hours of the longest run labelled long, else the longest run
+  grade: C
+  goals:
+  - ironman
+  - half_ironman
+  - running_marathon
+  - trail_50k
+  band:
+    by_goal:
+      ironman:
+        low: 2.5
+        high: 3.0
+        why: The longest Ironman run reaches 2.5-3 h (tlc §4).
+      half_ironman:
+        low: 1.5
+        high: 2.25
+        why: The 1.5-2 h longest half run (tlc §8) widened to 2.25 h.
+      running_marathon:
+        low: 2.5
+        high: 3.5
+      trail_50k:
+        low: 3.0
+        high: 4.0
+        why: A trail 50K's longest run is three to four hours on feet; no evidence says longer pays.
+        evidence: 'tr §5.1 / §13.5: trail 50K longest single run 3-4 h (Torrence); tr §5.4: 4 h is the
+          rehearsal floor (Koop). The ramp is every other goal''s.'
+  ramp: 1.5
+  missing: 1.0
+  school_specific: false
+  note: 'Marathon: a duration cap near 2.5 h (Daniels) to a distance cap of 32 to 35 km that runs longer
+    for slower athletes.'
+  sources:
+  - citation: Friel J & Byrn G (2009). Going Long, 2nd ed. VeloPress.
+    isbn: '9781934030066'
+    states: Caps the longest run below 3 h, citing injury/recovery cost beyond that point for full-distance
+      athletes.
+    verified: isbn
+  - citation: Daniels J (2021). Daniels' Running Formula, 4th ed. Human Kinetics.
+    isbn: '9781718203662'
+    states: Caps the long run near 2.5 h or 25-30% of weekly mileage, whichever is smaller, to limit injury/recovery
+      cost.
+    verified: isbn
+  - citation: Vickers AJ & Vertosick EA (2016). An empirical study of race times in recreational endurance
+      runners. BMC Sports Sci Med Rehabil, 8, 51.
+    doi: 10.1186/s13102-016-0052-y
+    states: Weekly training mileage (not long-run length specifically) was the strongest training predictor
+      of marathon finishing time.
+    verified: crossref
+- name: long_swim_peak
+  family: specificity
+  reading: long_swim_peak_metres
+  reads: metres of the longest swim
+  grade: D
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      ironman:
+        low: 3800
+        high: 4500
+        why: The longest swim reaches race distance and a little beyond (tlc §4).
+      half_ironman:
+        low: 2000
+        high: 3500
+        why: The 3000-3500 m literature swim (tlc §4) widened down to 2000 m.
+  ramp: 1500.0
+  missing: 1.0
+  school_specific: false
+  sources:
+  - citation: Dixon M (2017). Fast-Track Triathlete. VeloPress.
+    isbn: '9781937715748'
+    states: Time-efficient long-course prep still rehearses a continuous swim at or near race distance
+      before taper.
+    verified: isbn
+- name: peak_long_timing
+  family: specificity
+  reading: peak_long_timing_weeks
+  reads: weeks from the last peak-length long ride to race week
+  grade: D
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      ironman:
+        low: 4
+        high: 6
+        why: The longest sessions come 4-6 weeks out (tlc §4).
+      half_ironman:
+        low: 2
+        high: 4
+        why: Half plans last hit their longest ride and run 2-3 weeks out; the upper edge admits
+          a structure midway to Ironman practice.
+  ramp: 4.0
+  missing: 1.0
+  school_specific: true
+  sources:
+  - citation: Friel J (2024). The Triathlete's Training Bible (5th ed.). VeloPress.
+    isbn: '9781646046072'
+    verified: isbn
+    states: The longest ride and run fall four to six weeks before race day.
+- name: brick_weeks
+  family: specificity
+  reading: brick_weeks_share
+  reads: share of build and peak load weeks with a ride and a run on one day
+  grade: C
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    low: 0.5
+    high: 1.0
+  ramp: 0.5
+  missing: 1.0
+  school_specific: false
+  note: The transition's physiology is well studied; the weekly prescription is coaching convention.
+  sources:
+  - citation: Millet GP & Vleck VE (2000). Physiological and Biomechanical Adaptations to the Cycle to
+      Run Transition in Olympic Triathlon. Br J Sports Med, 34(5), 384-390.
+    doi: 10.1136/bjsm.34.5.384
+    states: Documents altered running kinematics (forward lean, stride frequency, delayed VO2 kinetics)
+      immediately after cycling; the effect diminishes with practice.
+    verified: crossref
+  - citation: Dixon M (2017). Fast-Track Triathlete. VeloPress.
+    isbn: '9781937715748'
+    states: 'Treats the brick as a specificity tool: short, focused transition runs, not volume accumulation.'
+    verified: isbn
+- name: marathon_race_pace
+  family: specificity
+  reading: marathon_race_pace_sessions
+  reads: runs in build and peak labelled race pace or carrying 20 minutes in zone 3
+  grade: D
+  goals:
+  - running_marathon
+  band:
+    low: 2
+    high: null
+  ramp: 2.0
+  school_specific: false
+  sources:
+  - citation: Friel J & Byrn G (2009). Going Long, 2nd ed. VeloPress.
+    isbn: '9781934030066'
+    states: Prescribes race-simulation days combining race-pace nutrition, pacing, and duration rehearsal
+      before taper.
+    verified: isbn
+- name: sport_mix_bike
+  family: specificity
+  reading: sport_mix_bike
+  reads: cycling share of plan hours
+  grade: C
+  goals:
+  - half_ironman
+  - ironman
+  - sprint_triathlon
+  - olympic_triathlon
+  band:
+    low: 0.41
+    high: 0.55
+    why: The coaching consensus widened to the range triathlon plans actually ride.
+    evidence: 'The ramps stay at the widths of the original coaching consensus (swim 15-20 %, bike 45-55 %, run 25-35 %): widening a band changes which plans count as defects, not how fast the distance grows outside it.'
+  ramp: 0.1
+  missing: 1.0
+  school_specific: false
+  sources:
+  - citation: Dixon M (2017). Fast-Track Triathlete. VeloPress.
+    isbn: '9781937715748'
+    states: Time-constrained long-course athletes still protect bike volume as the highest training-ROI
+      discipline.
+    verified: isbn
+  - citation: Gilinsky N, Hawkins KR, Tokar TN & Cooper JA (2014). Predictive variables for half-Ironman
+      triathlon performance. J Sci Med Sport, 17(3), 300-305.
+    doi: 10.1016/j.jsams.2013.04.014
+    states: Regression study of 209 half-Ironman finishers relating training characteristics by discipline
+      to race performance.
+    verified: crossref
+- name: sport_mix_run
+  family: specificity
+  reading: sport_mix_run
+  reads: running share of plan hours
+  grade: C
+  goals:
+  - half_ironman
+  - ironman
+  - sprint_triathlon
+  - olympic_triathlon
+  band:
+    low: 0.25
+    high: 0.38
+    why: The coaching consensus widened to the range triathlon plans actually run.
+    evidence: 'The ramps stay at the widths of the original coaching consensus (swim 15-20 %, bike 45-55 %, run 25-35 %): widening a band changes which plans count as defects, not how fast the distance grows outside it.'
+  ramp: 0.1
+  missing: 1.0
+  school_specific: false
+  sources:
+  - citation: Dixon M (2017). Fast-Track Triathlete. VeloPress.
+    isbn: '9781937715748'
+    states: Time-constrained long-course athletes still protect bike volume as the highest training-ROI
+      discipline.
+    verified: isbn
+  - citation: Gilinsky N, Hawkins KR, Tokar TN & Cooper JA (2014). Predictive variables for half-Ironman
+      triathlon performance. J Sci Med Sport, 17(3), 300-305.
+    doi: 10.1016/j.jsams.2013.04.014
+    states: Regression study of 209 half-Ironman finishers relating training characteristics by discipline
+      to race performance.
+    verified: crossref
+- name: sport_mix_swim
+  family: specificity
+  reading: sport_mix_swim
+  reads: swimming share of plan hours
+  grade: C
+  goals:
+  - half_ironman
+  - ironman
+  - sprint_triathlon
+  - olympic_triathlon
+  band:
+    low: 0.15
+    high: 0.24
+    why: The coaching consensus widened to the long-course range; short course swims more and
+      overrides it.
+    evidence: 'The ramps stay at the widths of the original coaching consensus (swim 15-20 %, bike 45-55 %, run 25-35 %): widening a band changes which plans count as defects, not how fast the distance grows outside it.'
+    by_goal:
+      olympic_triathlon:
+        low: 0.15
+        high: 0.34
+        why: Short sessions compress the bike's dominance, so short course swims a larger share; the maintainer's range.
+      sprint_triathlon:
+        low: 0.15
+        high: 0.31
+        why: Short sessions compress the bike's dominance, so short course swims a larger share; the maintainer's range.
+  ramp: 0.05
+  missing: 1.0
+  school_specific: false
+  sources:
+  - citation: Dixon M (2017). Fast-Track Triathlete. VeloPress.
+    isbn: '9781937715748'
+    states: Time-constrained long-course athletes still protect bike volume as the highest training-ROI
+      discipline.
+    verified: isbn
+  - citation: Gilinsky N, Hawkins KR, Tokar TN & Cooper JA (2014). Predictive variables for half-Ironman
+      triathlon performance. J Sci Med Sport, 17(3), 300-305.
+    doi: 10.1016/j.jsams.2013.04.014
+    states: Regression study of 209 half-Ironman finishers relating training characteristics by discipline
+      to race performance.
+    verified: crossref
+- name: rest_days
+  family: specificity
+  reading: rest_days_per_week
+  reads: days with no session per load or recovery week, mean
+  grade: C
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  - sprint_triathlon
+  - olympic_triathlon
+  band:
+    low: 0.75
+    high: 2.25
+    why: Triathlon plans leave 0.94-2.00 days a week empty.
+    by_goal:
+      running_marathon:
+        low: 0.75
+        high: null
+  ramp: 1.5
+  school_specific: true
+  note: 'Running is one-sided: more running days a week raises injury risk in men (van Gent 2007) and
+    Friel asks for a day off, while no evidence makes extra rest days a defect. The triathlon band is the usual range. Some marathon schools train most days.'
+  sources:
+  - citation: Friel J (2024). The Triathlete's Training Bible (5th ed.). VeloPress.
+    isbn: '9781646046072'
+    verified: isbn
+    states: Age-group programmes keep at least one day a week free of training.
+- name: warmup_before_hard
+  family: session
+  reading: warmup_share
+  reads: share of hard sessions with at least 10 minutes below zone 4 before the first hard step; a run after a ride on the same day, a brick, is warmed up by the ride
+  grade: A
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 0.9
+    high: 1.0
+  ramp: 0.5
+  school_specific: false
+  sources:
+  - citation: 'McGowan CJ, Pyne DB, Thompson KG, Rattray B (2015). Warm-up strategies for sport and exercise:
+      mechanisms and applications. Sports Med 45(11):1523-1546.'
+    doi: 10.1007/s40279-015-0376-x
+    states: A general + sport-specific active warm-up (raising muscle temp, priming metabolic/neural pathways)
+      improves subsequent high-intensity performance; reviewed protocols cluster around 10-20 min.
+    verified: crossref
+  - citation: 'Bishop D (2003). Warm Up I: potential mechanisms and the effects of passive warm up on
+      exercise performance. Sports Med 33(6):439-454; Warm Up II: performance changes following active
+      warm up. Sports Med 33(7):483-498.'
+    doi: 10.2165/00007256-200333060-00005 (I); 10.2165/00007256-200333070-00002 (II)
+    states: Active warm-up of low-to-moderate intensity for roughly 5-20 min, ending close to the main-set
+      start, maximises subsequent high-intensity output without pre-fatiguing.
+    verified: crossref
+  - citation: Laursen PB, Buchheit M (2019). Science and Application of High-Intensity Interval Training.
+      Human Kinetics.
+    isbn: '9781492552123'
+    states: Coaching-convention protocols precede VO2max/threshold work with a 10-20 min progressive general
+      warm-up plus activation strides.
+    verified: isbn
+- name: vo2max_work_rest
+  family: session
+  reading: vo2max_work_rest_ratio
+  reads: median rest-over-work of zone-5 repeat blocks in sessions with at least 8 minutes in zone 5
+  grade: A
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 0.4
+    high: 1.5
+  ramp: 0.5
+  school_specific: false
+  sources:
+  - citation: 'Billat LV (2001). Interval training for performance: a scientific and empirical practice.
+      Sports Med 31(1):13-31.'
+    doi: 10.2165/00007256-200131010-00002
+    states: 3-5 min work bouts at vVO2max with roughly equal recovery maximise time spent above 90% VO2max;
+      total work volume of ~15-25 min per session is typical.
+    verified: crossref
+  - citation: Buchheit M, Laursen PH (2013). HIIT, solutions to the programming puzzle, Part I. Sports
+      Med 43(5):313-338; Part II. Sports Med 43(10):927-954.
+    doi: 10.1007/s40279-013-0029-x (I); 10.1007/s40279-013-0066-5 (II)
+    states: Programming framework confirming work:rest near 1:1 for long intervals and a session work-volume
+      envelope of roughly 12-25 min at VO2max intensity.
+    verified: crossref
+  - citation: 'Seiler S, Jøranson K, Olesen BV, Hetlelid KJ (2013). Adaptations to aerobic interval training:
+      interactive effects of exercise intensity and total work duration. Scand J Med Sci Sports 23(1):74-83.'
+    doi: 10.1111/j.1600-0838.2011.01351.x
+    states: 4x8 min at ~90% HRmax (2 min recovery, ratio ~0.25) drove larger VO2max gains than shorter-duration
+      matched protocols — a valid long-interval variant outside a strict 1:1 ratio.
+    verified: crossref
+  - citation: Rønnestad BR, Hansen J, Vegge G, Tønnessen E, Slettaløkken G (2015). Short intervals induce
+      superior training adaptations compared with long intervals in cyclists. Scand J Med Sci Sports 25(2):143-151.
+    doi: 10.1111/sms.12165
+    states: 30s-on/15s-off short-short intervals (ratio 0.5), 3 sets of 13 reps with 3 min between sets,
+      accumulate substantial time above 90% VO2max and are well tolerated.
+    verified: crossref
+- name: vo2max_minutes
+  family: session
+  reading: z5_minutes_per_session
+  reads: zone-5 minutes per VO2max session, mean
+  grade: A
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 12
+    high: 25
+  ramp: 8.0
+  school_specific: false
+  sources:
+  - citation: 'Billat LV (2001). Interval training for performance: a scientific and empirical practice.
+      Sports Med 31(1):13-31.'
+    doi: 10.2165/00007256-200131010-00002
+    states: 3-5 min work bouts at vVO2max with roughly equal recovery maximise time spent above 90% VO2max;
+      total work volume of ~15-25 min per session is typical.
+    verified: crossref
+  - citation: Buchheit M, Laursen PH (2013). HIIT, solutions to the programming puzzle, Part I. Sports
+      Med 43(5):313-338; Part II. Sports Med 43(10):927-954.
+    doi: 10.1007/s40279-013-0029-x (I); 10.1007/s40279-013-0066-5 (II)
+    states: Programming framework confirming work:rest near 1:1 for long intervals and a session work-volume
+      envelope of roughly 12-25 min at VO2max intensity.
+    verified: crossref
+  - citation: 'Seiler S, Jøranson K, Olesen BV, Hetlelid KJ (2013). Adaptations to aerobic interval training:
+      interactive effects of exercise intensity and total work duration. Scand J Med Sci Sports 23(1):74-83.'
+    doi: 10.1111/j.1600-0838.2011.01351.x
+    states: 4x8 min at ~90% HRmax (2 min recovery, ratio ~0.25) drove larger VO2max gains than shorter-duration
+      matched protocols — a valid long-interval variant outside a strict 1:1 ratio.
+    verified: crossref
+  - citation: Rønnestad BR, Hansen J, Vegge G, Tønnessen E, Slettaløkken G (2015). Short intervals induce
+      superior training adaptations compared with long intervals in cyclists. Scand J Med Sci Sports 25(2):143-151.
+    doi: 10.1111/sms.12165
+    states: 30s-on/15s-off short-short intervals (ratio 0.5), 3 sets of 13 reps with 3 min between sets,
+      accumulate substantial time above 90% VO2max and are well tolerated.
+    verified: crossref
+- name: threshold_minutes
+  family: session
+  reading: threshold_minutes_per_session
+  reads: zone-3-and-4 minutes per session labelled tempo or threshold, mean
+  grade: C
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 20
+    high: 60
+  ramp: 15.0
+  school_specific: true
+  sources:
+  - citation: Daniels J (2021). Daniels' Running Formula, 4th ed. Human Kinetics.
+    isbn: '9781718203662'
+    states: Threshold ("T-pace") work totals 20-60 min per session, run either continuously or as cruise
+      intervals with short recovery (roughly 1 min rest per mile of work, i.e. a small fraction of the
+      work time).
+    verified: isbn
+  - citation: 'Billat LV (2001). Interval training for performance: a scientific and empirical practice.
+      Sports Med 31(1):13-31.'
+    doi: 10.2165/00007256-200131010-00002
+    states: Long, lightly-broken efforts near maximal lactate steady state accumulate comparable metabolic
+      stimulus to continuous tempo work while limiting neuromuscular cost.
+    verified: crossref
+- name: easy_days_easy
+  family: session
+  reading: easy_session_low_share
+  reads: share of minutes in zones 1 and 2 within sessions labelled easy or long, mean
+  grade: B
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 0.9
+    high: 1.0
+  ramp: 0.1
+  school_specific: false
+  sources:
+  - citation: Seiler S (2010). What is best practice for training intensity and duration distribution
+      in endurance athletes? Int J Sports Physiol Perform 5(3):276-291.
+    doi: 10.1123/ijspp.5.3.276
+    states: Elite endurance athletes across sports converge on ~80% low-intensity training; the discipline
+      is per-session — easy days stay easy rather than drifting into moderate 'grey zone' effort.
+    verified: crossref
+  - citation: Esteve-Lanao J, Foster C, Seiler S, Lucia A (2007). Impact of training intensity distribution
+      on performance in endurance athletes. J Strength Cond Res 21(3):943-949.
+    doi: 10.1519/R-19725.1
+    states: A group shifting time from zone-1 toward unstructured zone-2 (eroded easy-day discipline)
+      underperformed a more polarised group over the same total volume.
+    verified: crossref
+- name: fuelling_cues
+  family: session
+  reading: fuelling_cue_share
+  reads: share of sessions of 75 minutes or more whose note says how to fuel
+  grade: A
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 0.8
+    high: 1.0
+  ramp: 0.5
+  school_specific: false
+  note: The evidence grades the need to fuel; the written cue is the proxy a plan can carry.
+  sources:
+  - citation: 'Jeukendrup AE (2014). A step towards personalized sports nutrition: carbohydrate intake
+      during exercise. Sports Med 44(Suppl 1):S25-S33.'
+    doi: 10.1007/s40279-014-0148-z
+    states: ~30 g/h for 1-2 h sessions, ~60 g/h for 2-3 h, up to 90 g/h beyond ~2.5-3 h using multiple-transportable-carbohydrate
+      blends.
+    verified: crossref
+  - citation: Thomas DT, Erdman KA, Burke LM (2016). Nutrition and athletic performance (ACSM/AND/DC joint
+      position stand). Med Sci Sports Exerc 48(3):543-568.
+    doi: 10.1249/MSS.0000000000000852
+    states: Endorses graded carbohydrate-intake targets scaling with exercise duration and intensity for
+      events beyond ~1 hour.
+    verified: crossref
+  - citation: Burke LM, Hawley JA, Wong SHS, Jeukendrup AE (2011). Carbohydrates for training and competition.
+      J Sports Sci 29(Suppl 1):S17-S27.
+    doi: 10.1080/02640414.2011.585473
+    states: IOC-consensus-aligned graded intake targets by duration, the basis for the 30/60/90 g/h steps.
+    verified: crossref
+  - citation: Jeukendrup AE (2017). Training the gut for athletes. Sports Med 47(Suppl 1):101-110.
+    doi: 10.1007/s40279-017-0690-6
+    states: Gut tolerance of high carbohydrate intake is trainable; race-rate fuelling should be rehearsed
+      in the long sessions that mimic race duration, not introduced on race day.
+    verified: crossref
+- name: label_honesty
+  family: consistency
+  reading: label_mismatches
+  reads: sessions whose type label contradicts their steps, count
+  grade: S
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 0
+    high: 0
+  ramp: 5.0
+  school_specific: false
+  sources: []
+- name: recovery_weeks_lighter
+  family: consistency
+  reading: recovery_label_honesty
+  reads: share of recovery-labelled weeks lighter than the week before
+  grade: S
+  goals:
+  - running_marathon
+  - half_ironman
+  - ironman
+  band:
+    low: 1.0
+    high: 1.0
+  ramp: 1.0
+  school_specific: false
+  sources: []
+- name: race_day_freshness_ratio
+  family: taper
+  reads: race-day TSB / CTL (combined PMC)
+  benchmark: false
+  weight: 1.5
+  band:
+    low: 0.27
+    high: 0.49
+    why: 'Fallback for goals without their own band: the full long-course envelope at the race-day instant.'
+    by_goal:
+      half_ironman:
+        low: 0.27
+        high: 0.49
+        why: 'Half-distance plans taper nine days to two weeks and arrive at 0.27-0.40; a
+          half plan with a two-week taper arrives as fresh as the full-distance plans, so the ceiling is
+          the long-course envelope''s (since 2026-10-11; 0.40 before).'
+      ironman:
+        low: 0.38
+        high: 0.49
+        why: The range of full-distance plans at the race-day instant, rounded outward.
+      olympic_triathlon:
+        low: 0.27
+        high: 0.44
+        why: The half-distance floor (same one-week-taper family) with the maintainer's ceiling.
+      running_10k:
+        low: 0.18
+        high: 0.4
+        why: A 10K tapers for about a week and arrives still carrying load; the floor and ceiling bracket one-week tapers.
+      running_half_marathon:
+        low: 0.23
+        high: 0.5
+        why: A shorter race tapers shorter and arrives still carrying load; the floor is the maintainer's,
+          the ceiling is the marathon's.
+      running_marathon:
+        low: 0.34
+        high: 0.5
+        why: The range of a two-week and a three-week marathon taper.
+      sprint_triathlon:
+        low: 0.15
+        high: 0.4
+        why: The shortest race tapers shortest; the floor is the maintainer's, the ceiling is the half-distance one.
+      trail_100k:
+        low: 0.34
+        high: 0.57
+        why: Longer trail races taper harder (tr §11.1); the ceiling is the maintainer's.
+      trail_20k:
+        low: 0.23
+        high: 0.5
+        why: The shortest trail category tapers shortest (tr §11.1); the floor is the maintainer's, the ceiling is the marathon's.
+      trail_50k:
+        low: 0.34
+        high: 0.5
+        why: Mirrors the marathon band.
+  ramp: 0.15
+- name: recovery_week_test_frequency
+  family: periodisation
+  reads: share of test occasions carrying a fitness test, the recovery weeks and an opening test week
+  benchmark: false
+  goals:
+  - running_5k
+  - running_10k
+  - running_half_marathon
+  - running_marathon
+  - sprint_triathlon
+  - olympic_triathlon
+  - half_ironman
+  - ironman
+  band:
+    low: 0.35
+    high: 0.55
+    why: Plans that field-test do so in 0.40 to 0.50 of their recovery weeks (thin); inert on plans with no tests.
+  ramp: 0.25
+  note: 'Not the trail goals: the band rests on thin Ironman evidence, and the trail research
+    says nothing about field tests.'
+- name: taper_quality_share
+  family: taper
+  reads: mean taper-week quality minutes / peak-week quality minutes
+  benchmark: false
+  band:
+    low: 0.5
+    high: 1.0
+    why: Fallback for goals without their own band, extrapolated from the full-distance taper, which
+      holds 0.53-1.00 of its peak-week intensity.
+    by_goal:
+      trail_20k:
+        low: 0.3
+        high: 1.0
+        why: 'The taper keeps the climb''s zone and cuts its volume: the trail research''s worked taper
+          holds 37.5 percent of its tempo volume in the week before race week, so one taper week at a
+          third of the peak week''s quality minutes is the prescription, not a defect. One coach''s
+          reading of the taper reviews [SC]: below the two sources a new band needs.'
+        evidence: "tr \xA711.3 (Mujika via Koop): 4 x 10 min tempo -> 3 x 5 -> 2 x 5 -> 1 x 5, the zone\
+          \ unchanged. Measured 2026-10-07 on the trail 20K basic plans: 0.36-0.50 at 12-20 weeks, athletes\
+          \ at 0.75-1.5 of the default volume."
+      half_ironman:
+        low: 0.38
+        high: 1.0
+        why: The range of half-distance tapers; a two-week taper sheds more quality than
+          a nine-day one.
+      ironman:
+        low: 0.33
+        high: 1.0
+        why: The top-hours week of a full-distance plan is a late-build week whose sweet-spot long ride
+          and progression long run are long sessions a taper shortens by design, so a taper that keeps
+          its quality sessions holds a third of that week's quality minutes and about all of the peak
+          phase's (since 2026-11-03; 0.50 before).
+        evidence: 'Measured 2026-11-03 on the full-distance moderate plans at 22-36 weeks: taper weeks
+          61-71 quality minutes, peak-phase load weeks 63-88, the top-hours week 134-194. The worked
+          taper of tr §11.3 holds 37.5 percent of its tempo volume in the week before race week; the
+          half-distance floor is 0.38.'
+  ramp: 0.5
+- name: race_pace_long_bike_peak
+  family: specificity
+  reads: hours of the longest race-pace long ride
+  benchmark: false
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      half_ironman:
+        low: 2.5
+        high: 3.5
+        why: A race-pace long ride brackets the ~2.75-3 h race bike (tlc §5).
+      ironman:
+        low: 4.0
+        high: 5.5
+        why: The race-pace rehearsal ride covers ~70-80 % of the race bike (tlc §4).
+  ramp: 2.0
+- name: load_pricing_agreement
+  family: consistency
+  reads: worst-week |card TSS / sized TSS - 1|
+  benchmark: false
+  band:
+    low: 0.0
+    high: 0.11
+    why: Sizing and cards speak the same load, so the freshness the QP targets is the freshness the athlete
+      sees.
+    evidence: 'Measured matrix maximum 0.107: basic 10K/half runs whose 15-min easy run the QP stretches
+      to 20-23 min, where the linearisation at the menu target drifts.'
+  ramp: 0.1
+- name: vo2max_peak_taper
+  family: intensity
+  reads: INTERVAL-family sessions in PEAK and TAPER
+  benchmark: false
+  weight: 1.5
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    low: 0.0
+    high: 0.0
+    why: Long-course VO2max work belongs in early BUILD; PEAK and TAPER keep only brief openers (tlc §5).
+  ramp: 2.0
+  note: 'Long course only. Not the trail goals: uphill intervals in PEAK are trail training by design.'
+- name: longest_long_session_in_peak
+  family: specificity
+  reads: phases before PEAK of the longest long session (BUILD 1, BASE 2)
+  benchmark: false
+  band:
+    low: 0.0
+    high: 0.0
+    why: Each sport's longest long session lands in PEAK (R-PP-002, tlc §4).
+  ramp: 2.0
+- name: build_brick_run_duration
+  family: specificity
+  reads: minutes of the longest BUILD brick run
+  benchmark: false
+  goals:
+  - half_ironman
+  - ironman
+  - sprint_triathlon
+  - olympic_triathlon
+  band:
+    low: 33.0
+    high: 42.0
+    why: The top of the 20-40 min BUILD brick band, so BUILD actually rehearses off-the-bike durability
+      (tri §4).
+  ramp: 15.0
+- name: race_pace_ride_ends_at_effort
+  family: session
+  reads: whether the longest race-pace ride ends on an easy block (1) or on its race effort (0)
+  benchmark: false
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    low: 0
+    high: 0
+  ramp: 1.0
+- name: run_long_fueling_cue_coverage
+  family: session
+  reads: share of 75'+ long and brick runs whose notes carry a fueling cue
+  benchmark: false
+  band:
+    low: 1.0
+    high: 1.0
+    why: Every run long enough to need fuel says so (R-SC-014).
+  ramp: 1.0
+- name: vo2max_session_work_rest_ratio
+  family: session
+  reads: rest:work ratio of the worst rendered VO2max rep
+  benchmark: false
+  band:
+    low: 0.0
+    high: 1.5
+    why: Classical VO2max reps run 3-5 min with roughly equal recovery; a 3:1 rest ratio is speed work.
+  ramp: 1.0
+- name: brick_pairs_with_key_ride
+  family: specificity
+  reads: share of race-tempo bricks chained to the week's longest ride
+  benchmark: false
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    low: 1.0
+    high: 1.0
+    why: A race-tempo brick run follows the race-duration ride, not an easy spin (tri §4, tlc §6).
+  ramp: 1.0
+- name: cross_sport_hard_day_stacking
+  family: intensity
+  reads: share of weeks with a day carrying hard sessions from two sports
+  benchmark: false
+  goals:
+  - half_ironman
+  - ironman
+  band:
+    by_goal:
+      half_ironman:
+        low: 0.0
+        high: 0.35
+        why: Half-distance plans stack two hard sports on one day in at most a third of their weeks.
+      ironman:
+        low: 0.0
+        high: 0.55
+        why: Full-distance programs fit more sessions into the same seven days, so they stack more often than the half-distance band allows.
+  ramp: 0.35
+- name: vert_session_coverage
+  family: specificity
+  reads: share of the last 8 weeks' load and taper weeks carrying a climbing or descent session
+  benchmark: false
+  goals:
+  - trail_50k
+  band:
+    by_goal:
+      trail_50k:
+        low: 1.0
+        high: 1.0
+        why: Climbing fitness fades fastest, so the final eight weeks and the taper keep a vertical session
+          every week.
+        evidence: 'tr §7.3: vertical adaptation is easy-come-easy-go and the final 8 weeks are its window;
+          tr §11.3: terrain and vertical specificity are kept unchanged through the taper. Both [SC].'
+  ramp: 1.0
+- name: easier_week_long_run
+  family: periodisation
+  reads: easier-week long run / longest long run before it (mean band distance)
+  benchmark: false
+  goals:
+  - trail_50k
+  band:
+    by_goal:
+      trail_50k:
+        low: 0.5
+        high: 0.75
+        why: The long runs off the ceiling sit at half to three quarters of it.
+        evidence: 'tr §5.3 / §13.5: 1-2 long runs a month at the ceiling, the rest at 50-75 % of it. One
+          coach [SC]: below the two sources a new band needs.'
+  ramp: width
+- name: race_rehearsal_duration
+  family: specificity
+  reads: hours of the shortest race-rehearsal long run
+  benchmark: false
+  goals:
+  - trail_50k
+  band:
+    by_goal:
+      trail_50k:
+        low: 4.0
+        high: null
+        why: A fuelling rehearsal needs at least four hours on feet; a shorter run cannot rehearse it.
+        evidence: 'tr §5.4 / §12.3: four hours is the least a long run can be and still rehearse race
+          fuelling. One coach [SC]: below the two sources a new band needs. The ramp reaches 1.0 at three
+          hours, the routine floor.'
+  ramp: 1.0
+  missing: 1.0
+schools:
+- school: Traditional / Matveyev-Friel linear periodization
+  source: 'Bompa TO, Haff GG (2009). Periodization: Theory and Methodology of Training (5th ed.). Human
+    Kinetics. ISBN 978-0-7360-7483-4.'
+  departs_on:
+  - Base phase near-zero VO2max/intensity (vo2max_in_base)
+  - Sequential single-emphasis phases (Base -> Build -> Peak), not concentrated blocks
+  - 3:1 or 2:1 load:recovery cadence (recovery_cadence)
+- school: Daniels (VDOT / pace-zone system)
+  source: Daniels J (2021). Daniels' Running Formula (4th ed.). Human Kinetics. ISBN 978-1-718-20366-2.
+  departs_on:
+  - Caps Interval-pace (I-pace, ~zone 5) volume at ~8% of weekly mileage regardless of phase, a volume
+    cap rather than a session count
+  - Threshold (T-pace) work is a distinct, larger allocation than Friel's threshold zone, run near cruise-interval
+    structure
+  - Long run capped near 25-30% of weekly mileage, not a fixed clock duration
+- school: Lydiard
+  source: Lydiard A, Gilmour G (2011 reissue). Running to the Top. Meyer & Meyer. ISBN 978-1-84126-335-9.
+  departs_on:
+  - Very long (weeks-long) pure-aerobic base phase before any anaerobic work is introduced at all — an
+    extreme version of vo2max_in_base's base=0 rule
+  - Hill resistance-training block bridges base and anaerobic phases, a structural stage most other schools
+    do not name separately
+  - Short, sharp anaerobic/sharpening phase immediately pre-race, deliberately brief relative to the base
+    phase's length
+- school: Hudson (adaptive/nonlinear periodization)
+  source: Hudson B, Fitzgerald M (2008). Run Faster from the 5K to the Marathon. Broadway Books. ISBN
+    978-0-7679-2822-9.
+  departs_on:
+  - Blends intensities within every week from day one (no sequential base-then-intensity phase structure),
+    closer to reverse/concurrent periodization than Friel/Matveyev
+  - Individualizes phase length and emphasis session-by-session based on athlete response rather than
+    a fixed macrocycle template
+  - Introduces race-pace and VO2max-adjacent work earlier than classical base-first schools
+- school: Maffetone / MAF (aerobic-threshold method)
+  source: Maffetone P (2010). The Big Book of Endurance Training and Racing. Skyhorse. ISBN 978-1-60094-345-0.
+  departs_on:
+  - Prescribes an extended (often many-week) phase of exclusively sub-aerobic-threshold (MAF 180-formula
+    HR cap) training with zero zones 3-5 work, far longer and stricter than a conventional BASE phase
+  - Uses a fixed formula (180 minus age, with adjustments) for the aerobic ceiling rather than lab-tested
+    LT1/LT2
+  - Reintroduces speed/anaerobic work only in a short pre-race phase, similar in spirit to Lydiard but
+    with a stricter, formula-based low-end cap
+- school: Magness (physiological/systems approach)
+  source: Magness S (2014). The Science of Running. Origin Press. ISBN 978-0-615-94294-0.
+  departs_on:
+  - Frames periodization around specific physiological systems (VO2max, LT, running economy, anaerobic
+    capacity) trained in sequence with explicit rationale per block, closer to block periodization (Issurin)
+    than classical phase-first
+  - Emphasizes neuromuscular/economy work (strides, hill sprints, plyometrics) as a continuous thread
+    across all phases rather than a base-phase-only inclusion
+  - More skeptical of a single fixed TID ratio, favoring phase- and athlete-specific targets over a universal
+    80/20 or pyramidal number
+- school: Reverse periodization (triathlon-specific variant)
+  source: Practitioner convention described in Friel J & Byrn G (2009). Going Long (2nd ed.). VeloPress.
+    ISBN not checked.; commonly attributed to indoor-trainer-era
+    winter-intensity, summer-volume programs.
+  departs_on:
+  - Places VO2max/anaerobic-power work in BASE (often the winter off-season, when outdoor long-volume
+    riding is impractical) and shifts to aerobic volume as BUILD/PEAK approaches race day — a direct inversion
+    of vo2max_in_base's base=0 band
+  - Common in time-crunched age-group triathlon coaching where winter access to long outdoor rides is
+    limited, less common for pure marathon training
+  - Peak-phase intensity is lower/more volume-dominant than classical schools, since the anaerobic stimulus
+    was already banked earlier

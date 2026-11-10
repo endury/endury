@@ -1,0 +1,578 @@
+/* Endury — component kit: session card, badges, outline mini-bars, load
+   ring, coach messages/chips, toast, modal. Per-component classes below;
+   shared keyframes and hover/scrollbar rules at the bottom of this file. */
+
+/* Session card */
+
+.cb-card {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--cb-dur-fast) var(--cb-ease),
+              transform var(--cb-dur-fast) var(--cb-ease),
+              box-shadow var(--cb-dur-fast) var(--cb-ease);
+}
+
+.cb-card--agenda {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-sp-2);
+  border-style: solid;
+  border-width: 1px 1px 1px 4px;
+  border-color: var(--cb-border);
+  border-radius: var(--cb-r-tile);
+  padding: var(--cb-sp-3) var(--cb-sp-3);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .08);
+}
+
+/* Structural emphasis, not gold — gold means "a race" only. */
+.cb-card--agenda.cb-card--anchor {
+  border-color: var(--cb-border-strong);
+}
+
+.cb-card--grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-sp-1);
+  border-style: solid;
+  border-width: 1px 1px 1px 3px;
+  border-color: var(--cb-border);
+  border-radius: var(--cb-r-tile);
+  padding: var(--cb-sp-2) var(--cb-sp-2-5);
+}
+
+/* Structural emphasis, not gold — gold means "a race" only. */
+.cb-card--grid.cb-card--anchor {
+  border-color: var(--cb-border-strong);
+}
+
+.cb-card__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cb-sp-2);
+}
+
+.cb-card__title {
+  font-weight: 600;
+  min-width: 0;
+}
+
+/* A saved coach's take on the card's activity. */
+.cb-card__take {
+  display: inline-flex;
+  vertical-align: -1px;
+  margin-left: var(--cb-sp-1);
+  color: var(--cb-text-muted);
+}
+
+.cb-card--agenda .cb-card__title { font-size: var(--cb-fs-body); line-height: 1.3; }
+.cb-card--grid .cb-card__title { font-size: var(--cb-fs-meta); line-height: 1.25; }
+
+.cb-card__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cb-sp-3-5);
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+}
+
+.cb-card__note {
+  font-size: var(--cb-fs-label);
+  line-height: 1.4;
+  color: var(--cb-text-muted);
+}
+
+.cb-card__meta {
+  font-size: var(--cb-fs-label);
+  color: var(--cb-text-muted);
+}
+
+/* Badges */
+
+.cb-badge {
+  display: inline-block;
+  flex: none;
+  white-space: nowrap;
+  text-transform: uppercase;
+  border-radius: var(--cb-r-pill);
+  color: var(--cb-accent-ink);
+}
+
+.cb-badge--agenda { font-size: var(--cb-fs-micro); font-weight: 700; letter-spacing: .04em; padding: var(--cb-sp-1) var(--cb-sp-2); }
+.cb-badge--grid { font-size: var(--cb-fs-micro); font-weight: 700; letter-spacing: .03em; padding: var(--cb-sp-0-5) var(--cb-sp-1-5); align-self: flex-start; }
+
+.cb-badge--good { background: var(--cb-good); }
+.cb-badge--warn { background: var(--cb-warn); }
+.cb-badge--miss { background: var(--cb-miss); }
+.cb-badge--skip { background: var(--cb-skip); }
+.cb-badge--done { background: var(--cb-good-bright); }
+.cb-badge--muted { background: var(--cb-text-muted); }
+
+/* Sync status line — quiet (dot + muted meta text), not a filled badge */
+
+.cb-sync-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cb-sp-1-5);
+  min-width: 0;
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+  white-space: nowrap;
+}
+
+.cb-sync-status__dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cb-good);
+}
+
+.cb-sync-status__text { overflow: hidden; text-overflow: ellipsis; }
+
+.cb-sync-status--warn { color: var(--cb-warn); }
+.cb-sync-status--warn .cb-sync-status__dot { background: var(--cb-warn); }
+
+/* Workout outline mini-bars */
+
+.cb-outline {
+  display: flex;
+  align-items: stretch;
+  gap: var(--cb-sp-0-5);
+  background: var(--cb-bg);
+  border: 1px solid var(--cb-border);
+  padding: var(--cb-sp-0-5);
+  overflow: hidden;
+}
+
+.cb-outline__seg {
+  align-self: flex-end;
+  border-radius: var(--cb-r-bar);
+  background: var(--cb-outline-color, var(--cb-text-muted));
+}
+
+.cb-outline__seg--warmup   { height: 45%; opacity: .5; }
+.cb-outline__seg--interval { height: 100%; opacity: .9; }
+.cb-outline__seg--recovery { height: 42%; opacity: .45; }
+.cb-outline__seg--cooldown { height: 45%; opacity: .5; }
+.cb-outline__seg--rest     { height: 35%; opacity: .4; }
+.cb-outline__seg--unknown  { height: 60%; opacity: .6; }
+
+/* Load ring */
+
+.cb-ring {
+  position: relative;
+  flex: none;
+}
+
+.cb-ring__progress {
+  transition: stroke-dashoffset .6s var(--cb-ease);
+}
+
+.cb-ring__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cb-ring__value {
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cb-accent);
+}
+
+.cb-ring__sub {
+  font-size: var(--cb-fs-micro);
+  color: var(--cb-text-muted);
+  line-height: 1.5;
+}
+
+/* Coach messages + chips */
+
+.cb-msg--coach { border-left: 2px solid var(--cb-accent); padding-left: var(--cb-sp-3); }
+.cb-msg--user { text-align: right; padding-left: 32px; }
+
+.cb-msg__meta {
+  font-size: var(--cb-fs-micro);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: var(--cb-sp-1);
+}
+
+.cb-msg--coach .cb-msg__meta { color: var(--cb-text-strong); }
+.cb-msg--user .cb-msg__meta { color: var(--cb-text-muted); }
+
+.cb-msg__text {
+  font-size: var(--cb-fs-body);
+  line-height: 1.55;
+  color: var(--cb-text);
+}
+
+/* Markdown-lite tables (ad-hoc workouts, session splits): scroll inside the
+   bubble on narrow screens rather than widening the chat column. */
+.cb-msg__table-wrap {
+  overflow-x: auto;
+  margin: var(--cb-sp-2) 0;
+}
+
+.cb-msg__table {
+  border-collapse: collapse;
+  font-size: var(--cb-fs-meta);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cb-msg__table th,
+.cb-msg__table td {
+  padding: var(--cb-sp-1) var(--cb-sp-2);
+  text-align: left;
+  border-bottom: 1px solid rgb(from var(--cb-text-strong) r g b / .12);
+}
+
+.cb-msg__table th {
+  font-weight: 600;
+  color: var(--cb-text-muted);
+  letter-spacing: .04em;
+}
+
+.cb-msg__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cb-sp-1-5);
+  margin-top: var(--cb-sp-3);
+}
+
+/* A chart the coach's analysis drew under its reply (chat_chart.js). The
+   SVG scales with the bubble; the cap keeps its 10-unit ticks near 12px. */
+.cb-chart {
+  margin: var(--cb-sp-3) 0 0;
+  padding-top: var(--cb-sp-2);
+  border-top: 1px solid rgb(from var(--cb-text-strong) r g b / .12);
+  max-width: 420px;
+}
+
+.cb-chart__title {
+  font-size: var(--cb-fs-meta);
+  font-weight: 600;
+  color: var(--cb-text-strong);
+}
+
+.cb-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cb-sp-3);
+  margin-top: var(--cb-sp-1);
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+}
+
+.cb-chart__legend i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: var(--cb-sp-1);
+  border-radius: var(--cb-r-bar);
+}
+
+.cb-chart__readout {
+  min-height: 15px;
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cb-chart__plot {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: pan-y;
+  cursor: crosshair;
+}
+
+.cb-chart__grid { stroke: rgb(from var(--cb-text-strong) r g b / .10); stroke-width: 1; }
+.cb-chart__tick { fill: var(--cb-text-muted); font-size: 10px; font-family: var(--cb-font); }
+.cb-chart__cursor { stroke: var(--cb-text-muted); stroke-width: 1; }
+.cb-chart__zero { stroke: rgb(from var(--cb-text-strong) r g b / .35); stroke-width: 1; }
+
+.cb-chip {
+  font-family: inherit;
+  font-size: var(--cb-fs-body);
+  font-weight: 500;
+  color: var(--cb-accent);
+  background: rgb(from var(--cb-text-strong) r g b / .1);
+  border: 1px solid rgb(from var(--cb-text-strong) r g b / .3);
+  border-radius: var(--cb-r-sheet);
+  padding: var(--cb-sp-1-5) var(--cb-sp-3-5);
+  cursor: pointer;
+  transition: background var(--cb-dur-fast), color var(--cb-dur-fast), transform var(--cb-dur-fast);
+}
+
+/* Thinking indicator */
+
+.cb-thinking {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-1-5);
+  padding: var(--cb-sp-0-5) 0;
+}
+
+.cb-thinking__label {
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+  margin-left: var(--cb-sp-1);
+}
+
+/* Toast */
+
+.cb-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  z-index: 70;
+  background: var(--cb-toast-bg);
+  border: 1px solid var(--cb-border-strong);
+  color: var(--cb-text);
+  font-size: var(--cb-fs-body);
+  font-weight: 500;
+  padding: var(--cb-sp-2-5) var(--cb-sp-4);
+  border-radius: var(--cb-r-card);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+  max-width: min(92vw, 340px);
+  text-align: center;
+  animation: cb-fade var(--cb-dur-fast) var(--cb-ease) both;
+}
+
+/* Web shell: centering on the full viewport lands the toast on top of the
+   block-overview table in the center pane. Center it over the coach column
+   instead (372px, flush right — see shells/web/web.css .cbw-coach) so it
+   clears the data. Mobile keeps the viewport-centered default above. */
+html[data-shell="web"] .cb-toast {
+  left: calc(100% - 186px);
+}
+
+/* Modal (center dialog / bottom sheet) */
+
+.cb-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .55);
+  z-index: 50;
+  display: flex;
+  animation: cb-fade var(--cb-dur-fast) var(--cb-ease) both;
+}
+
+.cb-modal-overlay--center { align-items: center; justify-content: center; }
+.cb-modal-overlay--sheet { align-items: flex-end; }
+
+.cb-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-sp-3-5);
+  outline: none;
+}
+
+.cb-modal--center {
+  width: 460px;
+  max-width: calc(100% - 32px);
+  max-height: 82%;
+  overflow-y: auto;
+  background: linear-gradient(180deg, var(--cb-sheet-top), var(--cb-sheet-bot));
+  border-radius: var(--cb-r-card);
+  border: 1px solid var(--cb-border-strong);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, .6);
+  padding: var(--cb-sp-5-5) var(--cb-sp-6) var(--cb-sp-7);
+  animation: cb-pop var(--cb-dur-fast) var(--cb-ease) both;
+}
+
+.cb-modal--sheet {
+  width: 100%;
+  /* The sheet is bottom-anchored: without a cap a tall debrief grows off the
+     top of the screen, taking its title and close button with it. */
+  max-height: 88%;
+  overflow-y: auto;
+  border-radius: var(--cb-r-sheet) var(--cb-r-sheet) 0 0;
+  border-top: 1px solid var(--cb-border-strong);
+  background: linear-gradient(180deg, var(--cb-sheet-top), var(--cb-sheet-bot));
+  box-shadow: 0 -18px 44px rgba(0, 0, 0, .5);
+  padding: var(--cb-sp-3-5) var(--cb-sp-5-5) calc(34px + env(safe-area-inset-bottom, 0px));
+  animation: cb-fade var(--cb-dur-fast) var(--cb-ease) both;
+}
+
+.cb-modal__handle {
+  align-self: center;
+  flex: none;
+  width: 40px;
+  height: 4px;
+  border-radius: var(--cb-r-bar);
+  background: var(--cb-bar-muted);
+}
+
+/* Athlete-memory panel (openMemoryPanel) */
+
+.cb-memory { display: flex; flex-direction: column; gap: var(--cb-sp-2-5); }
+
+.cb-memory__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cb-memory__title { font-size: var(--cb-fs-title); font-weight: 600; }
+
+.cb-memory__close {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--cb-r-tile);
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-3);
+  color: var(--cb-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cb-memory__hint {
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+  line-height: 1.5;
+}
+
+.cb-memory__text {
+  font-family: var(--cb-font);
+  font-size: var(--cb-fs-body);
+  line-height: 1.6;
+  color: var(--cb-text);
+  background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-tile);
+  padding: var(--cb-sp-3);
+  min-height: 240px;
+  resize: vertical;
+  outline: none;
+}
+
+.cb-memory__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-sp-2);
+}
+
+.cb-memory__status { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); }
+
+/* Confirm dialog (openConfirm) and memory-panel actions */
+
+.cb-confirm { display: flex; flex-direction: column; gap: var(--cb-sp-2-5); }
+.cb-confirm__title { font-size: var(--cb-fs-title); font-weight: 600; }
+.cb-confirm__body { font-size: var(--cb-fs-body); color: var(--cb-text-muted); line-height: 1.5; }
+
+.cb-confirm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--cb-sp-2);
+  margin-top: var(--cb-sp-1-5);
+}
+
+.cb-confirm__btn {
+  font: inherit;
+  font-size: var(--cb-fs-body);
+  font-weight: 600;
+  padding: var(--cb-sp-2) var(--cb-sp-3-5);
+  border-radius: var(--cb-r-tile);
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-3);
+  color: var(--cb-text);
+  cursor: pointer;
+}
+
+.cb-confirm__btn--primary {
+  background: var(--cb-accent);
+  border-color: var(--cb-accent);
+  color: var(--cb-accent-ink);
+}
+
+/* Shared motion + interaction */
+
+@keyframes cb-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes cb-pop {
+  from { opacity: 0; transform: scale(.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes cb-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .35; transform: scale(.6); }
+}
+
+@keyframes cb-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+.cb-msg { animation: cb-fade var(--cb-dur-med) ease both; }
+
+.cb-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cb-accent);
+  animation: cb-pulse 1.3s ease-in-out infinite;
+}
+
+.cb-chip:hover {
+  background: var(--cb-accent) !important;
+  color: var(--cb-accent-ink) !important;
+  transform: translateY(-1px);
+}
+
+.cb-ib:hover { background: var(--cb-border-strong) !important; }
+
+.cb-card:hover { border-color: var(--cb-accent); }
+.cb-card--grid:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0, 0, 0, .35); }
+
+/* Plan preview: projected sessions render dashed at reduced opacity.
+   Shells stamp .cbw-preview on preview-overlaid days. */
+
+.cbw-preview .cb-card { border-style: dashed; opacity: .8; }
+
+/* The shared "?" affordance that opens the metrics explainer.
+   The shells keep their own .cbw-/.cbm-hint-btn on the load ring; components
+   can't know which shell they render in, so they use this one. */
+
+.cb-hint-btn {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin-left: var(--cb-sp-1-5);
+  vertical-align: 1px;
+  border-radius: 50%;
+  border: 1px solid var(--cb-border-strong);
+  background: none;
+  color: var(--cb-text-muted);
+  font-size: var(--cb-fs-label);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.cb-hint-btn:hover { color: var(--cb-text); border-color: var(--cb-text-muted); }

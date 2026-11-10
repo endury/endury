@@ -1,0 +1,260 @@
+# trail_maintenance session menus. Format and validation ladder: AUTHORING.md.
+#
+# Maintenance retains fitness by keeping intensity and cutting volume
+# (Mujika & Padilla 2000): every tier keeps at least one weekly quality
+# touch plus a moderate long run, at roughly half the tier's race-prep peak
+# volume. The trail flavour of running_maintenance: the long run moves onto
+# trails (time on feet over real terrain, hike the climbs), and the quality
+# rotation leads with hills and sustained climbing so leg strength and
+# descending durability are what the block preserves. Nothing is
+# progressive: the block holds the tier's maintenance volume instead of
+# ramping.
+#
+# Recovery weeks carry the threshold retest, so every deload doubles as a
+# fitness checkpoint ("did I hold?").
+#
+# BASIC (reviewed with the maintainer) runs the trail 20K BASIC
+# week: Tue climb, Wed easy, Thu rest, Fri rhythm run, Sun trail long run,
+# optional rides Monday and Saturday. Its block runs three load weeks and a
+# recovery week from week 0 (3:1), so eight-member
+# rotations make a fixed eight-week cycle: Tuesday hill repeats, fartlek, a
+# power hike and the threshold test (on the climb day in weeks 5 and 13,
+# never in week 1: the block opens on the athlete's current zones);
+# Friday strides, a steady run and a progression run.
+# Recovery weeks are an easy Tuesday, Friday strides and a short trail long
+# run, without the test.
+goal: trail_maintenance
+offered: [basic]
+progressions:
+  # intent: BASIC's trail long run opens from the athlete's own longest and
+  # grows about 10 % a week up to its range, then holds (2026-10-08).
+  - trail_maintenance_long_run
+menus:
+  maintain/load:
+    contract:
+      must_contain: [run_trail_long]
+      weekly_quality_sessions: [1, 2]
+    slots:
+      - name: maint_trail_basic_sun_long
+        day: sun
+        activity: run_trail_long
+        key: 0.5
+        minutes: {basic: [60, 80]}
+        progression: trail_maintenance_long_run
+        # intent: BASIC's long run is the block's other pillar beside the
+        # climb day, so both are key: a
+        # squeezed week shortens its easy runs before either goes optional.
+        # 0.5 as in the race menus' long runs.
+        why: >-
+          The trail long run is your best defence against losing both aerobic
+          fitness and trail legs, so it stays in the week even with no race on
+          the calendar. It holds at a moderate length rather than growing — this
+          block is about keeping what you built, not chasing more. Steer by
+          effort, not pace: the terrain sets the numbers.
+      - name: maint_trail_sun_long
+        day: sun
+        activity: run_trail_long
+        minutes: {moderate: [75, 90], competitive: [90, 110]}
+        # intent: Moderate trail long run holds aerobic durability and
+        # terrain-specific conditioning without ramping.
+        why: >-
+          The trail long run is your best defence against losing both aerobic
+          fitness and trail legs, so it stays in the week even with no race on
+          the calendar. It holds at a moderate length rather than growing — this
+          block is about keeping what you built, not chasing more. Steer by
+          effort, not pace: the terrain sets the numbers.
+      # Two tier-disjoint variants: BASIC runs an eight-week climb-day cycle,
+      # MODERATE/COMPETITIVE get the trail rotation — hills lead, sustained
+      # climbing and fartlek behind.
+      - name: maint_trail_tue_quality
+        day: tue
+        why: >-
+          Climbing strength is the first thing a trail runner loses when the
+          vert stops, and one honest hill session a week is what keeps it. The
+          flavour rotates — hard uphill reps one week, sustained climbing or
+          fast surges the next — but the job is always the same: go and work the
+          gradient properly.
+        variants:
+          - activity: run_hill_repeats
+            rotation: [run_hill_repeats, run_fartlek, run_vert_hike, run_hill_repeats, run_threshold_test, run_hill_repeats, run_fartlek, run_vert_hike]
+            key: 0.45
+            minutes: {basic: [45, 55]}
+            # intent: BASIC's eight-week cycle (maintainer review;
+            # eight weeks for 3:1): hill repeats, fartlek, a
+            # power hike, the threshold test, hill repeats, fartlek. The test
+            # comes in the first load week after each recovery week every
+            # eight weeks (weeks 5, 13), never in week 1: a maintenance block
+            # follows a season the athlete has trained and tested through, so
+            # it opens on their current zones (the
+            # maintainer's call). The fourth and eighth members land
+            # on the block's recovery weeks, so they fire only when the
+            # block's last week is turned into a load week (a 4-, 8-, 12- or
+            # 16-week block); they repeat a member for that case, the hike in
+            # the eighth so an 8-week block holds two. The test takes the
+            # climb's place at the same size, so it fits the week and stays
+            # its one hard day; a recovery week (about 1.5 h) cannot hold it
+            # beside its runs. Bounds sit at the cards' sizes (hill repeats >= 50,
+            # the hike >= 44, fartlek >= 38, the test 55). Key, because
+            # maintenance keeps intensity and cuts volume: a squeezed week
+            # shortens its easy runs before the climb day goes optional or
+            # the test drops. 0.45 lets a 2 h week hold the 55-min test
+            # beside its long run within the week; in a 1.5 h week (half the
+            # default volume) the keyed test books over the ceiling with the
+            # easy runs optional (R-SESS-033), since 2026-10-11; a larger
+            # share with the long run's 0.5 overfilled that week and scaled
+            # every session alike, under their minimums. A smaller share
+            # dropped the test there and the week fell under the one before.
+          - activity: run_hill_repeats
+            rotation: [run_hill_repeats, run_vert_hike, run_fartlek]
+            minutes: {moderate: [44, 50], competitive: [45, 55]}
+            # intent: Weekly intensity touch that retains climbing strength and
+            # the top end at reduced volume; the hill/vert-hike/fartlek rotation
+            # keeps the block trail-specific and varied.
+      - name: maint_trail_thu_quality
+        day: thu
+        activity: run_threshold
+        rotation: [run_threshold, run_vo2max]
+        minutes: {moderate: [35, 45], competitive: [40, 50]}
+        why: >-
+          A second quality run keeps the engine sharp on runnable ground:
+          controlled threshold work some weeks, sharper intervals others. Hills
+          keep your legs strong; this is what stops the flat-out speed
+          underneath them from quietly draining away.
+      - name: maint_trail_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {competitive: [45, 75]}
+        why: >-
+          Extra easy running for a week that can carry it. It costs almost
+          nothing in freshness and keeps your aerobic base topped up between the
+          two hard days.
+      - name: maint_trail_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {moderate: [40, 55], competitive: [45, 55]}
+        why: >-
+          An easy run to keep the legs turning over between quality days. Run it
+          genuinely relaxed — its whole job is to add aerobic time while leaving
+          you fresh for the weekend.
+      - name: maint_trail_basic_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {basic: [35, 45]}
+        why: >-
+          An easy run the day after the climbing session. In a maintenance
+          block it is the days you show up that hold your fitness, so this one
+          stays genuinely easy and simply keeps you running.
+      - name: maint_trail_basic_fri_rhythm
+        day: fri
+        activity: run_strides
+        rotation: [run_strides, run_aerobic_tempo, run_progression, run_strides, run_strides, run_aerobic_tempo, run_progression, run_strides]
+        minutes: {basic: [30, 36]}
+        # intent: The Friday half of BASIC's eight-week cycle: strides, a
+        # steady aerobic tempo, a progression run, and strides again in the
+        # test week; the fourth and eighth members fall on recovery weeks, as
+        # on Tuesday. 36 min is the strides card's ceiling.
+        why: >-
+          Friday is your rhythm run, a little different each week: easy running
+          with a few quick pickups, a steady run at a comfortably firm effort,
+          or a progression run that starts easy and finishes firm. None of them
+          should leave you tired for Sunday.
+      - name: maint_trail_sat_strides
+        day: sat
+        activity: run_strides
+        minutes: {moderate: [30, 36], competitive: [30, 36]}
+        why: >-
+          A handful of short, fast accelerations inside an easy run keeps your
+          legs remembering how to move quickly — on trails that turnover is what
+          saves you on technical descents. It costs almost nothing in fatigue.
+      - &maint_trail_mon_spin
+        name: maint_trail_mon_spin
+        day: mon
+        activity: bike_recovery
+        minutes: {basic: [30, 40], moderate: [35, 45], competitive: [40, 50]}
+        optional: true
+        # intent: Optional cross-training, the maintainer's call:
+        # a ride adds aerobic time without the impact that limits how much a
+        # runner can run. It sits outside the load model (session_generator
+        # R-SESS-040), so the running plan is the same with or without it, and
+        # it goes only on a day the menu leaves free of running.
+        why: >-
+          A very easy spin the day after your long run. It moves stiff legs
+          without any of the impact of running, so the week starts fresher, not
+          more tired.
+      - &maint_trail_sat_ride
+        name: maint_trail_sat_ride
+        day: sat
+        activity: bike_endurance
+        minutes: {basic: [45, 60]}
+        optional: true
+        why: >-
+          More aerobic time without more pounding: on the bike your heart and
+          lungs work as they would on an easy run while your legs skip the impact.
+          Keep it easy; the long run is tomorrow and matters more.
+
+  maintain/recovery:
+    slots:
+      - name: maint_trail_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [22, 30], moderate: [21, 30], competitive: [25, 35]}
+        why: >-
+          Recovery weeks pull the volume right back so accumulated fatigue can
+          clear. Keep this short and easy — you're absorbing the last few weeks,
+          not adding to them.
+      - name: maint_trail_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {moderate: [17, 26], competitive: [20, 30]}
+        why: >-
+          A second short run keeps the habit and the movement pattern alive
+          through the down week. Easy, short, and you should finish feeling
+          better than when you started.
+      - name: maint_trail_rec_wed_test
+        day: wed
+        activity: run_threshold_test
+        minutes: {moderate: [37, 37], competitive: [44, 44]}
+        why: >-
+          Every recovery week carries a test, so this block keeps answering the
+          only question that matters when you're maintaining: am I holding on to
+          it? Rested legs give an honest number — a half-hearted test tells you
+          nothing.
+      # intent: R-SESS-035. BASIC's easy Tuesday, Friday strides and a short
+      # long run land this week near its 0.50 recovery fraction; its long run
+      # starts at 37 min, the least the long trail run card renders exactly.
+      # MODERATE/COMPETITIVE hold a
+      # higher fraction (0.60/0.65 — a lighter deload for a bigger week), which
+      # the two short runs alone can't reach, so a cut-back trail long run
+      # carries the rest.
+      # The long run stays at most three quarters of the load week's (R-SESS-034's
+      # fraction), so COMPETITIVE lands near 0.56 of its load week, not 0.65:
+      # a down week's long run as long as the load week's is not a cut-back.
+      - name: maint_trail_rec_sun_long
+        day: sun
+        activity: run_trail_long
+        minutes: {basic: [37, 45], moderate: [37, 50], competitive: [40, 80]}
+        why: >-
+          A cut-back trail long run keeps your longest session from vanishing
+          in a down week. It's well short of what you ran last week, but it's
+          still out there — the down week is about easing off, not stopping.
+      - name: maint_trail_basic_rec_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {basic: [27, 30]}
+        # intent: BASIC's down week keeps its rhythm minus the Wednesday run:
+        # an easy Tuesday, Friday strides and a short trail long run. The
+        # threshold test moved to the climb day (see the load week).
+        why: >-
+          An easy run with a few relaxed pickups. In a lighter week this is all
+          the speed you need: enough to keep your legs quick, nothing to recover
+          from.
+      - *maint_trail_mon_spin
+      - &maint_trail_rec_sat_spin
+        name: maint_trail_rec_sat_spin
+        day: sat
+        activity: bike_recovery
+        minutes: {basic: [30, 40], moderate: [35, 45], competitive: [40, 50]}
+        optional: true
+        why: >-
+          A very easy spin in a lighter week. It keeps you moving without giving
+          your legs anything to recover from; if you would rather rest, rest.

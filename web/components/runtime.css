@@ -1,0 +1,468 @@
+/* Endury — the browser runtime's own UI: the settings panel/form
+   (settings_panel.js), the boot screen (boot_screen.js), the front door
+   (front_door.js) and the runtime banner (runtime_banner.js). */
+
+/* Page frame: the banner sits in flow above the app, so the app shrinks
+   by its height instead of hiding under it. */
+
+body { display: flex; flex-direction: column; }
+body > .cb-app { flex: 1 1 auto; min-height: 0; height: auto; }
+
+/* Runtime banner */
+
+.cb-banner {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-3);
+  padding: calc(var(--cb-sp-2) + env(safe-area-inset-top, 0px)) var(--cb-sp-4) var(--cb-sp-2);
+  background: var(--cb-surface-3);
+  border-bottom: 2px solid var(--cb-border-strong);
+  color: var(--cb-text);
+  font-size: var(--cb-fs-body);
+}
+
+.cb-banner[hidden] { display: none; }
+.cb-banner--warn { border-bottom-color: var(--cb-warn); }
+/* A conflict is a genuine problem: another device's save beat this one. */
+.cb-banner--alert { border-bottom-color: var(--cb-alert); }
+.cb-banner__text { flex: 1; min-width: 0; line-height: 1.4; }
+
+.cb-banner__btn {
+  flex: none;
+  font: inherit;
+  font-size: var(--cb-fs-meta);
+  font-weight: 600;
+  padding: var(--cb-sp-1) var(--cb-sp-2-5);
+  border-radius: var(--cb-r-pill);
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-2);
+  color: var(--cb-accent);
+  cursor: pointer;
+}
+
+/* Boot screen — above the page, below modals (the start-fresh confirm) */
+
+.cb-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  overflow-y: auto;
+  padding: calc(var(--cb-sp-4) + env(safe-area-inset-top, 0px)) var(--cb-sp-4)
+    calc(var(--cb-sp-4) + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(160deg, var(--cb-bg-grad-top), var(--cb-bg-grad-bot));
+}
+
+/* margin:auto, not align-items:center — a tall settings form then scrolls
+   instead of losing its top edge. */
+.cb-boot__card {
+  margin: auto;
+  width: 420px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-sp-4);
+}
+
+.cb-boot__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-2-5);
+  font-size: var(--cb-fs-title);
+  font-weight: 600;
+}
+
+/* The README, at the brand row's far end. */
+.cb-boot__how {
+  margin-left: auto;
+  font-size: var(--cb-fs-body);
+  font-weight: 400;
+  color: var(--cb-accent);
+  text-underline-offset: 3px;
+}
+
+.cb-boot__logo {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: var(--cb-r-tile);
+  border: 1px solid var(--cb-accent);
+  color: var(--cb-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cb-boot__body { display: flex; flex-direction: column; gap: var(--cb-sp-3); }
+
+.cb-boot__status {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-2-5);
+  color: var(--cb-text-muted);
+}
+
+.cb-boot__spinner {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--cb-border-strong);
+  border-top-color: var(--cb-accent);
+  animation: cb-boot-spin .9s linear infinite;
+}
+
+@keyframes cb-boot-spin { to { transform: rotate(360deg); } }
+
+.cb-boot__note { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); line-height: 1.5; }
+.cb-boot__intro { line-height: 1.5; }
+.cb-boot__error { line-height: 1.5; overflow-wrap: anywhere; }
+.cb-boot__details { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); }
+.cb-boot__details summary { cursor: pointer; }
+.cb-boot__report {
+  margin: var(--cb-sp-2) 0;
+  max-height: 40vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+.cb-boot__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--cb-sp-2);
+}
+
+/* Front door (front_door.js): landing, connect flow, ready screen */
+
+.cb-door { display: flex; flex-direction: column; gap: var(--cb-sp-3); }
+
+.cb-door__title {
+  margin: 0;
+  font-size: var(--cb-fs-hero);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  color: var(--cb-text-strong);
+}
+
+.cb-door__lede { margin: 0; line-height: 1.5; color: var(--cb-text-muted); }
+.cb-door__lede a { color: var(--cb-accent); }
+
+.cb-door__doors { display: flex; flex-direction: column; gap: var(--cb-sp-2-5); margin-top: var(--cb-sp-1); }
+.cb-door__door { display: flex; flex-direction: column; gap: var(--cb-sp-1); }
+
+.cb-door__btn { width: 100%; padding: var(--cb-sp-3) var(--cb-sp-3-5); }
+
+.cb-door__note { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); line-height: 1.4; text-align: center; }
+
+.cb-door__facts {
+  margin: var(--cb-sp-1) 0 0;
+  padding: var(--cb-sp-3) 0 0;
+  border-top: 1px solid var(--cb-border-faint);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-sp-1);
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+  line-height: 1.4;
+}
+
+.cb-door__facts li { display: flex; gap: var(--cb-sp-2); }
+.cb-door__facts li::before {
+  content: "";
+  flex: none;
+  width: 5px;
+  height: 5px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--cb-good);
+}
+
+.cb-door__progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--cb-fs-label);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--cb-text-muted);
+}
+
+.cb-door__bars { display: flex; gap: var(--cb-sp-1); }
+.cb-door__bars i {
+  width: 22px;
+  height: 4px;
+  border-radius: var(--cb-r-bar);
+  background: var(--cb-border-strong);
+}
+.cb-door__bars i.is-done { background: var(--cb-accent); }
+
+.cb-door__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: cb-door-step;
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-sp-3);
+}
+
+.cb-door__steps li {
+  counter-increment: cb-door-step;
+  position: relative;
+  padding-left: 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--cb-sp-2);
+  line-height: 1.5;
+}
+
+.cb-door__steps li::before {
+  content: counter(cb-door-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--cb-accent);
+  color: var(--cb-accent);
+  font-size: var(--cb-fs-meta);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cb-door__ext { text-decoration: none; display: inline-block; }
+
+.cb-door__row { display: flex; align-items: center; justify-content: space-between; gap: var(--cb-sp-2); }
+.cb-door__row--center { justify-content: center; }
+
+.cb-door__link,
+.cb-door__quiet {
+  font: inherit;
+  font-size: var(--cb-fs-body);
+  background: none;
+  border: 0;
+  padding: var(--cb-sp-1) 0;
+  cursor: pointer;
+}
+
+.cb-door__link { color: var(--cb-accent); text-decoration: underline; text-underline-offset: 3px; }
+.cb-door__quiet { color: var(--cb-text-muted); }
+
+.cb-door__form { display: flex; flex-direction: column; gap: var(--cb-sp-3); margin: 0; }
+.cb-door__form .cb-settings__status:empty { display: none; }
+
+.cb-door__box {
+  padding: var(--cb-sp-3);
+  border-radius: var(--cb-r-card);
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-2);
+  font-size: var(--cb-fs-meta);
+  line-height: 1.5;
+  color: var(--cb-text-muted);
+}
+
+.cb-door__box-title { font-size: var(--cb-fs-body); font-weight: 600; color: var(--cb-text); margin-bottom: var(--cb-sp-1); }
+
+.cb-door__checks { display: flex; flex-direction: column; gap: var(--cb-sp-3-5); }
+
+.cb-check { display: flex; gap: var(--cb-sp-2-5); }
+
+.cb-check__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cb-accent-ink);
+  background: var(--cb-good);
+}
+
+.cb-check[data-state="warn"] .cb-check__icon { background: var(--cb-warn); }
+
+.cb-check__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--cb-sp-0-5); }
+.cb-check__title { font-size: var(--cb-fs-body); font-weight: 600; color: var(--cb-text); line-height: 1.4; }
+.cb-check__detail { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); line-height: 1.5; }
+.cb-check__actions { display: flex; flex-wrap: wrap; gap: var(--cb-sp-2); margin-top: var(--cb-sp-1-5); }
+.cb-check__actions .cb-confirm__btn { font-size: var(--cb-fs-meta); padding: var(--cb-sp-1-5) var(--cb-sp-2-5); }
+
+/* Settings form (panel and the front door's key step) */
+
+.cb-settings { display: flex; flex-direction: column; gap: var(--cb-sp-3); }
+
+.cb-settings__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cb-settings__title { font-size: var(--cb-fs-title); font-weight: 600; }
+
+.cb-settings__close {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--cb-r-tile);
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-3);
+  color: var(--cb-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cb-settings__hint {
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+  line-height: 1.5;
+}
+
+.cb-settings__hint a { color: var(--cb-accent); }
+
+.cb-settings__group { display: flex; flex-direction: column; gap: var(--cb-sp-2-5); }
+
+.cb-settings__legend {
+  font-size: var(--cb-fs-label);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--cb-text-muted);
+}
+
+.cb-settings__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cb-sp-1);
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+}
+
+.cb-settings__input {
+  width: 100%;
+  font: inherit;
+  font-size: var(--cb-fs-input);
+  color: var(--cb-text);
+  background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-tile);
+  padding: var(--cb-sp-2) var(--cb-sp-2-5);
+  outline: none;
+}
+
+.cb-settings__input:focus-visible { border-color: var(--cb-accent); }
+
+.cb-settings__connect { align-self: flex-start; }
+
+.cb-settings__advanced > summary {
+  cursor: pointer;
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+  margin-bottom: var(--cb-sp-2-5);
+}
+
+.cb-settings__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-sp-2);
+}
+
+.cb-settings__status { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); }
+
+/* Theme: Dark · Light · Auto, applied on tap. */
+.cb-settings__theme {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cb-sp-2);
+}
+
+.cb-settings__seg {
+  display: flex;
+  gap: var(--cb-sp-0-5);
+  background: var(--cb-bg);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-tile);
+  padding: var(--cb-sp-0-5);
+}
+
+.cb-settings__seg button {
+  padding: var(--cb-sp-1-5) var(--cb-sp-3);
+  border-radius: var(--cb-r-chip);
+  border: none;
+  background: transparent;
+  color: var(--cb-text-muted);
+  font: inherit;
+  font-size: var(--cb-fs-body);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cb-settings__seg button[aria-pressed="true"] { background: var(--cb-accent); color: var(--cb-accent-ink); }
+
+/* The chat consent: a plain checkbox beside its full text. */
+.cb-settings__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cb-sp-2);
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.cb-settings__consent input { flex: none; margin: 3px 0 0; accent-color: var(--cb-accent); }
+
+/* Privacy · Legal notice · Source, and "Forget my keys" at the far end. */
+.cb-settings__links,
+.cb-door__legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cb-sp-1) var(--cb-sp-2);
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+}
+
+.cb-door__legal { justify-content: center; }
+.cb-settings__links a,
+.cb-door__legal a { color: var(--cb-text-muted); }
+.cb-settings__links .cb-door__link { margin-left: auto; }
+
+/* Header entry on mobile: a labelled button in the Planning Inputs drawer's
+   head (the app bar row itself has no slack). */
+.cb-settings-entry {
+  margin: 0 var(--cb-sp-2) 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--cb-sp-1);
+  font: inherit;
+  font-size: var(--cb-fs-meta);
+  font-weight: 600;
+  color: var(--cb-accent);
+  background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-pill);
+  padding: var(--cb-sp-1) var(--cb-sp-2-5);
+  cursor: pointer;
+}
+
+/* Landing: the privacy fold-out under the facts */
+.cb-door__privacy > summary {
+  cursor: pointer;
+  font-size: var(--cb-fs-meta);
+  color: var(--cb-text-muted);
+}
+.cb-door__privacy[open] > summary { margin-bottom: var(--cb-sp-2); }

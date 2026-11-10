@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bench Plan View</title>
+<style>
+:root {
+  --bg: #f7f6f3; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6a66; --line: #e4e2dc;
+  --swim: #2f7fc1; --bike: #d9822b; --run: #3a9a5b; --other: #8a8a8a;
+  --z1: #c9d6df; --z2: #7fb3d5; --z3: #f2c14e; --z4: #ef8a3c; --z5: #d64545;
+  --rec: rgba(47,127,193,.07); --taper: rgba(214,69,69,.06); --race: rgba(214,69,69,.14);
+  --warn: #b5462f;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615; --panel: #1f1f1d; --ink: #ecebe6; --muted: #9b9a94; --line: #34332f;
+    --z1: #4a5963; --rec: rgba(127,179,213,.10); --taper: rgba(214,69,69,.10); --race: rgba(214,69,69,.2);
+    --warn: #e57c62;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 1400px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 22px; margin: 0 0 4px; }
+h2 { font-size: 15px; margin: 28px 0 10px; }
+.sub { color: var(--muted); margin: 0 0 16px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.tabs button { border: 1px solid var(--line); background: var(--panel); color: var(--ink); padding: 6px 10px; border-radius: 8px; cursor: pointer; font: inherit; font-size: 13px; }
+.tabs button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tabs button small { opacity: .7; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.tile b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; }
+.tile span { color: var(--muted); font-size: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); }
+.chip i { font-style: normal; color: var(--warn); font-variant-numeric: tabular-nums; }
+.error { color: var(--warn); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; }
+svg text { fill: var(--muted); font-size: 11px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; background: var(--c); }
+table { border-collapse: collapse; width: 100%; min-width: 1050px; }
+th, td { border-bottom: 1px solid var(--line); vertical-align: top; padding: 6px; }
+th { font-size: 12px; color: var(--muted); text-align: left; font-weight: 600; }
+td.wk { width: 110px; font-size: 12px; white-space: nowrap; }
+td.wk b { font-size: 13px; }
+td.wk small { display: block; color: var(--muted); }
+tr.recovery td { background: var(--rec); }
+tr.taper td { background: var(--taper); }
+tr.race td { background: var(--race); }
+.s { border-left: 3px solid var(--c); background: var(--bg); border-radius: 5px; padding: 4px 6px 5px; margin-bottom: 4px; cursor: pointer; font-size: 12px; }
+.s:hover { outline: 1px solid var(--c); }
+.s .t { display: flex; justify-content: space-between; gap: 6px; }
+.s .t b { color: var(--c); text-transform: capitalize; }
+.s .n { color: var(--muted); font-size: 11px; }
+.zb { display: flex; height: 5px; border-radius: 2px; overflow: hidden; margin-top: 4px; }
+.zb div { height: 100%; }
+.s.open .det { display: block; }
+.det { display: none; margin-top: 5px; font-size: 11px; }
+.det code { font-family: ui-monospace, Menlo, monospace; font-size: 11px; }
+.foot { color: var(--muted); font-size: 12px; margin-top: 20px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Bench plan view</h1>
+  <p class="sub">Every plan parsed and graded as the benchmark grades it. Click a session to see its steps.</p>
+  <div class="tabs" id="scenarios"></div>
+  <div class="tabs" id="contestants"></div>
+  <div id="body"></div>
+  <p class="foot">Off-band values are distances from the rulebook band (0 = inside). Swim steps are shown in minutes, as the benchmark reads them.</p>
+</main>
+<script>
+const DATA = /*DATA*/null;
+const DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+const SPORTC = { swim: "var(--swim)", bike: "var(--bike)", run: "var(--run)" };
+const ZC = z => `var(--z${Math.min(Math.max(z, 1), 5)})`;
+const fmtH = m => (m / 60).toFixed(1);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const weekMinutes = w => w.sessions.reduce((a, s) => a + s.minutes, 0);
+const scenarios = [...new Set(DATA.map(d => d.scenario))];
+let current = { scenario: scenarios[0], name: DATA[0].name };
+
+function zoneBar(zones) {
+  const tot = zones.reduce((a, z) => a + z[1], 0) || 1;
+  return `<div class="zb">${zones.map(z => `<div style="width:${z[1] / tot * 100}%;background:${ZC(z[0])}"></div>`).join("")}</div>`;
+}
+
+function head(d) {
+  const a = d.about, s = d.summary, f = d.facts;
+  const hours = Object.entries(a.hours).map(([k, v]) => `${k} ${v} h`).join(", ");
+  const longest = Object.entries(a.longest_min).map(([k, v]) => `${k} ${v}′`).join(", ");
+  let h = `<p class="sub"><b>${a.weeks} weeks</b>, athlete “${esc(a.label)}” training ${hours} a week (longest: ${longest})${d.cap ? `, weekly cap ${d.cap} h` : ""}.</p>`;
+  if (d.error) return h + `<div class="error">${esc(d.name)}: ${esc(d.error)}</div>`;
+  const peak = Math.max(...d.weeks.map(weekMinutes));
+  const off = Object.entries(d.off).sort((x, y) => y[1] - x[1])
+    .map(([k, v]) => `<span class="chip">${esc(k)} <i>${v.toFixed(2)}</i></span>`).join("");
+  const cost = d.cost == null ? "–" : `$${d.cost.toFixed(2)}`;
+  return h + `
+    <div class="tiles">
+      <div class="tile"><b>${s.rules_met} / ${s.rules_total}</b><span>rules met</span></div>
+      <div class="tile"><b>${s.strong_met} / ${s.strong_total}</b><span>strong-evidence rules met</span></div>
+      <div class="tile"><b>${Math.round(f.total_hours)} h</b><span>total training</span></div>
+      <div class="tile"><b>${fmtH(peak)} h</b><span>biggest week</span></div>
+      <div class="tile"><b>${f.recovery_weeks} · ${f.taper_weeks}</b><span>recovery · taper weeks</span></div>
+      <div class="tile"><b>${Math.round(f.race_day_ctl)}</b><span>race-day CTL (form ratio ${f.race_day_form_ratio.toFixed(2)})</span></div>
+      <div class="tile"><b>${Math.round(f.min_tsb)}</b><span>lowest TSB</span></div>
+      <div class="tile"><b>${cost}</b><span>cost of the plan</span></div>
+    </div>
+    <h2>Rules off band</h2><div class="chips">${off || '<span class="chip">none</span>'}</div>`;
+}
+
+function chart(d) {
+  const W = Math.max(760, d.weeks.length * 34), H = 260, L = 34, B = 34, T = 10;
+  const sports = [...new Set(d.weeks.flatMap(w => w.sessions.map(s => s.sport)))]
+    .sort((a, b) => ["swim", "bike", "run"].indexOf(a) - ["swim", "bike", "run"].indexOf(b));
+  const rows = d.weeks.map(w => {
+    const r = { longest: {} };
+    for (const s of w.sessions) {
+      r[s.sport] = (r[s.sport] || 0) + s.minutes;
+      r.longest[s.sport] = Math.max(r.longest[s.sport] || 0, s.minutes);
+    }
+    return r;
+  });
+  const max = Math.max(2, Math.ceil(Math.max(...d.weeks.map(weekMinutes)) / 60 / 2) * 2);
+  const bw = (W - L - 10) / rows.length, y = h => T + (H - T - B) * (1 - h / max);
+  let g = "";
+  for (let h = 0; h <= max; h += 2) g += `<line x1="${L}" x2="${W}" y1="${y(h)}" y2="${y(h)}" stroke="var(--line)"/><text x="${L - 6}" y="${y(h) + 4}" text-anchor="end">${h}</text>`;
+  rows.forEach((r, i) => {
+    const w = d.weeks[i], x = L + i * bw + 3;
+    let base = 0;
+    for (const sp of sports) {
+      const h = (r[sp] || 0) / 60;
+      g += `<rect x="${x}" width="${bw - 6}" y="${y(base + h)}" height="${y(base) - y(base + h)}" fill="${SPORTC[sp] || "var(--other)"}" opacity="${w.mode === "recovery" ? 0.5 : 0.9}"><title>Week ${w.week}: ${sp} ${h.toFixed(1)} h</title></rect>`;
+      base += h;
+    }
+    g += `<text x="${x + (bw - 6) / 2}" y="${H - B + 14}" text-anchor="middle">${w.week}</text>`;
+    g += `<text x="${x + (bw - 6) / 2}" y="${H - B + 27}" text-anchor="middle" style="font-size:9px">${esc(w.mode === "load" ? w.phase.slice(0, 4) : w.mode.slice(0, 3))}</text>`;
+  });
+  const line = (sp, dash) => `<polyline fill="none" stroke="${sp === "bike" ? "var(--ink)" : SPORTC[sp] || "var(--other)"}" stroke-width="2" ${dash ? 'stroke-dasharray="4 3"' : ""} points="${rows.map((r, i) => `${L + i * bw + bw / 2},${y((r.longest[sp] || 0) / 60)}`).join(" ")}"/>`;
+  const long = sports.filter(sp => sp !== "swim");
+  g += long.map((sp, i) => line(sp, i > 0)).join("");
+  const legend = sports.map(sp => `<span style="--c:${SPORTC[sp] || "var(--other)"}">${esc(sp)}</span>`).join("")
+    + long.map((sp, i) => `<span style="--c:${sp === "bike" ? "var(--ink)" : SPORTC[sp] || "var(--other)"}">Longest ${esc(sp)} (h)${i > 0 ? ", dashed" : ""}</span>`).join("");
+  return `<h2>Weekly hours by sport</h2><div class="card"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${W * 0.8}px">${g}</svg><div class="legend">${legend}</div></div>`;
+}
+
+function fitness(d) {
+  const ref = d.name === "Endury's planner" ? null
+    : DATA.find(e => e.scenario === d.scenario && e.name === "Endury's planner" && !e.error);
+  const n = d.ctl.length, W = Math.max(760, d.weeks.length * 34), H = 240, L = 34, B = 22, T = 10;
+  const tsb = d.ctl.map((c, i) => c - d.atl[i]);
+  const all = [...d.ctl, ...d.atl, ...tsb, ...(ref ? ref.ctl : [])];
+  const lo = Math.floor(Math.min(0, ...all) / 20) * 20, hi = Math.ceil(Math.max(...all) / 20) * 20;
+  const x = i => L + (W - L - 10) * i / n, y = v => T + (H - T - B) * (hi - v) / (hi - lo);
+  let g = "";
+  d.weeks.forEach((w, i) => {
+    if (w.mode !== "load") g += `<rect x="${x(i * 7)}" width="${x(7) - x(0)}" y="${T}" height="${H - T - B}" fill="var(--${w.mode === "recovery" ? "rec" : w.mode === "race" ? "race" : "taper"})"/>`;
+    g += `<text x="${x(i * 7 + 3.5)}" y="${H - 6}" text-anchor="middle">${w.week}</text>`;
+  });
+  for (let v = lo; v <= hi; v += 20) g += `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"${v === 0 ? ' stroke-width="1.5"' : ""}/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  const line = (vals, color, extra = "") => `<polyline fill="none" stroke="${color}" stroke-width="2" ${extra} points="${vals.map((v, i) => `${x(i)},${y(v)}`).join(" ")}"/>`;
+  if (ref) g += line(ref.ctl, "var(--muted)", 'stroke-dasharray="4 3" stroke-width="1.5"');
+  g += line(tsb, "var(--z3)") + line(d.atl, "var(--z5)", 'opacity=".7"') + line(d.ctl, "var(--swim)");
+  return `<h2>Fitness, fatigue and form (daily, bench load model)</h2><div class="card"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:${W * 0.8}px">${g}</svg>
+    <div class="legend"><span style="--c:var(--swim)">CTL (fitness)</span><span style="--c:var(--z5)">ATL (fatigue)</span><span style="--c:var(--z3)">TSB (form)</span>${ref ? '<span style="--c:var(--muted)">Endury CTL, dashed</span>' : ""}</div></div>`;
+}
+
+function grid(d) {
+  const days = d.weeks.some(w => w.sessions.some(s => s.day === "any")) ? [...DAYS, "any"] : DAYS;
+  let h = `<tr><th>Week</th>${days.map(x => `<th>${x[0].toUpperCase() + x.slice(1)}</th>`).join("")}</tr>`;
+  for (const w of d.weeks) {
+    h += `<tr class="${w.mode === "load" ? "" : esc(w.mode)}"><td class="wk"><b>W${w.week}</b> · ${fmtH(weekMinutes(w))} h<small>${esc(w.phase)} · ${esc(w.mode)}</small><small>${w.sessions.length} sessions</small></td>`;
+    for (const day of days) {
+      h += "<td>" + w.sessions.filter(s => s.day === day).map(s => `
+        <div class="s" style="--c:${SPORTC[s.sport] || "var(--other)"}" onclick="this.classList.toggle('open')">
+          <div class="t"><b>${esc(s.sport)}</b><span>${s.minutes}′${s.metres ? ` · ${(s.metres / 1000).toFixed(1)} km` : ""}</span></div>
+          <div class="n">${esc(s.type.replace("_", " "))}${s.notes ? " · " + esc(s.notes).replace(/&lt;(\/?b)&gt;/g, "<$1>") : ""}</div>
+          ${zoneBar(s.zones)}
+          <div class="det"><code>${esc(s.steps)}</code></div></div>`).join("") + "</td>";
+    }
+    h += "</tr>";
+  }
+  return `<h2>Every week, every session</h2>
+    <div class="legend" style="margin:-4px 0 8px"><span style="--c:var(--z1)">Z1</span><span style="--c:var(--z2)">Z2</span><span style="--c:var(--z3)">Z3</span><span style="--c:var(--z4)">Z4</span><span style="--c:var(--z5)">Z5+</span><span style="--c:var(--rec)">Recovery week</span><span style="--c:var(--taper)">Taper</span><span style="--c:var(--race)">Race week</span></div>
+    <div class="card"><table>${h}</table></div>`;
+}
+
+function show() {
+  const here = DATA.filter(d => d.scenario === current.scenario);
+  const d = here.find(e => e.name === current.name) || here[0];
+  current.name = d.name;
+  document.getElementById("scenarios").innerHTML = scenarios.map(s =>
+    `<button class="${s === current.scenario ? "on" : ""}" onclick="current.scenario='${s}';show()">${esc(s.replaceAll("_", " "))}</button>`).join("");
+  document.getElementById("contestants").innerHTML = here.map((e, i) =>
+    `<button class="${e === d ? "on" : ""}" onclick="current.name=DATA.filter(x=>x.scenario===current.scenario)[${i}].name;show()">${esc(e.name)} <small>${e.error ? "no plan" : `${e.summary.rules_met}/${e.summary.rules_total}`}</small></button>`).join("");
+  document.getElementById("body").innerHTML = head(d) + (d.error ? "" : chart(d) + fitness(d) + grid(d));
+}
+show();
+</script>
+</body>
+</html>

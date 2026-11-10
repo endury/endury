@@ -1,0 +1,76 @@
+name: Plan quality
+description: The plan the planner built for a race looks wrong.
+title: "[Plan quality] "
+labels: ["planner"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The planner is deterministic: the same inputs always build the same
+        plan. Giving the inputs below lets the maintainer reproduce your
+        exact plan without needing any of your intervals.icu data.
+  - type: dropdown
+    id: goal-type
+    attributes:
+      label: Goal type
+      options:
+        - running_5k
+        - running_10k
+        - running_half_marathon
+        - running_marathon
+        - trail_20k
+        - trail_50k
+        - trail_100k
+        - sprint_triathlon
+        - olympic_triathlon
+        - half_ironman
+        - ironman
+        - running_maintenance
+        - trail_maintenance
+        - triathlon_maintenance
+    validations:
+      required: true
+  - type: dropdown
+    id: ambition
+    attributes:
+      label: Ambition level
+      options:
+        - BASIC
+        - MODERATE
+        - COMPETITIVE
+    validations:
+      required: true
+  - type: input
+    id: race-date
+    attributes:
+      label: Race date, or block length for a maintenance goal
+      placeholder: "YYYY-MM-DD, or e.g. 12 weeks"
+    validations:
+      required: true
+  - type: input
+    id: training-start
+    attributes:
+      label: Training start date
+      placeholder: "YYYY-MM-DD (a Monday)"
+    validations:
+      required: true
+  - type: input
+    id: weekly-hours-cap
+    attributes:
+      label: Weekly hours cap
+      description: Leave blank if you didn't set one.
+    validations:
+      required: false
+  - type: input
+    id: week-session
+    attributes:
+      label: Which week and session looks wrong?
+      placeholder: e.g. Week 6, Saturday long run
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What would a coach expect instead, and why?
+    validations:
+      required: true

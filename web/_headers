@@ -1,0 +1,11 @@
+# Response headers for Cloudflare (Workers static assets); other hosts ignore
+# this file. The CSP allows only this origin plus the two services the
+# athlete's keys go to; an Advanced base-URL override (the e2e fakes) is not
+# on the list, so it works only on a host without these headers.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://intervals.icu https://openrouter.ai; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

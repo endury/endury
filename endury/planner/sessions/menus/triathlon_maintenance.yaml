@@ -1,0 +1,372 @@
+# triathlon_maintenance session menus. Format and validation ladder: AUTHORING.md.
+#
+# Every sport keeps a weekly touch; each sport keeps one quality session
+# (retain-intensity / cut-volume maintenance: Mujika & Padilla 2000,
+# Rønnestad et al. 2014) at roughly half the tier's race-prep peak volume.
+# Rotations supply week-over-week variety — technique swims alternate drill
+# and pull sets, the bike quality slot alternates sweet-spot and threshold,
+# the Saturday ride alternates steady endurance and a longer ride, and a
+# short Saturday brick keeps the bike-to-run transition rehearsed. Nothing
+# is progressive: the block holds the tier's maintenance volume instead of
+# ramping.
+#
+# Recovery weeks carry all three fitness retests, so every deload doubles
+# as a fitness checkpoint.
+#
+# MODERATE (reviewed with the maintainer) runs one session a
+# day at 8.5 h: Monday off, Tuesday bike quality, Wednesday the quality
+# swim, Thursday run quality, Friday an endurance swim, Saturday the long
+# ride and a short brick (the one day with two sessions), Sunday the long
+# run. Two sessions per sport and one quality session each, so no sport has
+# two hard days in a row (the maintainer: no double days but one;
+# the half-Ironman MODERATE week with four double days at 9 h before). The
+# long ride and long run open from the athlete's own longest and grow about
+# 10 % a week to their range, then hold, and the long ride carries sweet-spot
+# efforts in the second and third load weeks. The block runs three load weeks
+# and a recovery week from week 0 (3:1), so eight-member rotations make a
+# fixed eight-week cycle, and the three tests come in the first load week
+# after a recovery week every eight weeks (weeks 5 and 13): the FTP and run
+# tests in the bike and run quality sessions' places, the CSS test in
+# Friday's swim after an easy Wednesday swim. Never in week 1: a maintenance
+# block follows a season the athlete has trained and tested through, so it
+# opens on their current zones (as trail maintenance BASIC). The quality
+# sessions and the test week's swim are key, so a squeezed week shortens its
+# other sessions first. Recovery weeks are the half-Ironman MODERATE
+# recovery week without the tests and its Wednesday ride, with a shorter
+# long run. Every pool visit books at least 1500 m, a load week's 2200 m.
+# BASIC and COMPETITIVE keep the design above.
+#
+# Volume (8.5 h): 0.63 of the half-Ironman MODERATE peak week (13.5 h),
+# inside the reduced-training trials, where a third to two thirds less
+# volume held endurance for up to 15 weeks while intensity and frequency
+# held (Hickson's series, reviewed by Spiering et al. 2021), down to two
+# sessions a week. It is what one session
+# a day holds at maintenance-sized long sessions; 9 h would take a 2:45 ride
+# and a 1:40 long run. The long ride and long run hold the durability the
+# trials did not measure.
+goal: triathlon_maintenance
+offered: [moderate]
+progressions:
+  # intent: MODERATE's long run and long ride open from the athlete's own
+  # longest and grow about 10 % a week up to their ranges, then hold
+  # (the maintainer's call, as in trail maintenance
+  # BASIC).
+  - tri_maint_long_run
+  - tri_maint_long_ride
+menus:
+  maintain/load:
+    contract:
+      must_contain: [run_long]
+      min_sport_sessions: {running: 2, cycling: 2, swimming: 1}
+      bricks_per_week: [0, 1]
+    slots:
+      - name: maint_tri_mon_swim_tech
+        day: mon
+        activity: swim_drill
+        rotation: [swim_drill, swim_pull]
+        metres: {basic: [1500, 1600], competitive: [2100, 2400]}
+        # intent: Technique maintenance while fatigue cost is low.
+        why: >-
+          Swimming rewards technique more than fitness, and technique is the
+          first thing to slip when you swim less. Monday is the cheapest day in
+          the week for it — you arrive fresh, so you can actually concentrate on
+          how the water feels.
+      - name: maint_tri_tue_bike_quality
+        day: tue
+        activity: bike_sweet_spot
+        rotation: [bike_sweet_spot, bike_threshold, bike_over_under]
+        minutes: {basic: [40, 50], competitive: [65, 80]}
+        # intent: Weekly bike intensity touch retains FTP at reduced volume.
+        # intent: Over-unders (2026-09-30): 3 x (2 min just under, 1 min just over
+        # threshold) per rep, the classic way to train holding power while clearing
+        # the fatigue a surge leaves.
+        why: >-
+          One hard ride a week is what stops your cycling top end sliding while the
+          hours come down. The effort rotates between controlled sustained work, sharper
+          threshold sets and over-unders that swing either side of threshold, so the
+          stimulus stays honest without the week getting heavy.
+      - name: maint_tri_wed_run_easy
+        day: wed
+        activity: run_easy
+        rotation: [run_easy, run_strides]
+        minutes: {basic: [30, 40], competitive: [45, 60]}
+        why: >-
+          A mid-week run keeps your running frequency up, and frequency matters
+          more than any single session for holding run fitness. Some weeks it
+          carries a few strides so your legs don't forget what quick feels like.
+      - name: maint_tri_thu_swim_quality
+        day: thu
+        activity: swim_css
+        rotation: [swim_css, swim_threshold, swim_vo2max_short]
+        metres: {competitive: [2200, 2800]}
+        why: >-
+          A harder swim gives the week a fitness stimulus to go with the technique work.
+          Its shape changes week to week, short or long threshold repeats or fast 50s on
+          short rest, because swim speed is stubborn to build and quick to lose.
+      - name: maint_tri_fri_run_quality
+        day: fri
+        activity: run_tempo
+        rotation: [run_tempo, run_fartlek, run_progression]
+        minutes: {basic: [30, 40], competitive: [40, 50]}
+        # intent: Weekly run intensity touch retains threshold speed.
+        why: >-
+          Drop the intensity and running fitness drains away far faster than the drop in
+          mileage would suggest. One honest effort a week holds it, and its shape
+          changes week to week: a tempo block, a fartlek or a progression run.
+      - name: maint_tri_sat_bike_endurance
+        day: sat
+        activity: bike_endurance
+        rotation: [bike_endurance, bike_long]
+        minutes: {basic: [60, 90], competitive: [150, 195]}
+        why: >-
+          The weekend ride is where your aerobic durability lives — the ability
+          to sit on the bike for real time and still be able to run afterwards.
+          It alternates between steady and longer so you keep that ability
+          without the block turning into race prep.
+      - name: maint_tri_sat_brick_run
+        day: sat
+        activity: run_brick_short
+        minutes: {competitive: [20, 30]}
+        brick: true
+        # intent: Short brick keeps the bike-to-run transition rehearsed.
+        why: >-
+          Running off the bike is a skill of its own, and it goes rusty faster
+          than either sport does alone. A short run straight off the ride keeps
+          that transition rehearsed, so it isn't a shock the day you line up for
+          something again.
+      - name: maint_tri_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {basic: [50, 70], competitive: [75, 95]}
+        why: >-
+          A moderate long run holds the aerobic durability that took months to
+          build. It stays moderate on purpose — with no race on the calendar
+          this block keeps your endurance rather than chasing more of it.
+      # MODERATE's week (maintainer review; one session a
+      # day): Monday off, and Saturday's ride and brick the only
+      # day with two sessions. Each eight-member rotation is the block's
+      # eight-week cycle; the fourth and eighth members land on recovery
+      # weeks and fire only when the block's last week is turned into a load
+      # week, so they repeat a member for that case.
+      - name: maint_tri_mod_tue_bike_quality
+        day: tue
+        activity: bike_threshold
+        rotation: [bike_threshold, bike_sweet_spot, bike_over_under, bike_sweet_spot, bike_ftp_test, bike_threshold, bike_over_under, bike_sweet_spot]
+        minutes: {moderate: [75, 82]}
+        key: 0.2
+        # intent: Threshold, sweet spot and over-unders, and the FTP test in
+        # the fifth week (weeks 5 and 13). Key at 0.2, as each of the week's
+        # four key slots (bike, swim and run quality, Friday's swim for its
+        # test week), so the shares sum under 1 and a squeezed week shortens
+        # its other sessions instead of everything alike. The keyed slots are
+        # narrow: a maintenance session targets its authored maximum
+        # (R-SESS-035) and a key keeps its target in a squeezed week, so a
+        # wide range booked the 0.85-volume athlete's quality at its top and
+        # cut the long ride and long run under the ramp. 85 minutes is the
+        # threshold card's longest (3 x 20), less the rounding headroom.
+        why: >-
+          One hard ride a week is what stops your cycling top end sliding while the
+          hours come down. It rotates between threshold sets, longer sweet-spot
+          work and over-unders that swing either side of threshold. Every eighth
+          week it is the FTP test instead, on legs rested by the easier week
+          before, so every ride after it is pitched at your current power.
+      - name: maint_tri_mod_wed_swim_quality
+        day: wed
+        activity: swim_css
+        rotation: [swim_css, swim_threshold, swim_vo2max_short, swim_css, swim_endurance, swim_threshold, swim_vo2max_short, swim_css]
+        metres: {moderate: [2200, 2400]}
+        key: 0.2
+        # intent: CSS, threshold and short VO2 repeats; an easy endurance swim
+        # in the test week, so Friday's CSS test meets fresh arms (as the
+        # half-Ironman's test week). Between the bike and the run quality, so
+        # no sport has two hard days in a row.
+        why: >-
+          The week's harder swim, on a day of its own between the hard ride and
+          the hard run. Its shape changes week to week, short or long threshold
+          repeats or fast 50s on short rest, because swim speed is stubborn to
+          build and quick to lose. In a test week it is an easy swim, so you
+          arrive fresh for Friday's test.
+      - name: maint_tri_mod_thu_run_quality
+        day: thu
+        activity: run_tempo
+        rotation: [run_tempo, run_fartlek, run_progression, run_tempo, run_threshold_test, run_tempo, run_fartlek, run_progression]
+        minutes: {moderate: [50, 55]}
+        key: 0.2
+        # intent: Tempo, fartlek and progression, and the run threshold test
+        # in the fifth week (weeks 5 and 13). Three days before the long run.
+        # 57 is the fartlek card's longest.
+        why: >-
+          Drop the intensity and running fitness drains away far faster than the
+          drop in mileage would suggest. One honest effort a week holds it, and its
+          shape changes week to week: a tempo block, a fartlek or a progression
+          run. Every eighth week it is the threshold test instead, so your run
+          paces stay current.
+      - name: maint_tri_mod_fri_swim
+        day: fri
+        activity: swim_endurance
+        rotation: [swim_endurance, swim_endurance, swim_endurance, swim_endurance, swim_css_test, swim_endurance, swim_endurance, swim_endurance]
+        metres: {moderate: [2200, 2400]}
+        key: 0.2
+        # intent: The week's steady swim, and the CSS test in the fifth week
+        # (weeks 5 and 13). Key for that test: a keyed test gives way like any
+        # key session and books over the ceiling when nothing else can go
+        # (R-SESS-033), an unkeyed one drops first.
+        why: >-
+          Continuous aerobic swimming keeps race distance feeling ordinary and
+          your stroke long while you swim less. Every eighth week it is the swim
+          test instead, which re-anchors your threshold pace so the harder swims
+          stay pitched correctly.
+      - name: maint_tri_mod_sat_long_ride
+        day: sat
+        activity: bike_long
+        rotation: [bike_long, bike_long_sweet_spot, bike_long_sweet_spot, bike_long, bike_long, bike_long_sweet_spot, bike_long_sweet_spot, bike_long]
+        minutes: {moderate: [100, 150]}
+        progression: tri_maint_long_ride
+        # intent: Opens from the athlete's longest ride and grows about 10 % a
+        # week to 1:40-2:30, then holds. Sweet-spot efforts in the second and
+        # third load weeks of each three, plain in the first and in the test
+        # week. Against the half-Ironman MODERATE
+        # block this week cut hours by 34 % but middle-zone time by 71 %, the
+        # one thing it cut further than the trials did (Hickson 1982, 1985;
+        # McConell 1993). The hours stay; easy time would not restore it.
+        why: >-
+          The long ride is where your aerobic durability lives — the ability to
+          sit on the bike for real time and still run afterwards. It starts from
+          your own longest recent ride and settles around two and a half hours,
+          and in the second and third weeks of each build it carries steady
+          sweet-spot efforts, so your sustained power holds along with your
+          endurance without the block turning into race prep.
+      - name: maint_tri_mod_sat_brick
+        day: sat
+        activity: run_brick_short
+        minutes: {moderate: [15, 20]}
+        brick: true
+        why: >-
+          Running off the bike is a skill of its own, and it goes rusty faster
+          than either sport does alone. A short run straight off the ride keeps
+          that transition rehearsed, so it isn't a shock the day you line up for
+          something again.
+      - name: maint_tri_mod_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {moderate: [65, 90]}
+        progression: tri_maint_long_run
+        # intent: Opens from the athlete's longest run and grows about 10 % a
+        # week to 65-90 minutes, then holds.
+        why: >-
+          A moderate long run holds the aerobic durability that took months to
+          build. It starts from your own longest recent run and settles at about
+          an hour and a half — with no race on the calendar, this block keeps your
+          endurance rather than chasing more of it.
+
+  maintain/recovery:
+    slots:
+      - name: maint_tri_rec_sat_run
+        day: sat
+        activity: run_easy
+        minutes: {basic: [13, 20], competitive: [20, 30]}
+        why: >-
+          Short and easy while the week's load comes down. Recovery weeks are
+          where the work of the last few weeks actually lands, so resist the
+          urge to make this run count for anything.
+      - name: maint_tri_rec_wed_run_test
+        day: wed
+        activity: run_threshold_test
+        minutes: {basic: [29, 29], competitive: [44, 44]}
+        why: >-
+          A run test in the down week turns every recovery block into a
+          checkpoint: rested legs, an honest number, and a clear answer on
+          whether your run fitness is holding.
+      # intent: R-SESS-035. BASIC's bike/swim tests are cut below (no swim
+      # or bike quality session backs them at BASIC in maintain/load either),
+      # so this ride is BASIC's only bike touch that week and carries more of
+      # the week's recovery-fraction budget; COMPETITIVE holds a 0.65
+      # (lighter-deload) fraction the fixed tests alone can't reach, so it
+      # widens too. MODERATE has its own recovery week below (2026-10-12).
+      - name: maint_tri_rec_sun_bike
+        day: sun
+        activity: bike_endurance
+        minutes: {basic: [45, 60], competitive: [45, 95]}
+        why: >-
+          An easy spin keeps the legs moving without adding fatigue. Ride it
+          comfortably — the point of this week is to arrive at the next one
+          fresh.
+      # intent: R-SESS-035. Cut for BASIC: no bike-quality session backs it
+      # at BASIC in maintain/load, so a retest on tired legs isn't buying
+      # much, and BASIC's small recovery budget goes further on the easy
+      # ride above instead.
+      - name: maint_tri_rec_tue_bike_test
+        day: tue
+        activity: bike_ftp_test
+        minutes: {competitive: [42, 42]}
+        why: >-
+          This test tells you whether your cycling fitness is holding, and it
+          sets the numbers every other bike session is prescribed from. It sits
+          in the recovery week because a test on tired legs measures your
+          fatigue, not your fitness.
+      # intent: R-SESS-035, same reasoning as the bike ride above.
+      - name: maint_tri_rec_mon_swim
+        day: mon
+        activity: swim_recovery
+        metres: {basic: [900, 1100], competitive: [1100, 1850]}
+        why: >-
+          An easy swim in the down week: low effort, low fatigue, and a chance
+          to feel the water properly without chasing a time.
+      # intent: R-SESS-035, same reasoning as the bike test above: no swim
+      # quality session backs this at BASIC in maintain/load.
+      - name: maint_tri_rec_fri_swim_test
+        day: fri
+        activity: swim_css_test
+        metres: {competitive: [2350, 2350]}
+        why: >-
+          The swim test re-anchors your threshold pace so the harder swims stay
+          pitched correctly for the weeks ahead. A recovery week is the only
+          place it gives you a clean reading.
+      # MODERATE's recovery week (maintainer review; one session
+      # a day): the half-Ironman MODERATE recovery week
+      # without its tests, which this block takes in the load week after it,
+      # with a shorter long run and no double day.
+      - name: maint_tri_mod_rec_tue_bike
+        day: tue
+        activity: bike_tempo
+        minutes: {moderate: [48, 54]}
+        why: >-
+          A short ride with a steady tempo block keeps your bike legs sharp while
+          the week's load comes down. Hold it comfortably hard, not a fight.
+      - name: maint_tri_mod_rec_wed_swim
+        day: wed
+        activity: swim_recovery
+        metres: {moderate: [1500, 1800]}
+        why: >-
+          An easy swim in the down week: low effort, low fatigue, and a chance to
+          feel the water properly without chasing a time.
+      - name: maint_tri_mod_rec_thu_run
+        day: thu
+        activity: run_easy
+        minutes: {moderate: [30, 40]}
+        why: >-
+          Short and easy while the week's load comes down. Recovery weeks are where
+          the work of the last few weeks actually lands, so resist the urge to make
+          this run count for anything.
+      - name: maint_tri_mod_rec_fri_swim
+        day: fri
+        activity: swim_css
+        metres: {moderate: [1500, 1800]}
+        why: >-
+          A shorter swim at threshold pace keeps your feel for speed in the water.
+          The set is short; stop it fresh.
+      - name: maint_tri_mod_rec_sat_ride
+        day: sat
+        activity: bike_endurance
+        minutes: {moderate: [60, 90]}
+        why: >-
+          A steady ride, shorter than the weeks around it. It keeps the weekend
+          rhythm while the fatigue of the last three weeks drains away.
+      - name: maint_tri_mod_rec_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {moderate: [45, 60]}
+        eases: tri_maint_long_run
+        why: >-
+          Your long run, shorter and easy. It keeps the Sunday habit and the time
+          on your feet while the week recovers.

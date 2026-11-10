@@ -1,0 +1,2479 @@
+# ironman session menus. Format and validation ladder: AUTHORING.md.
+goal: ironman
+offered: [moderate]
+progressions:
+  # intent: Long open-water swim at IF 0.82; race-distance familiarisation.
+  - im_long_swim
+  # intent: Long-ride progression covering BASE (BIKE_LONG) and BUILD
+  # (BIKE_LONG_SWEET_SPOT). Ramp state carries across the activity-key swap at
+  # the phase boundary.
+  - im_long_bike
+  # intent: marathon-leg durability ramp; bike-fatigued legs on Sun. Shared
+  # across RUN_LONG and RUN_LONG_PROGRESSION variants.
+  - im_long_run
+  # intent: Weekday endurance ride; bike volume without weekend stacking.
+  - im_midweek_bike
+  # intent: Off-the-bike durability run in BUILD. Raises the run-off-bike
+  # stimulus from a token 20-25 min to a durability-relevant ~35 min (tri.md §4:
+  # BUILD brick 20-40 min). Phase-constant — the sub-75-min running progressive
+  # floor holds the nominal at the band top.
+  - im_build_brick_run
+menus:
+  base/load:
+    contract:
+      must_contain: [bike_long, run_long, swim_long]
+      must_not_contain: [run_10k_race_pace, run_5k_race_pace, run_hm_pace]
+      bricks_per_week: [0, 1]
+    slots:
+      - name: base_mon_swim_drill
+        day: mon
+        activity: swim_drill
+        metres: {competitive: [1500, 2250]}
+        why: >-
+          Swim speed comes from cutting drag, not from adding power, so a
+          cleaner body position buys you more than a bigger engine. Drills open
+          the week while you are fresh, and they stay in the plan all year
+          because stroke quality is the first thing that falls apart when you
+          get tired.
+      - name: basic_base_tue_bike_hills
+        day: tue
+        activity: bike_hill_climb
+        rotation: [bike_hill_climb, bike_tempo]
+        minutes: {basic: [55, 70]}
+        window: [0.0, 0.55]
+        group: im_basic_base_bike_quality
+        # intent: The basic week, the moderate shape (maintainer:
+        # "same treatment on every angle"): Monday off, one hard sport per
+        # day, a quality ride from the first base week. Base had held no
+        # quality at all for 15 weeks and BUILD then raised the load +50 % in
+        # one week. Two-way rotations only: BASIC cycles load-load-recovery,
+        # and a rotation counts the recovery weeks, so a third member would
+        # never show. Hill climbs only in early base, none toward the race.
+        why: >-
+          Your midweek quality ride, alternating week by week: steady climbs
+          just below threshold one week, a continuous tempo block the next.
+          Both build the muscular endurance a long bike leg leans on, without
+          the hard power that comes later.
+      - name: basic_base_tue_bike_tempo
+        day: tue
+        activity: bike_sweet_spot
+        rotation: [bike_sweet_spot, bike_tempo]
+        minutes: {basic: [55, 70]}
+        window: [0.55, 1.0]
+        group: im_basic_base_bike_quality
+        # intent: Late-BASE tail of the BASIC Tuesday ride: sweet spot joins,
+        # so BUILD's threshold and sweet-spot rides continue a habit.
+        why: >-
+          Late in base the Tuesday ride firms up, alternating sweet-spot blocks
+          just under threshold with a continuous tempo ride, so the build feels
+          like a continuation rather than a shock.
+      - name: mod_base_tue_bike_climb
+        day: tue
+        activity: bike_hill_climb
+        rotation: [bike_hill_climb, bike_tempo]
+        minutes: {moderate: [55, 65]}
+        window: [0.0, 0.75]
+        group: im_mod_base_bike_quality
+        # intent: Within-BASE Tue bike crossover: base cycling is
+        # cadence/neuromuscular-drill work (tlc §6, tri.md §3 Base row), so
+        # drills own the early window (frac 0-0.75) and hand off to a threshold
+        # variant in the back half — seeding the BUILD sub-threshold stimulus as
+        # a bridge, not front-loading it.
+        # intent: BASE colour (2026-09-30): cadence work alternates with hill climbs,
+        # strength endurance just below threshold. They are tempo family, so the
+        # long-course base still holds no VO2max work.
+        why: >-
+          Your midweek quality ride, alternating week by week: a set of steady
+          climbs just below threshold one week, a continuous tempo block the
+          next. Both build the muscular endurance a long bike leg leans on,
+          below the harder work that comes later.
+      - name: mod_base_tue_bike_threshold
+        day: tue
+        activity: bike_threshold
+        rotation: [bike_threshold, bike_sweet_spot]
+        minutes: {moderate: [55, 65]}
+        window: [0.5, 1.0]
+        group: im_mod_base_bike_quality
+        # intent: Late-BASE tail of the Tue bike crossover: introduces bike
+        # threshold, sub-threshold power being the IM performance determinant
+        # (tri.md §3), held to the back half so the BUILD stimulus is seeded
+        # rather than front-loaded.
+        why: >-
+          Sustained power just below your limit is what decides a full-distance bike split,
+          so it gets introduced towards the end of base rather than dropped on you all
+          at once. The ride alternates between threshold intervals and longer sweet-spot
+          blocks a notch below them, training the same quality from both sides.
+      - name: comp_base_tue_bike_tempo
+        day: tue
+        activity: bike_hill_climb
+        rotation: [bike_hill_climb, bike_tempo]
+        minutes: {competitive: [60, 75]}
+        window: [0.0, 0.8]
+        group: im_base_bike_quality
+        # intent: Competitive-dose Tue bike crossover: sub-threshold tempo work
+        # owns the early window (frac 0-0.8), crossing to threshold in the back
+        # half (tlc §6, tri.md §3 Base row). Hill climbs alternate with a
+        # continuous tempo ride, both tempo family, so the long-course base
+        # still holds no VO2max work. Reviewed with the maintainer:
+        # every base week carries one real quality ride; the cadence-drill
+        # weeks held none, and the BUILD step then quadrupled the zone-3+
+        # minutes in one week.
+        why: >-
+          Your midweek quality ride, alternating week by week: a set of steady
+          climbs just below threshold one week, a continuous tempo block the
+          next. Both build the muscular endurance a long bike leg leans on,
+          below the harder threshold work that comes later in base.
+      - name: comp_base_tue_bike_threshold
+        day: tue
+        activity: bike_threshold
+        rotation: [bike_threshold, bike_sweet_spot]
+        minutes: {competitive: [60, 75]}
+        window: [0.55, 1.0]
+        group: im_base_bike_quality
+        # intent: Tail of the competitive Tue bike crossover: bike threshold
+        # from frac 0.55 on, seeding the BUILD sub-threshold determinant late
+        # rather than front-loading it (tri.md §3).
+        why: >-
+          Late in base the Tuesday ride turns into structured work just under threshold,
+          the quality a full-distance bike leg is raced on. It alternates between threshold
+          intervals and longer sweet-spot blocks, so the build phase feels like a
+          continuation rather than a shock.
+      - name: comp_base_tue_strides
+        day: tue
+        activity: run_strides
+        minutes: {competitive: [25, 40]}
+        window: [0.0, 0.6]
+        group: im_comp_base_strides
+        # intent: The competitive week, reviewed with the maintainer: one
+        # easy day (Monday's swim), three rides in base, and the hard days spread
+        # one sport each (Tue bike, Wed run). The strides share Tuesday with the
+        # quality ride, so Thursday can carry the third ride
+        # (comp_base_thu_bike_easy). From 0.6 the quality swim takes the
+        # Tuesday place (2026-10-03) and the strides move to Thursday
+        # (comp_base_thu_strides); on Thursday all base, the even daily loads
+        # raised the light athlete's base monotony (bench, 2.12 -> 2.32).
+        why: >-
+          Short, relaxed accelerations keep your legs quick and your form crisp
+          in a phase that is otherwise all steady mileage. They share the day
+          with the quality ride, which keeps the rest of the week free for easy
+          volume.
+      - name: comp_base_thu_strides
+        day: thu
+        activity: run_strides
+        minutes: {competitive: [25, 40]}
+        window: [0.6, 1.0]
+        group: im_comp_base_strides
+        why: >-
+          Short, relaxed accelerations keep your legs quick and your form crisp
+          in a phase that is otherwise all steady mileage. Late in base they
+          share the day with an easy spin, so they never meet tired legs.
+      - name: base_wed_run_easy
+        day: wed
+        activity: run_easy
+        minutes: {moderate: [45, 65]}
+        window: [0.0, 0.55]
+        group: im_mod_base_wed_run
+        why: >-
+          Easy aerobic running is where run durability is actually built, and it
+          is the only running volume you can absorb at little recovery cost. Keep it genuinely easy — the hard running arrives later in
+          the plan.
+      - name: basic_base_wed_run_easy
+        day: wed
+        activity: run_easy
+        minutes: {basic: [40, 60]}
+        window: [0.0, 0.55]
+        group: im_basic_base_wed_run
+        why: >-
+          Easy aerobic running is where run durability is actually built, and it
+          is the only running volume you can absorb at little recovery cost. Keep it genuinely easy — the harder running arrives later in
+          base.
+      - name: basic_base_wed_run_tempo
+        day: wed
+        activity: run_aerobic_tempo
+        rotation: [run_aerobic_tempo, run_easy]
+        minutes: {basic: [40, 55]}
+        window: [0.55, 1.0]
+        group: im_basic_base_wed_run
+        # intent: Late-BASE BASIC run (2026-10-03): a steady aerobic tempo
+        # every other week, easy in between, so BUILD's Wednesday tempo run is
+        # not the first firm running of the plan.
+        why: >-
+          Late in base the midweek run picks up every other week with a steady,
+          comfortably firm tempo, and stays easy in between. It gets your legs
+          used to working before the build makes it a weekly session.
+      - name: comp_base_wed_run_easy
+        day: wed
+        activity: run_easy
+        minutes: {competitive: [50, 75]}
+        window: [0.0, 0.55]
+        group: im_comp_base_wed_run
+        why: >-
+          Easy aerobic running is where run durability is actually built, and it
+          is the only running volume you can absorb at little recovery cost. Keep it genuinely easy — the harder running arrives later in
+          base.
+      - name: comp_base_wed_run_tempo
+        day: wed
+        activity: run_aerobic_tempo
+        rotation: [run_aerobic_tempo, run_progression]
+        minutes: {competitive: [45, 60]}
+        window: [0.55, 1.0]
+        group: im_comp_base_wed_run
+        # intent: Late-BASE run quality (2026-10-01): a steady aerobic tempo
+        # run, so BUILD's threshold and tempo running continues a habit rather
+        # than starting cold. Aerobic tempo, not threshold or VO2max: the
+        # long-course base holds no VO2max work.
+        why: >-
+          Late in base the midweek run picks up, alternating a steady,
+          comfortably firm tempo with a progression run that builds from easy
+          to threshold pace. It gets your legs used to working before the
+          build adds harder running.
+      - name: mod_base_tue_swim_drill
+        day: tue
+        activity: swim_drill
+        metres: {moderate: [1500, 1800]}
+        # intent: On Tuesday since 2026-10-03; at least 1500 m since
+        # 2026-11-03, as every pool visit in the half.
+        why: >-
+          A technique swim. For most triathletes the swim rewards practice far
+          more than fitness, and only repetition makes a new stroke habit stick.
+          Base is when there is room in the schedule to do it properly.
+      - name: basic_base_tue_swim_drill
+        day: tue
+        activity: swim_drill
+        rotation: [swim_drill, swim_pull]
+        metres: {basic: [1500, 1750]}
+        window: [0.0, 0.55]
+        group: im_basic_base_tue_swim
+        # intent: BASIC's drill swim moves off Monday (2026-10-03), so Monday
+        # is the week's rest day, as in the moderate week; on Tuesday, so the
+        # base swims are three days apart (Tuesday and Friday). It alternates
+        # with a pull swim: base weeks had
+        # repeated one identical easy week after another.
+        why: >-
+          Swim speed comes from cutting drag, not from adding power, so a
+          cleaner body position buys you more than a bigger engine. Drill sets
+          alternate week by week with a pull swim, which lets you feel your
+          catch while the legs rest for the weekend.
+      - name: basic_base_tue_swim_css
+        day: tue
+        activity: swim_css
+        rotation: [swim_drill, swim_css]
+        metres: {basic: [1500, 1750]}
+        window: [0.55, 1.0]
+        group: im_basic_base_tue_swim
+        # intent: Late-BASE swim quality every other week (2026-10-03), on the
+        # day BUILD keeps it (basic_build_tue_swim_css). The quality swim and
+        # the extra pull swim were the largest piece of the BASE -> BUILD step
+        # (+46 of +84 TSS in one week); drills keep alternating for the
+        # technique this tier needs most. Out of step with the Wednesday tempo
+        # run (basic_base_wed_run_tempo), so each late-base week holds one of
+        # the two; in step, one week held both and the next neither.
+        why: >-
+          Late in base the Tuesday swim alternates the drill sets with your
+          first repeats at race-relevant pace, so swim fitness starts to grow
+          while your technique keeps being worked.
+      - name: basic_base_thu_bike_easy
+        day: thu
+        activity: bike_cadence
+        rotation: [bike_cadence, bike_endurance]
+        minutes: {basic: [40, 60]}
+        progression: im_midweek_bike
+        # intent: BASIC base's third ride (2026-10-03), on the midweek-ride
+        # progression so it grows into BUILD's Thursday endurance ride
+        # instead of BUILD adding a 100-min ride in one week. Cadence drills
+        # every other week, in the weeks
+        # of Tuesday's low-cadence hill climbs (basic_base_tue_bike_hills).
+        why: >-
+          An easy ride midweek adds a third ride without adding fatigue,
+          alternating week by week between fast-pedalling drills that smooth
+          your stroke and a plain steady spin. Riding often is how the bike leg
+          becomes routine, and it is the cheapest training time in triathlon.
+      - name: comp_base_wed_swim_pull
+        day: wed
+        activity: swim_pull
+        metres: {competitive: [2000, 2000]}
+        window: [0.25, 0.6]
+        group: im_comp_base_swim_quality
+        # intent: Extra competitive pull swim, gated to fire after the first
+        # BASE quarter (frac 0.25): swim is over-represented at low injury cost,
+        # so the top tier absorbs added pull volume (tri.md §2), sustaining the
+        # drill/technique work that must hold every phase since technique
+        # degrades under fatigue (tri.md §3). Late BASE hands it to the
+        # Tuesday CSS swim (comp_base_tue_swim_css, 2026-10-01).
+        why: >-
+          Pull work loads your upper body and lets you feel your catch without
+          the legs bailing you out. Swimming is the cheapest place in the plan
+          to add volume — your body absorbs it at almost no recovery cost — so an
+          extra swim goes in once base is properly underway.
+      - name: comp_base_thu_bike_easy
+        day: thu
+        activity: bike_endurance
+        minutes: {competitive: [45, 75]}
+        progression: im_midweek_bike
+        # intent: The competitive base's third ride (2026-10-01). Base books
+        # bike far under its capacity ceiling, so the spin adds about 0.9 h a
+        # week rather than shortening the long ride. Short and easy on purpose
+        # — frequency, not a second long day.
+        why: >-
+          A short, easy spin midweek adds a third ride without adding fatigue.
+          Riding often is how the bike leg becomes routine, and it is the
+          cheapest training time in triathlon: low impact, high return.
+      - name: comp_base_tue_swim_css
+        day: tue
+        activity: swim_css
+        rotation: [swim_css, swim_threshold]
+        metres: {competitive: [2000, 2500]}
+        window: [0.6, 1.0]
+        group: im_comp_base_swim_quality
+        # intent: Late-BASE swim quality (2026-10-01), on the day the BUILD
+        # week keeps it (comp_build_tue_swim_css), so late base already has
+        # the build's shape at a lower dose.
+        why: >-
+          Late in base the swim picks up its first repeats at your
+          race-relevant pace, shorter ones one week and longer ones the next.
+          With your technique in place, this is where swim fitness starts to
+          grow.
+      - name: base_fri_swim_long
+        day: fri
+        activity: swim_long
+        metres: {basic: [2250, 3000], competitive: [2500, 4000]}
+        progression: im_long_swim
+        why: >-
+          The long swim builds the aerobic endurance that makes the race swim
+          feel routine rather than daunting. Holding good form deep into a long
+          swim is what gets you out of the water fresh enough to ride well.
+      - name: base_sat_bike_long
+        day: sat
+        activity: bike_long
+        minutes: {basic: [120, 165], competitive: [165, 245]}
+        progression: im_long_bike
+        why: >-
+          The long ride is the backbone of full-distance training: the bike is over
+          half your race day, and it builds fatigue resistance at the lowest recovery cost of the three sports. In base it stays steady and unhurried
+          — length first, intensity later.
+      - name: base_sat_brick
+        day: sat
+        activity: run_brick_short
+        minutes: {basic: [12, 18], competitive: [15, 25]}
+        brick: true
+        why: >-
+          A short run straight off the bike teaches your legs the transition
+          without adding meaningful load. Kept small this early, it simply makes
+          the odd bike-to-run feeling familiar long before it matters.
+      - name: base_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {basic: [55, 85], competitive: [65, 115]}
+        progression: im_long_run
+        why: >-
+          The long run builds the fatigue-resistant aerobic running a full-distance marathon demands. It sits the day after the long ride on purpose —
+          running on legs that are not fresh is exactly what race day will ask
+          of you.
+      - name: mod_base_tue_bike_test
+        day: tue
+        activity: bike_ftp_test
+        minutes: {moderate: [42, 42]}
+        cadence_weeks: 8
+        group: im_mod_base_bike_quality
+        key: 0.3
+        # intent: Week 1 is the test week, as in the half-distance plan
+        # (the maintainer's rule: tests in week 1 and every eight weeks for
+        # every athlete). The cadence (R-SESS-041) fires a load slot in week 1
+        # only; the later tests are the cadence slots in the base and build
+        # recovery menus.
+        why: >-
+          Your first week opens with the tests that set the training zones every
+          session in this plan is written against: a 20-minute all-out effort
+          after a proper warm-up. Ride it rested and honest; the number only has
+          to be yours. If you have tested in the last six weeks, ride this as an
+          easy aerobic session instead.
+      - name: mod_base_wed_swim_easy
+        day: wed
+        activity: swim_endurance
+        metres: {moderate: [1800, 1800]}
+        window: [0.0, 0.05]
+        group: im_mod_base_wed_swim
+        why: >-
+          An easy, continuous swim in your test week. It keeps the pool routine
+          going and leaves your arms fresh for Friday's swim test.
+      - name: mod_base_wed_swim_css
+        day: wed
+        activity: swim_css
+        rotation: [swim_css, swim_threshold]
+        metres: {moderate: [1800, 1800]}
+        window: [0.05, 1.0]
+        group: im_mod_base_wed_swim
+        # intent: The half's third swim and its Wednesday quality swim
+        #. The old base held two swims and no swim
+        # quality, and BUILD then added 1 h of swimming in one week.
+        why: >-
+          The week's quality swim, repeats at your threshold pace, shorter ones
+          one week and longer ones the next. Swimming costs your legs almost
+          nothing, so this work sits beside the midweek run and swim fitness
+          grows from the start of the plan.
+      - name: mod_base_wed_run_tempo
+        day: wed
+        activity: run_aerobic_tempo
+        rotation: [run_aerobic_tempo, run_progression]
+        minutes: {moderate: [45, 55]}
+        window: [0.55, 1.0]
+        group: im_mod_base_wed_run
+        # intent: Late-BASE run quality, as in the half and the competitive
+        # week: BUILD's threshold running continues a habit instead of
+        # starting cold.
+        why: >-
+          Late in base the midweek run picks up, alternating a steady,
+          comfortably firm tempo with a progression run that builds from easy to
+          threshold pace. It gets your legs used to working before the build
+          adds harder running.
+      - name: mod_base_wed_run_test
+        day: wed
+        activity: run_threshold_test
+        minutes: {moderate: [44, 44]}
+        cadence_weeks: 8
+        group: im_mod_base_wed_run
+        key: 0.3
+        why: >-
+          Your first week opens with the tests that set the training zones every
+          session in this plan is written against: a 30-minute threshold effort
+          after a proper warm-up. Run it rested and honest; the number only has
+          to be yours. If you have tested in the last six weeks, run this as an
+          easy aerobic session instead.
+      - name: mod_base_thu_ride_easy
+        day: thu
+        activity: bike_endurance
+        minutes: {moderate: [40, 50]}
+        window: [0.0, 0.05]
+        group: im_mod_base_thu_ride
+        why: >-
+          A short, easy ride between the tests. The week is for the three tests,
+          so the midweek ride stays light. The regular midweek ride starts next
+          week.
+      - name: mod_base_thu_bike_endurance
+        day: thu
+        activity: bike_endurance
+        minutes: {moderate: [55, 85]}
+        window: [0.05, 1.0]
+        group: im_mod_base_thu_ride
+        # intent: Grows with the week as in the half (55-80), so BUILD's midweek
+        # ride (75-105) is a step and not the old jump from 55 to 100.
+        why: >-
+          A second, easier ride midweek. It adds aerobic volume at a low cost to
+          your legs and keeps the weekend free for the long ride and the long
+          run. It grows through base, so the longer midweek rides of the build
+          feel like a continuation.
+      - name: mod_base_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {moderate: [26, 34]}
+        window: [0.05, 1.0]
+        why: >-
+          A handful of relaxed strides inside an easy run. They keep your legs
+          quick and your form crisp in a phase that is otherwise all steady
+          running.
+      - name: mod_base_fri_swim_test
+        day: fri
+        activity: swim_css_test
+        metres: {moderate: [2350, 2350]}
+        cadence_weeks: 8
+        group: im_mod_base_fri_swim
+        key: 0.3
+        why: >-
+          Your first week opens with the tests that set the training zones every
+          session in this plan is written against: a 400 m and a 200 m time
+          trial after a proper warm-up, which give you your swim pace. Swim them
+          rested and honest; the number only has to be yours. If you have tested
+          in the last six weeks, swim this as a steady endurance session
+          instead.
+      - name: mod_base_fri_swim_long
+        day: fri
+        activity: swim_long
+        metres: {moderate: [2250, 3500]}
+        progression: im_long_swim
+        window: [0.05, 1.0]
+        group: im_mod_base_fri_swim
+        why: >-
+          The long swim builds the aerobic endurance that makes the race swim
+          feel routine rather than daunting. Holding good form deep into a long
+          swim is what gets you out of the water fresh enough to ride well.
+      - name: mod_base_sat_ride_easy
+        day: sat
+        activity: bike_endurance
+        minutes: {moderate: [75, 90]}
+        window: [0.0, 0.05]
+        group: im_mod_base_sat_ride
+        why: >-
+          An easy ride to close your test week. The tests are done on fresh legs
+          and the week lands a notch below what you have been doing. The long
+          ride starts next week.
+      - name: mod_base_sat_bike_long
+        day: sat
+        activity: bike_long
+        minutes: {moderate: [85, 215]}
+        progression: im_long_bike
+        window: [0.05, 1.0]
+        group: im_mod_base_sat_ride
+        why: >-
+          The long ride is the backbone of full-distance training: the bike is
+          over half your race day, and it builds fatigue resistance at the
+          lowest recovery cost of the three sports. In base it stays steady and
+          unhurried: length first, intensity later.
+      - name: mod_base_sat_brick
+        day: sat
+        activity: run_brick_short
+        minutes: {moderate: [13, 21]}
+        window: [0.5, 1.0]
+        brick: true
+        # intent: Late base only, as in the half.
+        why: >-
+          A short run straight off the bike teaches your legs the transition
+          without adding meaningful load. Kept small this early, it simply makes
+          the odd bike-to-run feeling familiar long before it matters.
+      - name: mod_base_sun_run_easy
+        day: sun
+        activity: run_easy
+        minutes: {moderate: [45, 60]}
+        window: [0.0, 0.05]
+        group: im_mod_base_sun_run
+        why: >-
+          A short, easy run to close your opening week. The week is for the
+          three tests, so the weekend stays light. The long run starts next
+          week.
+      - name: mod_base_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {moderate: [60, 100]}
+        progression: im_long_run
+        window: [0.05, 1.0]
+        group: im_mod_base_sun_run
+        why: >-
+          The long run builds the fatigue-resistant aerobic running a full-
+          distance marathon demands. It sits the day after the long ride on
+          purpose: running on legs that are not fresh is exactly what race day
+          will ask of you.
+
+  base/recovery:
+    slots:
+      - name: rec_mon_swim
+        day: mon
+        activity: swim_recovery
+        metres: {competitive: [2000, 2750]}
+        why: >-
+          An easy swim to open a recovery week: enough movement to keep your
+          feel for the water, gentle enough that the week can do what it is for.
+      - name: basic_rec_tue_bike
+        day: tue
+        # intent: BASIC tests over two recovery weeks (2026-10-03): bike and
+        # swim in one, the run on its own in a later one. All three in one
+        # 4-6 h recovery week did not fit, and the bike test fell out of every
+        # plan (the fit drops a fixed protocol it cannot book). The windows
+        # leave out the first base recovery week, too small at low volume to
+        # hold a test, and never overlap, so no week draws all three; at 22-36
+        # weeks each phase tests every sport at most once.
+        why: >-
+          A steady, easy ride: the frequency stays, the load comes off. Recovery
+          weeks are where the previous weeks of training actually turn into
+          fitness.
+        variants:
+          - activity: bike_endurance
+            minutes: {basic: [35, 50]}
+            window: [0.0, 0.21]
+            group: im_basic_recovery_tue
+          - activity: bike_ftp_test
+            minutes: {basic: [42, 42]}
+            window: [0.21, 0.42]
+            group: im_basic_recovery_tue
+            why: >-
+              A bike test in a recovery week does double duty: it is the one
+              hard effort you can afford when the volume is down, and it
+              re-anchors the power targets every ride in the coming weeks is
+              written against.
+          - activity: bike_endurance
+            minutes: {basic: [35, 50]}
+            window: [0.42, 1.0]
+            group: im_basic_recovery_tue
+      - name: mod_rec_tue_test
+        day: tue
+        activity: bike_ftp_test
+        minutes: {moderate: [42, 42]}
+        cadence_weeks: 8
+        key: 0.3
+        group: im_mod_recovery_tue
+        # intent: The eight-week cadence (R-SESS-041, since 2026-11-03, as in
+        # the half): the recovery week nearest each eight-week mark tests, in
+        # this session's place. key 0.3 keeps the fixed protocol in a squeezed
+        # week.
+        why: >-
+          Every eight weeks, in a lighter week when your legs are rested, the
+          tempo ride is the bike test instead: a 20-minute all-out effort after
+          a proper warm-up, which sets the power targets every ride after it is
+          written against.
+      - name: mod_rec_tue_bike
+        day: tue
+        activity: bike_tempo
+        minutes: {moderate: [48, 54]}
+        group: im_mod_recovery_tue
+        why: >-
+          A short ride in a lighter week with a controlled tempo section:
+          deliberately not a hard session, just enough intensity that next
+          week's real work does not feel like starting over.
+      - name: comp_rec_tue_test
+        day: tue
+        activity: bike_ftp_test
+        minutes: {competitive: [42, 42]}
+        window: [0.0, 0.55]
+        group: im_recovery_tue
+        why: >-
+          A bike test in a recovery week does double duty: it is the one hard
+          effort you can afford when the volume is down, and it re-anchors the
+          power targets every ride in the coming weeks is written against.
+      - name: comp_rec_tue_easy
+        day: tue
+        activity: bike_endurance
+        minutes: {competitive: [45, 60]}
+        window: [0.55, 1.0]
+        group: im_recovery_tue
+        why: >-
+          A steady, easy ride: the frequency stays, the load comes off. Recovery
+          weeks are where the previous weeks of training actually turn into
+          fitness.
+      - name: mod_rec_tue_swim
+        day: tue
+        activity: swim_recovery
+        metres: {moderate: [1500, 1800]}
+        # intent: MODERATE's second recovery-week swim (2026-10-01). BASIC and
+        # COMPETITIVE swim easy on Monday in their recovery weeks; MODERATE
+        # keeps Monday off, so it swims on Tuesday, spaced from Friday's swim.
+        # In test weeks too since 2026-11-03: the keyed tests now hold their
+        # place when it overfills the ceiling.
+        why: >-
+          An easy swim midweek keeps you in the water while the load comes off.
+          It moves blood and loosens everything without asking anything of your
+          legs.
+      - name: basic_rec_tue_swim
+        day: tue
+        # intent: BASIC keeps Monday off in its recovery weeks too
+        # (2026-10-03), so the easy swim moves to Tuesday. Held to the
+        # test-free weeks (before 0.21 and from 0.72), as mod_rec_tue_swim: a
+        # recovery week's minimums must leave room for its locked tests, or
+        # the fit drops a test.
+        why: >-
+          An easy swim midweek keeps you in the water while the load comes off.
+          It moves blood and loosens everything without asking anything of your
+          legs.
+        variants:
+          - activity: swim_recovery
+            metres: {basic: [1000, 1500]}
+            window: [0.0, 0.2]
+            group: im_basic_recovery_swim
+          - activity: swim_recovery
+            metres: {basic: [1000, 1500]}
+            window: [0.72, 1.0]
+            group: im_basic_recovery_swim
+      - name: basic_rec_thu_run
+        day: thu
+        why: >-
+          An easy run keeps your running frequency intact through the recovery
+          week. The point of the week is absorption, so the effort stays low and
+          your legs get their chance to catch up.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [25, 40]}
+            window: [0.0, 0.46]
+            group: im_basic_recovery_thu
+          - activity: run_threshold_test
+            minutes: {basic: [44, 44]}
+            window: [0.46, 0.7]
+            group: im_basic_recovery_thu
+            # intent: The run test's own recovery week, the one after the
+            # bike and swim tests (basic_rec_tue_bike).
+            why: >-
+              Testing your run threshold on the fresh legs of a recovery week
+              gives you an honest number and updates the paces the rest of
+              your running is built on. It also keeps one real effort in a
+              week that is otherwise all easy.
+          - activity: run_easy
+            minutes: {basic: [25, 40]}
+            window: [0.7, 1.0]
+            group: im_basic_recovery_thu
+      - name: mod_rec_thu_test
+        day: thu
+        activity: run_threshold_test
+        minutes: {moderate: [44, 44]}
+        cadence_weeks: 8
+        key: 0.3
+        group: im_mod_recovery_thu
+        why: >-
+          Every eight weeks, in a lighter week when your legs are rested, the
+          easy run is the run threshold test instead: a 30-minute effort after a
+          proper warm-up, which updates the paces the rest of your running is
+          built on.
+      - name: mod_rec_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {moderate: [30, 45]}
+        group: im_mod_recovery_thu
+        why: >-
+          An easy run keeps your running frequency intact through the recovery
+          week. The point of the week is absorption, so the effort stays low and
+          your legs get their chance to catch up.
+      - name: comp_rec_thu_test
+        day: thu
+        activity: run_threshold_test
+        minutes: {competitive: [44, 44]}
+        window: [0.0, 0.55]
+        group: im_recovery_thu
+        why: >-
+          Testing your run threshold on the fresh legs of a recovery week gives
+          you an honest number and updates the paces the rest of your running is
+          built on. It also keeps one real effort in a week that is otherwise
+          all easy.
+      - name: comp_rec_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {competitive: [35, 50]}
+        window: [0.55, 1.0]
+        group: im_recovery_thu
+        why: >-
+          An easy run keeps your running frequency intact through the recovery
+          week. The point of the week is absorption, so the effort stays low and
+          your legs get their chance to catch up.
+      - name: basic_rec_fri_swim
+        day: fri
+        # intent: The swim test shares its week with the bike test
+        # (basic_rec_tue_bike).
+        why: >-
+          An easy swim keeps you in the water without asking anything of you.
+          Technique holds together far better with frequent light contact than
+          with a week away from the pool.
+        variants:
+          - activity: swim_recovery
+            metres: {basic: [1000, 1500]}
+            window: [0.0, 0.21]
+            group: im_basic_recovery_fri
+          - activity: swim_css_test
+            metres: {basic: [2350, 2350]}
+            window: [0.21, 0.42]
+            group: im_basic_recovery_fri
+            why: >-
+              Your swim test sets the pace every other swim session is
+              prescribed from, so it is worth doing rested. In a recovery week
+              it is the one session where you get to push.
+          - activity: swim_recovery
+            metres: {basic: [1000, 1500]}
+            window: [0.42, 1.0]
+            group: im_basic_recovery_fri
+      - name: mod_rec_fri_test
+        day: fri
+        activity: swim_css_test
+        metres: {moderate: [2350, 2350]}
+        cadence_weeks: 8
+        key: 0.3
+        group: im_mod_recovery_fri
+        why: >-
+          Every eight weeks, in a lighter week when you are rested, the short
+          set is the swim test instead: a 400 m and a 200 m time trial after a
+          proper warm-up, which re-sets the pace every other swim session is
+          prescribed from.
+      - name: mod_rec_fri_swim
+        day: fri
+        activity: swim_css
+        metres: {moderate: [1500, 1800]}
+        group: im_mod_recovery_fri
+        why: >-
+          A short set at your usual hard-swim pace inside an easy week. One
+          brief reminder of speed keeps the sharpness you built; the rest of the
+          swim, and the week, stays easy.
+      - name: comp_rec_fri_test
+        day: fri
+        activity: swim_css_test
+        metres: {competitive: [2350, 2350]}
+        window: [0.0, 0.55]
+        group: im_recovery_fri
+        why: >-
+          Your swim test sets the pace every other swim session is prescribed
+          from, so it is worth doing rested. In a recovery week it is the one
+          session where you get to push.
+      - name: comp_rec_fri_easy
+        day: fri
+        activity: swim_recovery
+        metres: {competitive: [1500, 2250]}
+        window: [0.55, 1.0]
+        group: im_recovery_fri
+        why: >-
+          An easy swim keeps you in the water without asking anything of you.
+          Technique holds together far better with frequent light contact than
+          with a week away from the pool.
+      - name: rec_sat_bike
+        day: sat
+        activity: bike_endurance
+        minutes: {basic: [55, 85], moderate: [90, 120], competitive: [75, 120]}
+        why: >-
+          A recovery week still rides on Saturday — just shorter and easy
+          throughout. Keeping the rhythm of the week intact makes stepping back
+          into the next block far less of a jolt.
+      - name: rec_sun_run
+        day: sun
+        activity: run_easy
+        minutes: {basic: [35, 55], moderate: [65, 90], competitive: [55, 85]}
+        why: >-
+          An easy Sunday run at a fraction of the usual length. Cutting volume
+          rather than frequency is what makes a recovery week restorative
+          instead of a break in training.
+
+  build/load:
+    contract:
+      must_not_contain: [run_10k_race_pace, run_5k_race_pace, run_hm_pace]
+      weekly_quality_sessions: [1, 6]
+      bricks_per_week: [1, 1]
+    slots:
+      - name: comp_build_mon_swim_easy
+        day: mon
+        activity: swim_recovery
+        metres: {competitive: [2000, 2500]}
+        # intent: The competitive week's easy day (2026-10-01): one easy swim
+        # the day after the long run. It replaces a hard swim plus an easy run;
+        # the quality swim moves to Tuesday (comp_build_tue_swim_css) and the
+        # easy run to Thursday (comp_build_thu_easy_run). Triathlon plans often leave
+        # this day empty (rest_days); an easy swim
+        # instead is the maintainer's call, keeping three swims a week without
+        # using another day.
+        why: >-
+          The day after the long run is your easy day: a relaxed swim and
+          nothing else. It loosens what the weekend worked and keeps you in the
+          water without asking anything of your legs.
+      - name: build_tue_bike_vo2max
+        day: tue
+        activity: bike_vo2max
+        minutes: {moderate: [50, 65], competitive: [55, 70]}
+        window: [0.0, 0.55]
+        group: im_build_bike_quality
+        # intent: Tue bike: VO2max intervals in the early-BUILD window (frac
+        # 0-0.55) handing to threshold/sweet-spot after. Same early-spend logic
+        # as the Mon swim — primary window 1-2/wk for 3-4 wk with a 4-6 wk
+        # residual — then the late window converges on threshold/sweet-spot, the
+        # primary IM bike quality stimulus.
+        why: >-
+          A short block of hard bike intervals early in the build lifts your
+          aerobic ceiling so the threshold work that follows has more room to
+          grow. It is deliberately brief: the benefit lasts weeks, while the
+          fatigue cost is too high to carry all year.
+      - name: build_tue_bike_threshold
+        day: tue
+        activity: bike_threshold
+        rotation: [bike_threshold, bike_over_under, bike_sweet_spot]
+        minutes: {moderate: [50, 65], competitive: [55, 70]}
+        group: im_build_bike_quality
+        # intent: Over-unders (2026-09-30): 3 x (2 min just under, 1 min just over
+        # threshold) per rep, the classic way to train holding power while clearing
+        # the fatigue a surge leaves.
+        why: >-
+          Sustained power around threshold is the main lever on your full-distance bike split,
+          so once the build is underway it becomes the week's headline ride. It rotates
+          between threshold intervals, over-unders that swing either side of threshold
+          and longer sweet-spot blocks just below it: the quality you are really
+          training, from several sides.
+      - name: basic_build_tue_bike_threshold
+        day: tue
+        activity: bike_threshold
+        rotation: [bike_threshold, bike_sweet_spot]
+        minutes: {basic: [45, 60]}
+        why: >-
+          One structured ride a week is enough to move your sustainable power, and
+          sustainable power is what decides your bike split. It alternates between
+          threshold intervals and longer sweet-spot blocks, and keeping it to one
+          quality ride leaves your legs intact for the long ride and the long run.
+      - name: basic_build_thu_swim_pull
+        day: thu
+        activity: swim_pull
+        metres: {basic: [1500, 2000]}
+        # intent: Beside Thursday's easy ride (2026-10-03); the quality swim
+        # is Tuesday's (basic_build_tue_swim_css).
+        why: >-
+          A pull-focused swim adds water time without loading the legs you need
+          for the long ride and the long run. It shares the day with an easy
+          ride; the swim's hard work is on Tuesday.
+      - name: comp_build_thu_easy_run
+        day: thu
+        activity: run_easy
+        minutes: {competitive: [40, 50]}
+        # intent: On Thursday since 2026-10-03, so Tuesday holds the quality ride
+        # and the quality swim only.
+        why: >-
+          An easy run the day after the hard run loosens your legs and keeps your
+          running frequent. Short and conversational: a loosener, not a
+          session.
+      - name: basic_build_wed_run_tempo
+        day: wed
+        activity: run_aerobic_tempo
+        rotation: [run_aerobic_tempo, run_progression]
+        minutes: {basic: [40, 55]}
+        # intent: BASIC's BUILD Wednesday becomes the week's run quality
+        # (2026-10-03): the build had held no run quality, so PEAK's threshold
+        # running was the first firm running of the plan. Steady tempo and a
+        # progression run, below the threshold work PEAK holds.
+        why: >-
+          Wednesday is the week's quality run, alternating a steady, comfortably
+          firm tempo with a progression run that builds from easy to threshold
+          pace. This is where the pace you can hold off the bike starts to grow.
+      - name: build_wed_run_threshold
+        day: wed
+        activity: run_threshold
+        rotation: [run_threshold, run_progression, run_tempo]
+        minutes: {moderate: [50, 65]}
+        # intent: The whole BUILD's Wednesday run since 2026-10-01: neither
+        # MODERATE nor COMPETITIVE (comp_build_wed_run_threshold) runs VO2max
+        # any more. Their early-BUILD VO2max stays on the bike
+        # (build_tue_bike_vo2max), the cheaper sport to spend it on.
+        why: >-
+          Comfortably-hard running is where the pace you can hold off the bike gets
+          built. It rotates between threshold intervals, a progression run that builds
+          from easy to threshold pace, and a continuous tempo block.
+      - name: comp_build_wed_run_threshold
+        day: wed
+        activity: run_threshold
+        rotation: [run_threshold, run_progression, run_tempo]
+        minutes: {competitive: [55, 70]}
+        why: >-
+          Wednesday is the week's hard run, rotating between threshold
+          intervals, a progression run that builds from easy to threshold pace,
+          and a continuous tempo block. This is where the pace you can hold off
+          the bike gets built, and it has the day to itself.
+      - name: mod_build_tue_swim_pull
+        day: tue
+        activity: swim_pull
+        rotation: [swim_pull, swim_drill]
+        metres: {moderate: [1800, 2000]}
+        # intent: The build's third swim, on Tuesday since 2026-11-03 so
+        # Thursday's ride has its day alone, as in the half. The drill member
+        # keeps technique in the week.
+        why: >-
+          A lighter swim beside the Tuesday ride: mostly pull sets, with a
+          technique swim now and then. Pull sets let you hold a strong catch
+          without your legs contributing, in a week that is already loading them
+          hard. It is swim volume that costs you nothing anywhere else.
+      - name: basic_build_tue_swim_css
+        day: tue
+        activity: swim_css
+        rotation: [swim_css, swim_threshold]
+        metres: {basic: [1750, 2500]}
+        # intent: The quality swim sits on
+        # Tuesday beside the quality ride, so the week's swims spread out
+        # (Tuesday and Friday) instead of Thursday and Friday back to back,
+        # five days without swimming after them. Swimming spares the legs,
+        # so it is the one sport that shares the bike's hard day.
+        why: >-
+          The week's quality swim: repeats at your sustainable swim pace, shorter
+          ones one week and longer ones the next. Once your technique is in
+          place this is the most efficient way to get faster in the water. It
+          shares the day with the quality ride: swimming spares the legs, and the
+          swims stay spread through the week.
+      - name: build_thu_bike_endurance
+        day: thu
+        activity: bike_endurance
+        minutes: {basic: [75, 130], competitive: [70, 130]}
+        progression: im_midweek_bike
+        # intent: 2026-09-25 tops trimmed (moderate 145 -> 120, competitive
+        # 200 -> 130): the late-BUILD block stacked a 2.5-3.3 h midweek ride on
+        # the long weekend and ran competitive plans to -31..-34 combined TSB,
+        # deeper than a long-course plan should go for the same athlete
+        # (-25.6 competitive, -30.4 deepest). Midweek rides stay 1.5-2.2 h.
+        why: >-
+          A second substantial ride midweek is the most efficient way to build
+          durability: high aerobic return, low cost to your joints. It grows
+          through the build so your bike volume rises without leaning even
+          harder on the weekend.
+      - name: comp_build_tue_swim_css
+        day: tue
+        activity: swim_css
+        rotation: [swim_css, swim_threshold]
+        metres: {competitive: [2250, 3000]}
+        # intent: The quality swim sits on
+        # Tuesday beside the quality ride, so the week's swims spread out
+        # (Tuesday and Friday) instead of Thursday and Friday back to back,
+        # five days without swimming after them. Swimming spares the legs,
+        # so it is the one sport that shares the bike's hard day.
+        why: >-
+          The week's quality swim: repeats at your race-relevant pace, shorter
+          ones one week and longer ones the next. It shares the day with the
+          quality ride: swimming spares the legs, and the swims stay spread
+          through the week.
+      - name: mod_build_wed_swim_css
+        day: wed
+        activity: swim_css
+        rotation: [swim_css, swim_threshold]
+        metres: {moderate: [1800, 2500]}
+        # intent: On Wednesday beside the run quality since 2026-11-03, the
+        # half's week; on Tuesday beside the ride
+        # from 2026-10-03. Swimming spares the legs, so it is the one sport
+        # that shares a hard day.
+        why: >-
+          The week's quality swim: repeats at your race-relevant pace, shorter
+          ones one week and longer ones the next. It shares the day with the
+          quality run: swimming spares the legs, and the swims stay spread
+          through the week.
+      - name: build_fri_swim_long
+        day: fri
+        activity: swim_long
+        metres: {basic: [2500, 3500], moderate: [2750, 3750], competitive: [3250, 4250]}
+        progression: im_long_swim
+        why: >-
+          The long swim keeps stretching your endurance in the water so race
+          distance is never the question on the day. It sits ahead of the big
+          weekend because swimming leaves your legs fresh for what follows.
+      - name: basic_build_sat_bike_long
+        day: sat
+        # intent: As comp_build_sat_bike_long (2026-10-03): the build opens
+        # with a plain long ride and sweet spot joins after the first recovery
+        # week, so the long ride does not turn easy -> sweet spot in the week
+        # the rest of the build arrives.
+        why: >-
+          The long ride is the most race-specific session of the build.
+        variants:
+          - activity: bike_long
+            minutes: {basic: [155, 210]}
+            progression: im_long_bike
+            window: [0.0, 0.15]
+            group: im_basic_build_sat_bike
+            why: >-
+              The build opens with the long ride still steady while it grows
+              longer. The harder sweet-spot work joins after your first easier
+              week.
+          - activity: bike_long_sweet_spot
+            minutes: {basic: [155, 210]}
+            progression: im_long_bike
+            window: [0.15, 1.0]
+            group: im_basic_build_sat_bike
+            why: >-
+              The long ride now carries sustained blocks just under threshold —
+              long and firm, which is exactly how a full-distance bike leg is
+              ridden. Hour for hour it is the most race-specific session in the
+              whole plan.
+      - name: comp_build_sat_bike_long
+        day: sat
+        # intent: Sweet spot joins the long
+        # ride after the first recovery week (frac 0.15). It was the single
+        # biggest piece of the BASE -> BUILD step (+81 of +120 TSS in one
+        # week); starting it one load week later instead (frac 0.3) only moved
+        # a +15 % step between two load weeks. The opener is a plain long ride
+        # since 2026-10-03, not race-pace blocks: that card is at least 175
+        # min, so a ride still at 108-145 min (a 22-week plan, or 0.8x volume)
+        # jumped to 175 in one week (R-SESS-013, test_long_run_ramp), and at
+        # 0.6x volume the week no longer fit (test_swim_floor). The step
+        # stays +10 %. One slot with two variants keeps build_sat_brick
+        # paired with this ride.
+        why: >-
+          The long ride is the most race-specific session of the build.
+        variants:
+          - activity: bike_long
+            minutes: {competitive: [235, 291]}
+            progression: im_long_bike
+            window: [0.0, 0.15]
+            group: im_comp_build_sat_bike
+            why: >-
+              The build opens with the long ride still steady while it grows
+              longer. The harder sweet-spot work joins after your first easier
+              week.
+          - activity: bike_long_sweet_spot
+            minutes: {competitive: [235, 291]}
+            progression: im_long_bike
+            window: [0.15, 1.0]
+            group: im_comp_build_sat_bike
+            why: >-
+              The long ride now carries sustained blocks just under threshold —
+              long and firm, which is exactly how a full-distance bike leg is
+              ridden. Hour for hour it is the most race-specific session in the
+              whole plan.
+      - name: mod_build_sat_bike_long
+        day: sat
+        # intent: As comp_build_sat_bike_long (2026-10-01): sweet spot joins the
+        # long ride after the first recovery week, since it was the biggest
+        # piece of the BASE -> BUILD step. One slot with two variants keeps
+        # build_sat_brick paired with this ride.
+        why: >-
+          The long ride is the most race-specific session of the build.
+        variants:
+          - activity: bike_long
+            minutes: {moderate: [200, 255]}
+            progression: im_long_bike
+            window: [0.0, 0.15]
+            group: im_mod_build_sat_bike
+            why: >-
+              The build opens with the long ride still steady while it grows
+              longer. The harder sweet-spot work joins after your first easier
+              week.
+          - activity: bike_long_sweet_spot
+            minutes: {moderate: [200, 255]}
+            progression: im_long_bike
+            window: [0.15, 1.0]
+            group: im_mod_build_sat_bike
+            why: >-
+              The long ride now carries sustained blocks just under threshold —
+              long and firm, which is exactly how a full-distance bike leg is
+              ridden. Hour for hour it is the most race-specific session in the
+              whole plan.
+      - name: build_sat_brick
+        day: sat
+        activity: run_brick_short
+        minutes: {basic: [15, 35], moderate: [18, 35], competitive: [20, 35]}
+        progression: im_build_brick_run
+        brick: true
+        why: >-
+          Running off the bike is a skill, and legs only learn it by rehearsing
+          it. Through the build it grows from a token jog into a real run, so
+          that by the peak weeks you can hold race effort on tired legs.
+      - name: basic_build_sun_long_run_early
+        day: sun
+        activity: run_long
+        minutes: {basic: [85, 120]}
+        progression: im_long_run
+        window: [0.0, 0.45]
+        group: im_build_long_run
+        why: >-
+          The long run stretches the aerobic endurance your marathon rests on,
+          and it lands the day after the long ride so you practise running on
+          legs that have already worked. Early in the build it stays steady
+          throughout — distance first.
+      - name: build_sun_long_run_early
+        day: sun
+        activity: run_long
+        minutes: {moderate: [105, 135], competitive: [120, 150]}
+        progression: im_long_run
+        window: [0.0, 0.5]
+        group: im_build_long_run
+        why: >-
+          Steady long running the day after the long ride builds the fatigue
+          resistance a full-distance marathon demands. Early in the build the whole
+          run stays easy — you are buying time on your feet, not pace.
+      - name: build_sun_long_run_late
+        day: sun
+        activity: run_long_progression
+        rotation: [run_long_progression, run_long]
+        minutes: {basic: [95, 130]}
+        progression: im_long_run
+        window: [0.35, 1.0]
+        group: im_build_long_run
+        # intent: 2026-09-25 tops trimmed (moderate 148 -> 140, competitive
+        # 170 -> 155): part of the late-BUILD trim above; the PEAK long run
+        # stays the plan's longest. MODERATE and COMPETITIVE split off at
+        # mod_/comp_build_sun_long_run_late (2026-10-01).
+        # intent: Long run switches from plain RUN_LONG early to a PROGRESSION
+        # long run (final portion at race pace) in the back half of BUILD (frac
+        # 0.35-1.0). Progression long runs are the signature triathlon session —
+        # finishing at race pace trains quality output in a fatigued state — so
+        # specificity enters only once the aerobic base is laid. Since
+        # 2026-10-03 every other week, as in the moderate and competitive
+        # weeks: Saturday's sweet-spot ride carries the weekend's intensity.
+        why: >-
+          In the back half of the build the long run finishes at race pace
+          every other week and stays easy in between. Finishing strong trains
+          you to run well when you are already tired; the easy weeks stop the
+          weekend from becoming two hard days in a row, because Saturday's ride
+          already carries the work.
+      - name: comp_build_sun_long_run_late
+        day: sun
+        activity: run_long_progression
+        rotation: [run_long_progression, run_long]
+        minutes: {competitive: [135, 150]}
+        progression: im_long_run
+        window: [0.35, 1.0]
+        group: im_build_long_run
+        # intent: 2026-10-01: Saturday's sweet-spot ride carries the weekend's
+        # intensity, so the competitive Sunday long run finishes at race pace
+        # only every other week and stays easy in between, capped at 2:30. The
+        # PEAK Wednesday long run (comp_peak_wed_long_run, up to 2:45) stays
+        # the plan's longest (longest_long_session_in_peak).
+        why: >-
+          In the back half of the build the long run finishes at race pace
+          every other week and stays easy in between. Finishing strong trains
+          you to run well when you are already tired; the easy weeks stop the
+          weekend from becoming two hard days in a row, because Saturday's ride
+          already carries the work.
+      - name: mod_build_sun_long_run_late
+        day: sun
+        activity: run_long_progression
+        rotation: [run_long_progression, run_long]
+        minutes: {moderate: [118, 140]}
+        progression: im_long_run
+        window: [0.35, 1.0]
+        group: im_build_long_run
+        # intent: As comp_build_sun_long_run_late (2026-10-01): a race-pace
+        # finish every other week, easy in between, capped at 2:20; the PEAK
+        # Sunday long run (peak_sun_long_run, up to 2:35) stays the longest.
+        why: >-
+          In the back half of the build the long run finishes at race pace
+          every other week and stays easy in between. Finishing strong trains
+          you to run well when you are already tired; the easy weeks stop the
+          weekend from becoming two hard days in a row, because Saturday's ride
+          already carries the work.
+      - name: mod_build_fri_run_easy
+        day: fri
+        activity: run_easy
+        minutes: {moderate: [40, 55]}
+        # intent: The half's Friday run: without it the build held three runs
+        # against base's four, and running hours fell at the step into BUILD.
+        why: >-
+          An easy run beside the long swim, your fourth run of the week. It
+          keeps your running frequency up through the build, at little recovery
+          cost, and sits far enough from the weekend that your legs are ready
+          for the long sessions.
+      - name: mod_build_thu_bike_endurance
+        day: thu
+        activity: bike_endurance
+        minutes: {moderate: [75, 105]}
+        progression: im_midweek_bike
+        # intent: Top 120 -> 105 with the Friday run added: the build's top
+        # week stays near 15 h.
+        why: >-
+          A longer steady ride midweek adds aerobic volume without adding hard
+          work. It keeps your legs turning between the quality days and leaves
+          the weekend for the long sessions.
+
+  build/recovery:
+    slots:
+      - name: bld_rec_mon_swim
+        day: mon
+        activity: swim_recovery
+        metres: {competitive: [2000, 2750]}
+        why: >-
+          An easy swim to open a recovery week after a hard build block. Gentle
+          enough to aid recovery, frequent enough that your stroke does not go
+          rusty.
+      - name: basic_bld_rec_tue_test
+        day: tue
+        activity: bike_ftp_test
+        minutes: {basic: [42, 42]}
+        window: [0.0, 0.3]
+        group: im_basic_bld_recovery_tue
+        # intent: As basic_rec_tue_bike (2026-10-03): bike and swim tests in
+        # the first BUILD recovery week, the run test in the second.
+        why: >-
+          A bike test in a recovery week does double duty: it is the one hard
+          effort you can afford when the volume is down, and it re-anchors the
+          power targets every ride in the coming weeks is written against.
+      - name: basic_bld_rec_tue_easy
+        day: tue
+        activity: bike_endurance
+        minutes: {basic: [50, 90]}
+        window: [0.3, 1.0]
+        group: im_basic_bld_recovery_tue
+        # intent: BASIC BUILD recovery minimums lowered 2026-10-03 (this ride
+        # 75 -> 50, Thursday run 55 -> 40, Friday swim 2200 -> 1500 m, Saturday
+        # ride 115 -> 90, Sunday run 65 -> 50): they summed to about 6.2 h
+        # against 3.9-5.8 h recovery weeks, so the fit dropped the tests and
+        # the short sessions, and a low-volume week kept a ride and two runs.
+        # The tops stand.
+        why: >-
+          A steady, easy ride: the frequency stays, the load comes off. Recovery
+          weeks are where the previous weeks of training actually turn into
+          fitness.
+      - name: mod_bld_rec_tue_test
+        day: tue
+        activity: bike_ftp_test
+        minutes: {moderate: [42, 42]}
+        cadence_weeks: 8
+        key: 0.3
+        group: im_mod_bld_recovery_tue
+        # intent: The eight-week cadence (R-SESS-041, since 2026-11-03, as in
+        # the half): the recovery week nearest each eight-week mark tests, in
+        # this session's place. key 0.3 keeps the fixed protocol in a squeezed
+        # week.
+        why: >-
+          Every eight weeks, in a lighter week when your legs are rested, the
+          tempo ride is the bike test instead: a 20-minute all-out effort after
+          a proper warm-up, which sets the power targets every ride after it is
+          written against.
+      - name: mod_bld_rec_tue_bike
+        day: tue
+        activity: bike_tempo
+        minutes: {moderate: [50, 60]}
+        group: im_mod_bld_recovery_tue
+        why: >-
+          A short ride in a lighter week with a controlled tempo section: enough
+          intensity that next week's work does not feel like starting over, not
+          enough to cost you the recovery.
+      - name: comp_bld_rec_tue_test
+        day: tue
+        activity: bike_ftp_test
+        minutes: {competitive: [42, 42]}
+        window: [0.0, 0.55]
+        group: im_comp_bld_recovery_tue
+        why: >-
+          A bike test in a recovery week does double duty: it is the one hard
+          effort you can afford when the volume is down, and it re-anchors the
+          power targets every ride in the coming weeks is written against.
+      - name: comp_bld_rec_tue_easy
+        day: tue
+        activity: bike_endurance
+        minutes: {competitive: [70, 95]}
+        window: [0.55, 1.0]
+        group: im_comp_bld_recovery_tue
+        why: >-
+          A steady, easy ride: the frequency stays, the load comes off. Recovery
+          weeks are where the previous weeks of training actually turn into
+          fitness.
+      - name: mod_bld_rec_tue_swim
+        day: tue
+        activity: swim_recovery
+        metres: {moderate: [1500, 1800]}
+        # intent: As mod_rec_tue_swim (2026-10-01).
+        why: >-
+          An easy swim midweek keeps you in the water while the load comes off.
+          It moves blood and loosens everything without asking anything of your
+          legs.
+      - name: basic_bld_rec_tue_swim
+        day: tue
+        activity: swim_recovery
+        metres: {basic: [1200, 1600]}
+        window: [0.72, 1.0]
+        # intent: As basic_rec_tue_swim (2026-10-03): Monday stays off, and
+        # the swim keeps out of the test weeks.
+        why: >-
+          An easy swim midweek keeps you in the water while the load comes off.
+          It moves blood and loosens everything without asking anything of your
+          legs.
+      - name: basic_bld_rec_thu_run
+        day: thu
+        why: >-
+          An easy run keeps your running frequency intact through the recovery
+          week. The point of the week is absorption, so the effort stays low and
+          your legs get their chance to catch up.
+        variants:
+          - activity: run_easy
+            minutes: {basic: [40, 70]}
+            window: [0.0, 0.35]
+            group: im_basic_bld_recovery_thu
+          - activity: run_threshold_test
+            minutes: {basic: [44, 44]}
+            window: [0.35, 0.7]
+            group: im_basic_bld_recovery_thu
+            why: >-
+              Testing your run threshold on the fresh legs of a recovery week
+              gives you an honest number and updates the paces the rest of
+              your running is built on. It also keeps one real effort in a
+              week that is otherwise all easy.
+          - activity: run_easy
+            minutes: {basic: [40, 70]}
+            window: [0.7, 1.0]
+            group: im_basic_bld_recovery_thu
+      - name: mod_bld_rec_thu_test
+        day: thu
+        activity: run_threshold_test
+        minutes: {moderate: [44, 44]}
+        cadence_weeks: 8
+        key: 0.3
+        group: im_mod_bld_recovery_thu
+        why: >-
+          Every eight weeks, in a lighter week when your legs are rested, the
+          easy run is the run threshold test instead: a 30-minute effort after a
+          proper warm-up, which updates the paces the rest of your running is
+          built on.
+      - name: mod_bld_rec_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {moderate: [45, 65]}
+        group: im_mod_bld_recovery_thu
+        why: >-
+          An easy run keeps your running frequency intact through the recovery
+          week. The point of the week is absorption, so the effort stays low and
+          your legs get their chance to catch up.
+      - name: comp_bld_rec_thu_test
+        day: thu
+        activity: run_threshold_test
+        minutes: {competitive: [44, 44]}
+        window: [0.0, 0.55]
+        group: im_comp_bld_recovery_thu
+        why: >-
+          Testing your run threshold on the fresh legs of a recovery week gives
+          you an honest number and updates the paces the rest of your running is
+          built on. It also keeps one real effort in a week that is otherwise
+          all easy.
+      - name: comp_bld_rec_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {competitive: [55, 75]}
+        window: [0.55, 1.0]
+        group: im_comp_bld_recovery_thu
+        why: >-
+          An easy run keeps your running frequency intact through the recovery
+          week. The point of the week is absorption, so the effort stays low and
+          your legs get their chance to catch up.
+      - name: basic_bld_rec_fri_test
+        day: fri
+        activity: swim_css_test
+        metres: {basic: [2350, 2350]}
+        window: [0.0, 0.3]
+        group: im_basic_bld_recovery_fri
+        why: >-
+          Your swim test sets the pace every other swim session is prescribed
+          from, so it is worth doing rested. In a recovery week it is the one
+          session where you get to push.
+      - name: basic_bld_rec_fri_easy
+        day: fri
+        activity: swim_recovery
+        metres: {basic: [1500, 2800]}
+        window: [0.3, 1.0]
+        group: im_basic_bld_recovery_fri
+        why: >-
+          An easy swim keeps you in the water without asking anything of you.
+          Technique holds together far better with frequent light contact than
+          with a week away from the pool.
+      - name: mod_bld_rec_fri_test
+        day: fri
+        activity: swim_css_test
+        metres: {moderate: [2350, 2350]}
+        cadence_weeks: 8
+        key: 0.3
+        group: im_mod_bld_recovery_fri
+        why: >-
+          Every eight weeks, in a lighter week when you are rested, the short
+          set is the swim test instead: a 400 m and a 200 m time trial after a
+          proper warm-up, which re-sets the pace every other swim session is
+          prescribed from.
+      - name: mod_bld_rec_fri_swim
+        day: fri
+        activity: swim_css
+        metres: {moderate: [1500, 1800]}
+        group: im_mod_bld_recovery_fri
+        why: >-
+          A short set at your usual hard-swim pace inside an easy week. One
+          brief reminder of speed keeps the sharpness you built; the rest of the
+          swim, and the week, stays easy.
+      - name: comp_bld_rec_fri_test
+        day: fri
+        activity: swim_css_test
+        metres: {competitive: [2350, 2350]}
+        window: [0.0, 0.55]
+        group: im_comp_bld_recovery_fri
+        why: >-
+          Your swim test sets the pace every other swim session is prescribed
+          from, so it is worth doing rested. In a recovery week it is the one
+          session where you get to push.
+      - name: comp_bld_rec_fri_easy
+        day: fri
+        activity: swim_recovery
+        metres: {competitive: [2200, 3000]}
+        window: [0.55, 1.0]
+        group: im_comp_bld_recovery_fri
+        why: >-
+          An easy swim keeps you in the water without asking anything of you.
+          Technique holds together far better with frequent light contact than
+          with a week away from the pool.
+      - name: bld_rec_sat_bike
+        day: sat
+        activity: bike_endurance
+        minutes: {basic: [90, 135], moderate: [140, 170], competitive: [160, 195]}
+        why: >-
+          The long ride stays, at reduced length and easy throughout. Big build
+          weeks only become fitness once you give the body a lighter week to
+          absorb them.
+      - name: bld_rec_sun_run
+        day: sun
+        activity: run_easy
+        minutes: {basic: [50, 80], moderate: [95, 120], competitive: [110, 135]}
+        why: >-
+          An easy Sunday run instead of the usual long one. You keep the habit
+          and the frequency; the length comes back next week, when your legs can
+          use it.
+      - name: mod_bld_rec_wed_bike
+        day: wed
+        activity: bike_endurance
+        minutes: {moderate: [50, 60]}
+        # intent: As in the half: the load weeks grew with the Friday run and
+        # the third swim, and an easier week without it fell under half their
+        # hours.
+        why: >-
+          A short easy ride. It keeps the legs turning while the training load
+          drops; resist the urge to turn it into a real session.
+
+  peak/load:
+    contract:
+      must_not_contain: [run_10k_race_pace, run_5k_race_pace, run_hm_pace]
+    slots:
+      - name: comp_peak_mon_swim_easy
+        day: mon
+        activity: swim_recovery
+        metres: {competitive: [2000, 2500]}
+        # intent: The easy day holds through PEAK (2026-10-01); the quality
+        # swim moves to Tuesday (comp_peak_tue_swim_css).
+        why: >-
+          Monday stays your easy day through the peak weeks: one relaxed swim
+          after the big weekend and nothing else. Recovery is where the
+          weekend's work turns into fitness.
+      - name: basic_peak_tue_bike_threshold
+        day: tue
+        activity: bike_threshold
+        rotation: [bike_threshold, bike_sweet_spot]
+        minutes: {basic: [45, 60]}
+        why: >-
+          One firm ride a week, alternating between threshold intervals and longer
+          sweet-spot blocks, holds the sustainable power the build gave you while the
+          weekend does the race-specific work. The peak weeks are for keeping what you
+          have, not adding anything new.
+      - name: peak_tue_bike_threshold
+        day: tue
+        activity: bike_threshold
+        rotation: [bike_threshold, bike_over_under, bike_sweet_spot]
+        minutes: {moderate: [50, 65], competitive: [55, 75]}
+        group: im_peak_bike_quality
+        # intent: Tue bike holds threshold early in PEAK, then deliberately
+        # softens to tempo at frac 0.5 for freshness. Lead half; PEAK intensity
+        # is openers only, so structured threshold gives way to sub-threshold
+        # tempo.
+        # intent: Over-unders (2026-09-30): 3 x (2 min just under, 1 min just over
+        # threshold) per rep, the classic way to train holding power while clearing
+        # the fatigue a surge leaves.
+        why: >-
+          Threshold riding, rotating with over-unders and longer sweet-spot blocks,
+          holds on to the sustainable power you spent the whole build developing. Early
+          in the peak weeks it is still a genuine session; the weekend rides carry the
+          race specificity from here.
+      - name: peak_tue_bike_tempo
+        day: tue
+        activity: bike_tempo
+        minutes: {moderate: [48, 58], competitive: [48, 62]}
+        window: [0.5, 1.0]
+        group: im_peak_bike_quality
+        # intent: Late-window softening: bike quality steps down from threshold
+        # to sub-threshold tempo for race freshness. Tail of the Tue crossover,
+        # the deliberate soften-as-race-nears decision.
+        why: >-
+          As race day nears the midweek ride softens from threshold to a firm
+          but comfortable effort. The point stops being to build and starts
+          being to arrive fresh with the fitness intact.
+      - name: comp_peak_thu_easy_run
+        day: thu
+        activity: run_easy
+        minutes: {competitive: [35, 45]}
+        # intent: On Thursday since 2026-10-03, as comp_build_thu_easy_run.
+        why: >-
+          A short easy run the day after the hard run keeps your running frequent
+          and loosens what Wednesday worked.
+      - name: mod_peak_tue_swim_drill
+        day: tue
+        activity: swim_drill
+        metres: {moderate: [1500, 1800]}
+        window: [0.0, 0.75]
+        # intent: MODERATE's third PEAK swim (2026-10-01): the peak weeks had
+        # dropped to two swims against the build's three, and the swim ceiling
+        # has room for it, about 0.5 h a week. Not in the last PEAK load week:
+        # its hours ceiling falls there, and the week booked 2-3 min over it
+        # (test_ironman_weekly_hours_within_capacity). A technique swim on
+        # Tuesday since 2026-11-03, as in the half.
+        why: >-
+          A technique swim beside the Tuesday ride. Stroke quality is the first
+          thing to go when you are tired, and these are your most tiring weeks,
+          so the drills stay in right to the end.
+      - name: basic_peak_tue_swim_css
+        day: tue
+        activity: swim_css
+        rotation: [swim_css, swim_threshold]
+        metres: {basic: [1750, 2500]}
+        window: [0.0, 0.5]
+        group: im_basic_peak_swim
+        # intent: BASIC swim runs a CSS quality set early in PEAK, crossing
+        # to recovery swim at frac 0.5 as race nears. Lead half; retains the CSS
+        # marker for the recreational tier before backing off (tri.md §3, tlc
+        # §6). Beside Tuesday's quality ride, so the swims spread (2026-10-03).
+        why: >-
+          The week's quality swim, shorter repeats one week and longer ones the
+          next, keeps the pace you will hold on race day feeling normal. Peak
+          weeks maintain sharpness rather than chase new fitness.
+      - name: basic_peak_tue_swim_recovery
+        day: tue
+        activity: swim_recovery
+        metres: {basic: [1500, 1750]}
+        window: [0.5, 1.0]
+        group: im_basic_peak_swim
+        why: >-
+          Closer to race day the swim goes easy and loose: flush the arms,
+          remind the body of the stroke, and add nothing to the fatigue you will
+          carry to the start line.
+      - name: basic_peak_wed_run_threshold
+        day: wed
+        activity: run_threshold
+        rotation: [run_threshold, run_tempo]
+        minutes: {basic: [40, 55]}
+        window: [0.0, 0.55]
+        group: im_basic_peak_wed_run
+        why: >-
+          One controlled quality run a week, threshold intervals one week and a steady
+          tempo block the next, keeps the sharp end of your running alive while the long
+          ride and the brick dominate the load.
+      - name: basic_peak_wed_run_tempo
+        day: wed
+        activity: run_aerobic_tempo
+        rotation: [run_aerobic_tempo, run_progression]
+        minutes: {basic: [35, 50]}
+        window: [0.55, 1.0]
+        group: im_basic_peak_wed_run
+        # intent: Late-PEAK softening (2026-10-03), as peak_wed_run_tempo: the
+        # run quality steps down from threshold as the race nears. From 0.55,
+        # not 0.5: at 36 weeks the race-rehearsal week sits at 0.5, and a
+        # tempo run there shrank the rehearsal ride and long run under their
+        # minimums (4.3 h, 2:24); the threshold run's card does not fit that
+        # week, so it keeps the rehearsal whole, as before.
+        why: >-
+          As race day approaches the midweek run steps down from hard to steady,
+          a comfortably firm tempo one week and a progression run the next.
+          Freshness is the product now; the fitness is already in the bank.
+      - name: peak_wed_run_threshold
+        day: wed
+        activity: run_threshold
+        rotation: [run_threshold, run_tempo]
+        minutes: {moderate: [50, 65]}
+        group: im_peak_run_quality
+        # intent: Wed run holds threshold early in PEAK, softening to aerobic
+        # tempo at frac 0.5, mirroring the Tue bike. Lead half; PEAK run
+        # intensity is race-pace/activation only.
+        why: >-
+          Comfortably-hard running, alternating between threshold intervals and a
+          continuous tempo block, holds on to the run fitness the build produced. Your
+          race-specific running happens off the bike now, so this session exists to
+          maintain, not to add.
+      - name: peak_wed_run_tempo
+        day: wed
+        activity: run_aerobic_tempo
+        rotation: [run_aerobic_tempo, run_progression]
+        minutes: {moderate: [35, 50]}
+        window: [0.5, 1.0]
+        group: im_peak_run_quality
+        # intent: Late-window softening to aerobic tempo: run quality steps down
+        # from threshold as race nears. Tail of the Wed crossover, the
+        # freshness-taper decision.
+        why: >-
+          As race day approaches the midweek run steps down from hard to steady
+          tempo. Freshness is the product now; the fitness is already in the
+          bank.
+      - name: comp_peak_wed_long_run
+        day: wed
+        activity: run_long_progression
+        minutes: {competitive: [140, 165]}
+        progression: im_long_run
+        window: [0.0, 0.5]
+        load_weeks: true
+        group: im_comp_peak_wed_run
+        # intent: COMPETITIVE's early-PEAK long run, on a day of its own since
+        # 2026-10-01. Saturday's tempo brick (comp_peak_sat_brick_p1) rules out
+        # a Sunday long run (run_long_after_hard_run_day); its Tuesday home
+        # (2026-09-14) shared the day with the threshold ride and was followed
+        # by Wednesday's threshold run. Here it is the week's run quality, and
+        # at up to 2:45 the plan's longest run (longest_long_session_in_peak,
+        # long_run_peak 2.5-3 h), above the 2:30 build cap.
+        why: >-
+          The longest runs of the plan, finishing at race pace, on a day of
+          their own. Saturday's brick already has you running at race effort
+          off the bike, so the long run comes midweek, on legs fresher than they
+          would be the day after that brick.
+      - name: comp_peak_wed_run_tempo
+        day: wed
+        activity: run_aerobic_tempo
+        rotation: [run_aerobic_tempo, run_progression]
+        minutes: {competitive: [40, 55]}
+        window: [0.5, 1.0]
+        load_weeks: true
+        group: im_comp_peak_wed_run
+        why: >-
+          Late in the peak weeks Wednesday's run steps down to a steady tempo.
+          The long runs have done their work; this one keeps the feel for pace
+          while the fatigue starts to clear.
+      - name: peak_thu_bike_endurance
+        day: thu
+        activity: bike_endurance
+        minutes: {basic: [60, 90], moderate: [55, 80]}
+        why: >-
+          A steady midweek ride keeps your bike frequency and aerobic volume up
+          between the week's hard days. It is deliberately unremarkable — the
+          big weekend ride is what you need to be ready for.
+      - name: mod_peak_wed_swim_css
+        day: wed
+        activity: swim_css
+        rotation: [swim_css, swim_threshold]
+        metres: {moderate: [1800, 2500]}
+        # intent: MODERATE's PEAK quality swim, beside the run quality on
+        # Wednesday since 2026-11-03, as in the half and the build.
+        why: >-
+          The week's quality swim: repeats at your race-relevant pace, shorter
+          ones one week and longer ones the next. Swim fitness is cheap to keep
+          and slow to rebuild, so it stays sharp through the peak weeks.
+      - name: comp_peak_thu_bike_tempo
+        day: thu
+        activity: bike_tempo
+        minutes: {competitive: [65, 80]}
+        # intent: 2026-10-01: a tempo ride, not a second sweet-spot/threshold
+        # day, and no second brick. Since 2026-10-03 it shares Thursday with an
+        # easy run; the quality swim is Tuesday's (comp_peak_tue_swim_css).
+        why: >-
+          A steady tempo ride midweek holds the sustained power the build gave
+          you without adding another hard day. Tuesday's ride is the sharp one
+          and Saturday's is the rehearsal.
+      - name: comp_peak_tue_swim_css
+        day: tue
+        activity: swim_css
+        rotation: [swim_css, swim_threshold]
+        metres: {competitive: [2250, 3000]}
+        # intent: The quality swim sits on
+        # Tuesday beside the quality ride, so the week's swims spread out
+        # (Tuesday and Friday) instead of Thursday and Friday back to back,
+        # five days without swimming after them. Swimming spares the legs,
+        # so it is the one sport that shares the bike's hard day.
+        why: >-
+          The week's quality swim: repeats at your race-relevant pace, shorter
+          ones one week and longer ones the next. Swim fitness is cheap to keep
+          and slow to rebuild, so it stays sharp through the peak weeks.
+      - name: peak_fri_swim_long
+        day: fri
+        activity: swim_long
+        metres: {basic: [3800, 4000], moderate: [3850, 4250], competitive: [4300, 4500]}
+        progression: im_long_swim
+        group: im_peak_fri_swim
+        # intent: Every tier floors PEAK at >= race distance (3.8 km). Since
+        # 2026-09-28 the long swim grows at most one step from the swim booked
+        # the load week before (R-SESS-013), so on a routine PEAK week a
+        # swimmer whose ramp is behind swims under the floor; the race-distance
+        # swim below is the one PEAK swim exempt from the step (R-SESS-B-006).
+        why: >-
+          The longest swims of the plan land here, building toward the 3.8 km
+          you will race. It comes the day before the big weekend on purpose —
+          swimming builds endurance without touching the legs you are about to
+          need.
+      - name: peak_fri_swim_race_distance
+        day: fri
+        activity: swim_long
+        metres: {basic: [3800, 4000], moderate: [3850, 4250], competitive: [4300, 4500]}
+        progression: im_long_swim
+        group: im_peak_fri_swim
+        race_sim: true
+        # intent: The race-distance swim (R-SESS-B-006) rides the race-sim week,
+        # the one weekend exempt from the step (R-SESS-023): the authored
+        # minimum, not the progression, makes the race swim a rehearsed
+        # distance rather than a first.
+        why: >-
+          A full race-distance swim in your rehearsal week, so the 3.8 km is
+          something you have already done before race morning. It comes the day
+          before the big weekend on purpose — swimming builds endurance without
+          touching the legs you are about to need.
+      - name: basic_peak_sat_bike_p1
+        day: sat
+        activity: bike_long_im_race_pace
+        minutes: {basic: [185, 240]}
+        progression: im_long_bike
+        window: [0.0, 0.5]
+        group: im_basic_peak_sat_bike
+        # intent: BASIC Sat race-pace long ride: p1 (early) and p2 (late) flank
+        # one pinned race_sim big rehearsal week (basic_peak_sat_bike_big). Lead
+        # of the BASIC weekend crossover; the big ride is the durability
+        # dress-rehearsal peaking 4-6 wk out.
+        why: >-
+          Long riding at full-distance race effort is where the peak weeks earn their
+          name: you rehearse the exact effort, position and fuelling you will
+          use on the day. Race effort here sits well below your threshold — the
+          skill is holding it for hours, not going hard.
+      - name: basic_peak_sat_bike_big
+        day: sat
+        activity: bike_long_im_race_pace
+        minutes: {basic: [270, 300]}
+        progression: im_long_bike
+        group: im_basic_peak_sat_bike
+        race_sim: true
+        # intent: The single BASIC race_sim week: the big race-pace rehearsal
+        # ride (270-300 min), bypassing frac to fire once. IM race-pace ride
+        # sits well below threshold, training the sustained sub-threshold output
+        # that is the central limiter. Its step is 0.3, not the default quarter
+        # (the maintainer's call): the routine long ride tops out
+        # at its 210-min BUILD ceiling, so 270 min is a 29 % step for the
+        # default athlete at 24 weeks (R-SESS-023).
+        max_step: 0.3
+        why: >-
+          The dress rehearsal: the longest ride of the plan, at race effort,
+          with race fuelling and race kit. It lands several weeks out so you get
+          the durability benefit and still have time to absorb it before race
+          day.
+      - name: basic_peak_sat_bike_p2
+        day: sat
+        activity: bike_long_im_race_pace
+        minutes: {basic: [155, 200]}
+        progression: im_long_bike
+        window: [0.5, 1.0]
+        group: im_basic_peak_sat_bike
+        why: >-
+          After the big rehearsal ride the long ride stays at race effort but
+          comes back in length. You have proved the distance; from here the job
+          is to keep the feel while you start banking freshness.
+      - name: peak_sat_bike_p1
+        day: sat
+        activity: bike_long_im_race_pace
+        minutes: {moderate: [260, 305], competitive: [320, 330]}
+        progression: im_long_bike
+        window: [0.0, 0.5]
+        # intent: The big weekend (this ride, the short brick and the
+        # Sunday long run, or the competitive Wednesday one) reads the
+        # peak's load weeks, so a recovery week on one of the peak's early
+        # weeks no longer costs one of the two big weekends.
+        load_weeks: true
+        group: im_peak_sat_bike
+        # intent: MOD/COMP Sat race-pace long ride, early window. COMPETITIVE is
+        # capped at 5.5 h (320-330 min) per commit 3997308: tlc §4 puts the IM
+        # race-pace durability ride at 70-80% of race duration, so a longer
+        # rehearsal is over-long. Lead half; p2 recedes late.
+        why: >-
+          The long race-pace ride is the most race-specific session you will do:
+          hours at the effort you intend to hold, fuelling as you intend to
+          fuel. It reaches roughly three quarters of your expected bike split —
+          beyond that the recovery cost outgrows the benefit.
+      - name: peak_sat_bike_p2
+        day: sat
+        activity: bike_long_im_race_pace
+        minutes: {moderate: [190, 245], competitive: [220, 285]}
+        progression: im_long_bike
+        window: [0.5, 1.0]
+        load_weeks: true
+        group: im_peak_sat_bike
+        why: >-
+          The long ride stays at race effort but shortens as race day
+          approaches. The durability is already built; now it is about keeping
+          the pattern familiar while the fatigue drains away.
+      - name: basic_peak_sat_brick_p1
+        day: sat
+        activity: run_brick_short
+        minutes: {basic: [20, 35]}
+        window: [0.0, 0.6]
+        group: im_basic_peak_sat_brick
+        brick: true
+        # intent: Lead of the BASIC off-the-bike run crossover: a short brick
+        # (20-35 min) early, crossing at frac 0.6 to a long race-pace brick,
+        # ramping the run-off-bike stimulus toward PEAK race-simulation
+        # (race-duration bike + race-pace run).
+        why: >-
+          A short run off the long ride keeps the transition familiar while the
+          ride does the heavy lifting. Early in these weeks the bike is the
+          session and the run is the rehearsal; it grows later.
+      - name: basic_peak_sat_brick_p2
+        day: sat
+        activity: run_brick_long
+        minutes: {basic: [38, 55]}
+        window: [0.6, 1.0]
+        group: im_basic_peak_sat_brick
+        brick: true
+        # intent: The grown BASIC brick: a long race-pace run (38-55 min) off
+        # the long ride in the late window, the durability-under-fatigue
+        # rehearsal. Tail carrying the short-to-long growth decision (frac 0.6
+        # crossover).
+        why: >-
+          Now the run off the bike becomes a real run at race effort — the
+          closest thing to race day you will do in training. Whether your
+          marathon is a run or a survival shuffle is decided by how well your
+          legs handle this exact stimulus.
+      - name: peak_sat_brick_p1
+        day: sat
+        activity: run_brick_im_tempo
+        minutes: {moderate: [22, 35]}
+        window: [0.0, 0.5]
+        load_weeks: true
+        group: im_peak_sat_brick
+        brick: true
+        # intent: MODERATE's off-the-bike run grows across PEAK: a short race-
+        # pace brick early (since 2026-11-03, as the half's peak), crossing at
+        # frac 0.5 to the long brick (RUN_BRICK_LONG). The Sunday long run
+        # stays: run_long_after_hard_run_day exempts brick runs. COMPETITIVE
+        # splits off at comp_peak_sat_brick_p1.
+        why: >-
+          A short run at full-distance race effort straight off the long ride.
+          Hold the effort and the fuelling you intend to hold on the day, and
+          find out now whether your bike pacing leaves you a marathon.
+      - name: comp_peak_sat_brick_p1
+        day: sat
+        activity: run_brick_im_tempo
+        minutes: {competitive: [25, 40]}
+        window: [0.0, 0.5]
+        load_weeks: true
+        group: im_peak_sat_brick
+        brick: true
+        # intent: COMPETITIVE's early-PEAK brick off the Sat key ride, at IM
+        # race pace. Added 2026-09-14: the rest-day rework re-keyed the Thu brick to
+        # RUN_BRICK_SHORT to stop a race-pace brick sitting behind a 50-70 min
+        # midweek ride, which left the tier's first half of PEAK with no
+        # race-pace run at all — tri.md §4's PEAK brick is race-duration bike +
+        # race-pace run as ONE session, and frac 0.0-0.5 had only an easy
+        # transition jog. The half-IM menus took the same shape on 2026-08-27
+        # (him_peak_sat_brick). 25-40 min sits inside the usual tempo-brick envelope
+        # (roughly 15-40 min); the frac 0.5 handoff to RUN_BRICK_LONG (82-115
+        # min) keeps the escalation intact. Unblocking this moved the tier's
+        # early-PEAK long run off Sunday to midweek (comp_peak_wed_long_run
+        # since 2026-10-01) — the run_long_after_hard_run_day lint forbids a
+        # Sunday long run the day after a tempo brick. Honest caveat: some Ironman programs instead put
+        # a tempo brick on Thursday behind a threshold ride and leave a shorter
+        # brick on the key ride. This slot follows tri.md §4 over that shape by
+        # decision, and brick_pairs_with_key_ride — itself
+        # doctrine-asserted — keeps the chaining honest either way.
+        why: >-
+          Running at full-distance race effort straight off the long ride is the
+          single most race-specific thing you will do. From the first peak week
+          it is a real rehearsal, not a token jog: hold the effort and the
+          fuelling you intend to hold on the day, and find out now whether your
+          bike pacing leaves you a marathon.
+      - name: peak_sat_brick_p2
+        day: sat
+        activity: run_brick_long
+        minutes: {moderate: [70, 95], competitive: [82, 115]}
+        window: [0.5, 1.0]
+        load_weeks: true
+        group: im_peak_sat_brick
+        brick: true
+        # intent: The grown MOD/COMP brick: a long race-pace run (70-115 min)
+        # off the long ride, training quality output on bike-fatigued legs. Tail
+        # carrying the short-to-long growth decision (frac 0.5 crossover).
+        why: >-
+          The full rehearsal: a long run at race effort on legs that have
+          already ridden for hours. Nothing else in the plan tells you as much
+          about your race-day pacing and fuelling.
+      - name: basic_peak_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {basic: [100, 130]}
+        progression: im_long_run
+        window: [0.0, 0.5]
+        group: im_basic_peak_sun_run
+        # intent: BASIC Sun long run in the early window, flanking one pinned
+        # race_sim big long run (basic_peak_sun_long_run_big) and handing to an
+        # easy recovery run late. Easy since 2026-10-03 (was
+        # RUN_LONG_PROGRESSION), as peak_sun_long_run: the Saturday race-pace
+        # ride carries the weekend's intensity, so only one weekend day is hard.
+        why: >-
+          The long runs land the day after the race-pace ride, so you rehearse
+          running on bike-tired legs. They stay easy: Saturday already carries
+          the race effort, and the job here is time on your feet.
+      - name: basic_peak_sun_long_run_big
+        day: sun
+        activity: run_long
+        minutes: {basic: [150, 160]}
+        progression: im_long_run
+        group: im_basic_peak_sun_run
+        race_sim: true
+        # intent: The single BASIC race_sim Sun long run (150-160 min),
+        # bypassing frac to fire once as the durability rehearsal. Held under 3
+        # h — beyond that the longest IM run's injury and recovery cost outweigh
+        # the marginal benefit.
+        why: >-
+          The longest run of the plan, done once, as a durability rehearsal. It
+          stays under three hours because past that the recovery cost outweighs anything more you would gain.
+      - name: basic_peak_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {basic: [45, 65]}
+        window: [0.5, 1.0]
+        group: im_basic_peak_sun_run
+        why: >-
+          With the big weekends behind you, Sunday's run drops to easy. From
+          here everything is about arriving at the start line fresh, not fitter.
+      - name: peak_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {moderate: [150, 155]}
+        progression: im_long_run
+        window: [0.0, 0.5]
+        load_weeks: true
+        group: im_peak_sun_run
+        # intent: MODERATE Sun long run in the early window on bike-fatigued
+        # legs, handing off at frac 0.5 to an easy recovery run late for
+        # freshness. Easy since 2026-10-01 (was RUN_LONG_PROGRESSION): the
+        # Saturday race-pace ride carries the weekend's intensity, so only one
+        # weekend day is hard; it stays on Sunday because a 2.5 h weekday run
+        # is hard to fit at this tier. COMPETITIVE splits off at
+        # comp_peak_wed_long_run.
+        why: >-
+          The longest runs of the plan land the day after the race-pace ride, so
+          you rehearse running on bike-tired legs. They stay easy: Saturday
+          already carries the race effort, and the job here is time on your
+          feet.
+      - name: peak_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {moderate: [45, 60]}
+        window: [0.5, 1.0]
+        load_weeks: true
+        group: im_peak_sun_run
+        why: >-
+          Late in the peak weeks the Sunday run goes easy so the accumulated
+          fatigue can start to clear. The long runs have done their work —
+          holding on to them now would only cost you on race day.
+      - name: comp_peak_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {competitive: [50, 70]}
+        window: [0.5, 1.0]
+        load_weeks: true
+        # intent: Late PEAK only (2026-10-01). Early PEAK leaves Sunday empty:
+        # the day after the 5-5.5 h race-pace ride and its tempo brick is a
+        # second easy day before Monday's swim. An easy run there was measured
+        # and rejected: it cost the rest-day band
+        # (rest_days) and the single-day form floor across the competitive
+        # cells for 40-50 min of easy running.
+        why: >-
+          Late in the peak weeks Sunday brings an easy run. The day after the
+          long rehearsal brick is for loosening up, not for adding load.
+      - name: mod_peak_fri_run_easy
+        day: fri
+        activity: run_easy
+        minutes: {moderate: [35, 45]}
+        why: >-
+          An easy run beside the long swim, your fourth run of the week. Keep it
+          genuinely easy: the weekend is where the work is.
+
+  peak/recovery:
+    slots:
+      - name: rec_pk_mon_swim
+        day: mon
+        activity: swim_recovery
+        metres: {competitive: [2000, 2750]}
+        why: >-
+          An easy swim to open a recovery week in the heaviest phase of the
+          plan. There is no quality anywhere this week — the big rehearsal
+          weekends only pay off if you absorb them.
+      - name: rec_pk_tue_bike
+        day: tue
+        activity: bike_endurance
+        minutes: {basic: [65, 75], competitive: [70, 95]}
+        why: >-
+          A short, easy ride. This close to the race a recovery week carries no
+          hard efforts at all; the fitness is made, and what you need now is to
+          let it surface.
+      - name: mod_rec_pk_tue_swim
+        day: tue
+        activity: swim_recovery
+        metres: {moderate: [1500, 1800]}
+        # intent: As mod_rec_tue_swim (2026-10-01).
+        why: >-
+          An easy swim midweek keeps you in the water while the load comes off.
+          It moves blood and loosens everything without asking anything of your
+          legs.
+      - name: basic_rec_pk_tue_swim
+        day: tue
+        activity: swim_recovery
+        metres: {basic: [1600, 1900]}
+        # intent: As basic_rec_tue_swim (2026-10-03): Monday stays off.
+        why: >-
+          An easy swim midweek keeps you in the water while the load comes off.
+          There is no quality anywhere this week — the big rehearsal weekends
+          only pay off if you absorb them.
+      - name: rec_pk_thu_run
+        day: thu
+        activity: run_easy
+        minutes: {basic: [50, 60], moderate: [45, 65], competitive: [55, 75]}
+        why: >-
+          An easy run to keep the legs turning over. Frequency stays, intensity
+          goes — that is the whole design of a recovery week this late in the
+          plan.
+      - name: rec_pk_fri_swim
+        day: fri
+        activity: swim_recovery
+        metres: {basic: [1300, 1600], competitive: [2200, 3000]}
+        why: >-
+          Easy swimming keeps your feel for the water through a week with no
+          hard sessions in it. The stroke stays honest with regular light
+          contact.
+      - name: rec_pk_sat_bike
+        day: sat
+        activity: bike_endurance
+        minutes: {basic: [130, 150], moderate: [125, 155], competitive: [145, 180]}
+        why: >-
+          The long ride shrinks to something comfortable. After the race-pace
+          rehearsals, a week of steady aerobic riding is what turns that work
+          into race-day fitness.
+      - name: rec_pk_sun_run
+        day: sun
+        activity: run_easy
+        minutes: {basic: [75, 90], moderate: [90, 115], competitive: [100, 130]}
+        why: >-
+          A relaxed Sunday run in place of the usual long one. The week is
+          deliberately light so you come out of it ready for the last hard block
+          before the taper.
+      - name: mod_rec_pk_tue_bike
+        day: tue
+        activity: bike_tempo
+        minutes: {moderate: [50, 65]}
+        why: >-
+          A short ride in a lighter week with a controlled tempo section: enough
+          intensity that next week's work does not feel like starting over, not
+          enough to cost you the recovery.
+      - name: mod_rec_pk_fri_swim
+        day: fri
+        activity: swim_css
+        metres: {moderate: [1500, 1800]}
+        why: >-
+          A short set at your usual hard-swim pace inside an easy week. One
+          brief reminder of speed keeps the sharpness you built; the rest of the
+          swim, and the week, stays easy.
+      - name: mod_rec_pk_wed_bike
+        day: wed
+        activity: bike_endurance
+        minutes: {moderate: [50, 60]}
+        why: >-
+          A short easy ride. It keeps the legs turning while the training load
+          drops; resist the urge to turn it into a real session.
+
+  taper/taper:
+    slots:
+      - name: comp_taper_mon_swim_recovery
+        day: mon
+        activity: swim_recovery
+        metres: {competitive: [2000, 2000]}
+        why: >-
+          An easy swim to open the taper week: it keeps you moving and loosens
+          what the last hard block left behind, without adding a thing to your
+          fatigue.
+      - name: basic_taper_tue_bike
+        day: tue
+        activity: bike_threshold
+        minutes: {basic: [45, 60]}
+        # intent: The taper's bike intensity touch. Bosquet 2007's third factor:
+        # volume falls, intensity is HELD (0.33 +/- 0.14, p<0.001). The threshold
+        # ride stays; the long ride and long run carry the cut.
+        why: >-
+          Volume drops in the taper but intensity does not — that is the part
+          athletes usually get wrong. A short, genuinely firm ride keeps your
+          legs sharp while everything around it gets shorter.
+      - name: taper_tue_bike_p1
+        day: tue
+        activity: bike_threshold
+        minutes: {moderate: [45, 60], competitive: [50, 65]}
+        window: [0.0, 0.34]
+        group: im_taper_tue_bike
+        # intent: Two-step taper (tlc §7): the first step holds a genuine
+        # threshold ride, the second softens to tempo at the 0.34 break.
+        # Intensity is maintained in short touches while volume falls, not
+        # zeroed out: a BIKE_OPENER here reads as ~4 % quality minutes and
+        # leaves the taper effectively intensity-free.
+        why: >-
+          The taper cuts volume, not quality. In its first step this is still a
+          real threshold ride, because holding intensity is what stops a taper
+          turning into detraining.
+      - name: taper_tue_bike_p2
+        day: tue
+        activity: bike_tempo
+        minutes: {moderate: [48, 55], competitive: [48, 58]}
+        window: [0.34, 1.0]
+        group: im_taper_tue_bike
+        why: >-
+          Closer to the race the same ride softens to a firm tempo — enough to
+          keep your legs switched on, little enough that you keep gaining
+          freshness every day.
+      - name: taper_wed_run
+        day: wed
+        activity: run_threshold
+        minutes: {basic: [26, 35], competitive: [33, 46]}
+        # intent: The taper's run intensity touch, mirroring the threshold run
+        # most tapers hold at an unchanged duration from their peak
+        # week. Short: the volume cut comes out of the Sunday long run, not out
+        # of the quality.
+        why: >-
+          The taper's run intensity touch: short, but genuinely at threshold.
+          The volume comes out of your long run, not out of the quality that
+          keeps you feeling fast.
+      - name: taper_wed_swim
+        day: wed
+        activity: swim_threshold
+        metres: {basic: [1500, 1500], moderate: [1800, 1800], competitive: [2000, 2000]}
+        # intent: Frequency AND intensity, at unchanged volume. Bosquet 2007's
+        # meta-analysis isolates three taper factors — cut volume 41-60 %, but
+        # hold INTENSITY (0.33 +/- 0.14) and FREQUENCY (0.35 +/- 0.17, both
+        # p<0.001). This slot restored the frequency half in 2026-07: without it
+        # the taper dropped from three swims a week to one, in the most
+        # frequency-sensitive discipline of the three. It was a recovery swim,
+        # which is why the taper still read ~0 quality minutes; threshold at the
+        # same metres buys the intensity half for free.
+        # Volume is untouched, so the plan-wide swim share — already at the top
+        # of the triathlon.md 15-20 % window — does not move. Pairs with the Wed
+        # run on a two-session day, mirroring the PEAK week's own run+swim
+        # Wednesday, so the taper keeps the week's shape and changes only its
+        # size.
+        why: >-
+          Frequency matters as much as intensity in a taper, and swimming is the
+          discipline that goes flat quickest when you skip sessions. This keeps
+          you in the water at a real pace without any of the cost a hard run
+          would carry.
+      - name: taper_thu_strides
+        day: thu
+        activity: run_strides
+        minutes: {basic: [12, 16], competitive: [20, 30]}
+        why: >-
+          A handful of quick, relaxed strides keeps your legs feeling springy in
+          a week where everything else is shorter and slower. Cheap sharpening,
+          with no fatigue attached.
+      - name: taper_thu_bike
+        day: thu
+        activity: bike_tempo
+        minutes: {basic: [65, 78], competitive: [70, 80]}
+        # intent: Restores the third weekly ride the taper had been dropping
+        # (PEAK rides three times, the taper rode twice), and carries the back
+        # half of the taper's intensity. Tempo rather than threshold: the sharp
+        # work is Tuesday's, this one holds sub-threshold aerobic power without
+        # adding another maximal day, which is the two-step shape tlc §7
+        # describes. It also carries the taper's volume top-up, because cycling
+        # is the one sport with room in its mix band (45-55 %, triathlon.md §2)
+        # while swimming already sits at the top of its 15-20 % window — buying
+        # the volume back in the water would break the mix instead.
+        # COMPETITIVE's floor rose 65 -> 70 with its heavier race week: the QP
+        # had been lifting this ride to offset race-day over-freshness, and
+        # without that lift the taper held under half the peak's quality.
+        why: >-
+          A third ride keeps your cycling frequency where it has been, at a
+          comfortable tempo rather than a hard effort — the sharp work is
+          Tuesday's. The bike is the easiest place to hold volume while you back
+          off, because it costs you the least in freshness.
+      - name: taper_fri_swim
+        day: fri
+        activity: swim_threshold
+        metres: {basic: [1500, 1500], competitive: [2000, 2000]}
+        # intent: The taper's second threshold swim, at unchanged metres.
+        # Swimming is where tapers concentrate their intensity —
+        # several hold two quality swims a week through the taper — because it
+        # is the cheapest sport to hold quality in: no eccentric loading, so the
+        # freshness cost of a hard swim is far below a hard run.
+        why: >-
+          A second quality swim in the taper week. Swimming has no pounding, so
+          a hard swim leaves far less residue than a hard run — it is where
+          quality can be held most cheaply as race day comes.
+      - name: basic_taper_sat_bike_p1
+        day: sat
+        activity: bike_endurance
+        minutes: {basic: [175, 200]}
+        window: [0.0, 0.4]
+        group: im_basic_taper_sat
+        # intent: BASIC's plainer taper: endurance-only both halves (no
+        # race-pace touch), stepping down at a later 0.4 break to hold more
+        # volume early before the deload. Still a two-step exponential with a
+        # slower initial drop (tlc §7).
+        why: >-
+          The long ride shortens but stays steady — you keep the aerobic habit
+          intact and empty nothing out of your legs. The first step of the taper
+          takes only part of the volume; the rest goes in the final week.
+      - name: basic_taper_sat_bike_p2
+        day: sat
+        activity: bike_endurance
+        minutes: {basic: [85, 88]}
+        window: [0.4, 1.0]
+        group: im_basic_taper_sat
+        why: >-
+          In the last stretch the weekend ride comes right down. Every extra
+          hour now costs you freshness and buys nothing you will still have on
+          race day.
+      - name: taper_sat_bike_p1
+        day: sat
+        activity: bike_long_im_race_pace
+        minutes: {moderate: [200, 255], competitive: [225, 240]}
+        window: [0.0, 0.34]
+        group: im_taper_sat_bike
+        # intent: Two-step taper: step 1 retains the race-pace long ride as its
+        # held quality session (tlc §7: retain 1-2 quality sessions), crossing
+        # to plain endurance at frac 0.34 for step 2. MODERATE's p1 bound was
+        # raised (commit 906deea) so the taper lands ~40% of peak rather than an
+        # over-deloaded ~32% risking detraining/staleness (defends
+        # taper_volume_drop).
+        why: >-
+          The taper's first step keeps the race-pace long ride as its one held
+          quality session, at a fraction of its previous length. Race effort
+          should still feel completely familiar when you line up.
+      - name: taper_sat_bike_p2
+        day: sat
+        activity: bike_endurance
+        minutes: {moderate: [120, 150], competitive: [75, 120]}
+        window: [0.34, 1.0]
+        group: im_taper_sat_bike
+        why: >-
+          The second step drops the ride to plain steady endurance. The
+          rehearsals are done; from here riding exists only to keep you loose.
+      - name: basic_taper_sun_run_p1
+        day: sun
+        activity: run_long
+        minutes: {basic: [75, 90]}
+        window: [0.0, 0.4]
+        group: im_basic_taper_sun
+        # intent: BASIC's plainer run taper: a long run early, dropping to easy
+        # at a later 0.4 break so more volume is held before the deload.
+        # Two-step exponential with a slower initial drop (tlc §7).
+        why: >-
+          The long run gets shorter but is still a long run — you hold the
+          aerobic pattern while the volume comes down in stages rather than all
+          at once.
+      - name: basic_taper_sun_run_p2
+        day: sun
+        activity: run_easy
+        minutes: {basic: [45, 47]}
+        window: [0.4, 1.0]
+        group: im_basic_taper_sun
+        why: >-
+          In the final stretch Sunday's run is simply easy. Nothing you add now
+          will be fitness by race day, and everything you leave out becomes
+          freshness.
+      - name: taper_sun_run_p1
+        day: sun
+        activity: run_long
+        minutes: {moderate: [80, 110], competitive: [100, 115]}
+        window: [0.0, 0.34]
+        group: im_taper_sun_run
+        # intent: Two-step taper: the first-third keeps a longer run to hold
+        # durability, dropping to easy at frac 0.34 for step 2. MODERATE's p1
+        # bound was raised (commit 906deea) so the Sun long run helps the taper
+        # land ~40% of peak instead of an over-deloaded ~32% (defends
+        # taper_volume_drop).
+        why: >-
+          The taper's first step keeps a genuine long run, well short of its
+          peak length, so your durability does not go soft. Cutting volume in
+          two stages beats dropping it in one — you keep the feel while the
+          fatigue drains.
+      - name: taper_sun_run_p2
+        day: sun
+        activity: run_easy
+        minutes: {moderate: [30, 45], competitive: [40, 65]}
+        window: [0.34, 1.0]
+        group: im_taper_sun_run
+        why: >-
+          In the last stretch the Sunday run goes short and easy. The marathon
+          is already in your legs; the job now is to show up rested.
+
+  # COMPETITIVE's race week carries more easy volume (4.67 h, 0.27-0.30 of
+  # its peak; the band reads 0.19-0.40): the shared 3.67 h week
+  # read 0.21 of a 17 h peak and left race-day TSB / CTL at 0.52 against the
+  # band's 0.38-0.48. The opener stays shared: lengthening it instead
+  # moved taper_quality_share out of its band. Since 2026-10-01 its Monday is
+  # the week's easy swim, as in every other COMPETITIVE week, and the 90-min
+  # easy ride moves to Wednesday at unchanged volume.
+      - name: mod_taper_tue_swim_drill
+        day: tue
+        activity: swim_drill
+        metres: {moderate: [1500, 1500]}
+        why: >-
+          A technique swim beside the Tuesday ride. With the volume falling,
+          your stroke gets the attention it never had room for when you were
+          tired.
+      - name: mod_taper_wed_run_p1
+        day: wed
+        activity: run_threshold
+        minutes: {moderate: [46, 50]}
+        window: [0.0, 0.34]
+        group: im_mod_taper_wed_run
+        # intent: The half's taper week: the quality days of the load week and
+        # no others. The old week held six hard sessions against the peak's
+        # four to five, 1.6 times its quality minutes. Bounds 46-50: the
+        # threshold card's smallest set books 50 minutes.
+        why: >-
+          Your usual midweek quality run, a little shorter. The volume falls in
+          these weeks but the intensity stays, so your legs keep their sharpness
+          while the fatigue drains out.
+      - name: mod_taper_wed_run_p2
+        day: wed
+        activity: run_aerobic_tempo
+        minutes: {moderate: [36, 42]}
+        window: [0.34, 1.0]
+        group: im_mod_taper_wed_run
+        why: >-
+          A short, firm run, the last real running effort before race week. Stay
+          controlled: this keeps the feel for the effort and asks little of your
+          legs.
+      - name: mod_taper_thu_bike
+        day: thu
+        activity: bike_endurance
+        minutes: {moderate: [50, 70]}
+        why: >-
+          An easy midweek ride. It keeps the legs turning without adding any
+          fatigue you would have to carry into race week.
+      - name: mod_taper_fri_swim
+        day: fri
+        activity: swim_endurance
+        metres: {moderate: [1800, 1800]}
+        why: >-
+          A steady, continuous swim. Long enough to keep the feel for the water,
+          short enough to leave you fresher than last week.
+      - name: mod_taper_fri_run
+        day: fri
+        activity: run_easy
+        minutes: {moderate: [30, 36]}
+        why: >-
+          An easy run beside the swim. It keeps your running rhythm and nothing
+          more.
+      - name: mod_taper_sat_brick_p1
+        day: sat
+        activity: run_brick_im_tempo
+        minutes: {moderate: [15, 25]}
+        window: [0.0, 0.34]
+        brick: true
+        why: >-
+          A short run at race effort straight off the ride, the last time you
+          rehearse the transition before race day. Keep it short and controlled.
+  taper/race:
+    slots:
+      - name: comp_race_mon_swim_recovery
+        day: mon
+        activity: swim_recovery
+        metres: {competitive: [1250, 1250]}
+        why: >-
+          Race week opens with your usual easy Monday: a short, relaxed swim to
+          stay in touch with the water. Feel matters more than fitness now.
+      - name: race_tue_run
+        day: tue
+        activity: run_easy
+        minutes: {basic: [35, 35], moderate: [35, 35], competitive: [45, 45]}
+        why: >-
+          A short easy run. Race week keeps your movement patterns familiar and
+          does nothing else; every session should feel smaller than you want it
+          to be.
+      - name: race_tue_swim_recovery
+        day: tue
+        activity: swim_recovery
+        metres: {basic: [1250, 1250], moderate: [1250, 1250]}
+        why: >-
+          A short, easy swim to stay in touch with the water. Feel matters more
+          than fitness now — you want the stroke to be automatic when the gun
+          goes.
+      - name: comp_race_wed_bike
+        day: wed
+        activity: bike_endurance
+        minutes: {competitive: [90, 90]}
+        why: >-
+          The week's one longer ride, easy all the way: enough time on the bike
+          to keep your legs from feeling flat, early enough in the week to cost
+          you nothing on race day.
+      - name: mod_race_wed_bike
+        day: wed
+        activity: bike_endurance
+        minutes: {basic: [30, 30], moderate: [45, 45]}
+        # intent: MODERATE's race-week spin moves off Monday (2026-10-01), so
+        # Monday stays the rest day it is in every other week; BASIC's since
+        # 2026-10-03, shortened 45 -> 30 min: two days nearer the race, the
+        # 45-min spin left low-volume BASIC plans further under the
+        # race-day freshness (TSB / CTL 0.33 against 0.38-0.49).
+        why: >-
+          An easy spin midweek, enough to stop your legs feeling flat and short
+          enough to be free. Everything this week exists to keep you loose, not
+          to add fitness.
+      - name: race_thu_bike_opener
+        day: thu
+        activity: bike_opener
+        minutes: [35, 35]
+        why: >-
+          A few brief, sharp efforts to wake the system up after days of easy
+          riding. Openers stop you starting the race feeling sluggish, and cost
+          you nothing in freshness.
+      - name: race_thu_run_short
+        day: thu
+        activity: run_easy
+        minutes: {basic: [15, 15], moderate: [15, 15], competitive: [20, 20]}
+        why: >-
+          A very short jog straight off the opener ride, keeping the bike-to-run
+          switch familiar in the final days. Minutes, not miles.
+      - name: race_fri_swim
+        day: fri
+        activity: swim_endurance
+        metres: [1500, 1500]
+        why: >-
+          The last real swim: steady, unhurried, mostly about feel and
+          confidence. In your wetsuit and in open water if you can get it.
+      - name: race_sat_shakeout
+        day: sat
+        activity: run_easy
+        minutes: [20, 20]
+        why: >-
+          A short shakeout the day before — a few easy minutes to run the travel
+          and the nerves out of your legs. It does nothing for your fitness and
+          a great deal for how you feel on the start line.

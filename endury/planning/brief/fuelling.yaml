@@ -1,0 +1,97 @@
+# Fuel and water for the brief sheet (endury/planning/brief/fuel.py).
+#
+# Every string here is shown to the athlete as written: plain coaching
+# language, no sources. The evidence sits in these comments.
+#
+# During the session, by its length in minutes (the first band whose
+# `up_to_min` holds the session wins; `null` is "any longer"):
+# - Up to about 75 minutes, muscle and liver glycogen cover the work; water
+#   to thirst is enough, so that band carries no fluid figure (Jeukendrup 2014, "A step towards personalized
+#   sports nutrition: carbohydrate intake during exercise", Sports Med 44
+#   Suppl 1: small amounts or a mouth rinse only for 45-75 min).
+# - 1-2.5 h: 30-60 g/h (Jeukendrup 2014). General recreational-endurance
+#   guidance is 30-50 g/h (docs/research/trail_running.md §12.1).
+# - Over 2.5 h: up to 90 g/h from multiple transportable carbohydrates
+#   (Jeukendrup 2014). Glucose alone saturates the SGLT1 transporter near
+#   60 g/h whatever the gut training, so anything above 60 needs a
+#   glucose-fructose product the athlete has practised with (§12.1, §12.2:
+#   start at 30 g/h and step up 10-15 g/h every one or two weeks).
+#   180 min caps at 80 so the 90 g/h end is kept for the longest efforts.
+# - Fluid 400-700 ml/h is the common working band for running and riding
+#   in mild weather (ACSM position stand, Thomas et al. 2016, "Nutrition and
+#   Athletic Performance", Med Sci Sports Exerc 48(3): drink to limit losses
+#   to under 2 % of body weight; sweat rates mostly 0.3-2.4 l/h).
+during:
+  - up_to_min: 75
+    carbs_g_per_h: null
+    fluid_ml_per_h: null
+    before: false
+    notes:
+      - "Water is enough for this one; no carbs needed on the way."
+  - up_to_min: 150
+    carbs_g_per_h: [30, 60]
+    fluid_ml_per_h: [400, 700]
+    before: true
+    notes:
+      - "Start eating in the first half hour, then a little every 20–25 minutes."
+  - up_to_min: 180
+    carbs_g_per_h: [60, 80]
+    fluid_ml_per_h: [400, 700]
+    before: true
+    notes:
+      - "Start eating in the first half hour, then a little every 20–25 minutes."
+  - up_to_min: null
+    carbs_g_per_h: [60, 90]
+    fluid_ml_per_h: [400, 700]
+    before: true
+    notes:
+      - "Up to 90 g an hour only if you have practised it in training."
+      - "Start eating in the first half hour, then a little every 20–25 minutes."
+
+# Under every band with figures: the figures are general guidance, and thirst
+# and the athlete's doctor outrank them.
+guidance: "General sports guidance: drink to thirst within this range and never force fluid. With a medical condition affecting fluid, salt or carbs, ask your doctor or dietitian first."
+
+# Heat: sweat rates rise with temperature (Thomas et al. 2016); above 20 °C
+# recent temperature the fluid band moves up by 200 ml an hour.
+heat:
+  above_c: 20
+  extra_fluid_ml_per_h: 200
+  note: "Recent sessions ran warm: drink a little more, to thirst, and consider some salt on anything over two hours."
+
+# Before: a carbohydrate meal 1-4 g/kg 1-4 h before the start (Thomas et al.
+# 2016); Endury uses the lighter 1-2 g/kg at 2-3 h, which suits a morning
+# start and a runner's gut.
+before:
+  hours: [2, 3]
+  g_per_kg: [1, 2]
+  with_weight: "A normal meal {hours} hours before, {grams} g of carbs for your weight; nothing new on the day."
+  without_weight: "A normal meal {hours} hours before, built around carbs; nothing new on the day."
+
+# Carb loading for a race over 150 minutes: 7-10 g/kg the day before (Burke
+# et al. 2011, "Carbohydrates for training and competition", J Sports Sci
+# 29 Suppl 1; Jeukendrup 2014). Measured in elite 24-h ultrarunners:
+# 7.2 ± 0.8 g/kg/day (docs/research/trail_running.md §12.1).
+carb_load:
+  races_over_min: 150
+  g_per_kg: [7, 10]
+  days: 1
+
+# A race with no finish-time range of its own (a triathlon, or a run with
+# too little hilly history) still needs a fuel plan, so its length is the
+# typical finishing time of an age-group athlete at that goal: the plan
+# menus' race-day doctrine (docs/research/triathlon_long_course.md,
+# trail_running.md §1) and Endury's own planning horizons. The sheet says
+# which figure it assumed.
+race_hours_by_goal:
+  running_5k: 0.5
+  running_10k: 1
+  running_half_marathon: 2
+  running_marathon: 4
+  trail_20k: 2.5
+  trail_50k: 6.5
+  trail_100k: 14
+  sprint_triathlon: 1.5
+  olympic_triathlon: 2.75
+  half_ironman: 5.75
+  ironman: 12.5

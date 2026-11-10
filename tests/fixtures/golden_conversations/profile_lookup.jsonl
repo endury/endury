@@ -1,0 +1,3 @@
+{"setup": {"athlete": {"name": "Alex", "experience_level": "intermediate", "primary_sport": "running"}}}
+{"role": "user", "content": "What do you know about me?"}
+{"role": "assistant", "content": "You're Alex, an intermediate runner.", "expect_tool_calls": ["get_athlete_profile"], "expect_not_contains": ["error"]}

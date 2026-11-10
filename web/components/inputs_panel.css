@@ -1,0 +1,61 @@
+/* Endury — components/inputs_panel.js styles. Reuses insights.css's
+   .cb-insight (card shell) / .cb-section-label / .cb-muted / .cb-warn-text
+   and kit.css's .cb-badge — this file adds only the panel's own layout. */
+
+.cb-inputs { display: flex; flex-direction: column; gap: var(--cb-sp-3-5); }
+
+.cb-inputs__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--cb-sp-2); }
+.cb-inputs__head-end { display: flex; align-items: center; gap: var(--cb-sp-2); }
+.cb-inputs__edit-btn {
+  font: inherit; font-size: var(--cb-fs-label); font-weight: 600; color: var(--cb-accent);
+  background: none; border: none; padding: var(--cb-sp-1); cursor: pointer;
+}
+
+/* Threshold edit: one labelled input per threshold, then Cancel / Save. */
+.cb-inputs__edit {
+  display: flex; flex-direction: column; gap: var(--cb-sp-2);
+  margin-top: var(--cb-sp-2); padding-top: var(--cb-sp-2); border-top: 1px solid var(--cb-border-faint);
+}
+.cb-inputs__edit[hidden] { display: none; }
+.cb-inputs__field { display: flex; flex-direction: column; gap: var(--cb-sp-1); font-size: var(--cb-fs-meta); }
+.cb-inputs__unit { font-size: var(--cb-fs-label); }
+.cb-inputs__edit-actions { display: flex; justify-content: flex-end; gap: var(--cb-sp-2); }
+
+.cb-inputs__row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--cb-sp-2); font-size: var(--cb-fs-meta); padding: var(--cb-sp-1) 0;
+}
+.cb-inputs__val { color: var(--cb-text); font-weight: 600; }
+
+.cb-inputs__note { font-size: var(--cb-fs-label); color: var(--cb-text-muted); margin-top: var(--cb-sp-1); line-height: 1.4; }
+
+.cb-inputs__source {
+  margin-top: var(--cb-sp-1-5); padding-top: var(--cb-sp-1-5); border-top: 1px solid var(--cb-border-faint);
+  font-size: var(--cb-fs-label); color: var(--cb-text-muted);
+}
+
+.cb-inputs__chips { display: flex; flex-wrap: wrap; gap: var(--cb-sp-2); margin-top: var(--cb-sp-1); }
+.cb-inputs__chip {
+  font-size: var(--cb-fs-meta); color: var(--cb-text-muted); background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border); border-radius: var(--cb-r-pill); padding: var(--cb-sp-1) var(--cb-sp-2-5);
+}
+.cb-inputs__chip b { color: var(--cb-text); font-weight: 600; }
+
+.cb-inputs__push-row { padding: var(--cb-sp-2) 0; border-top: 1px solid var(--cb-border-faint); }
+.cb-inputs__push-row:first-of-type { border-top: none; padding-top: 0; }
+.cb-inputs__push-name { font-size: var(--cb-fs-meta); font-weight: 600; }
+.cb-inputs__push-line { font-size: var(--cb-fs-label); color: var(--cb-alert); margin-top: var(--cb-sp-0-5); }
+
+.cb-inputs__setup-text { font-size: var(--cb-fs-body); color: var(--cb-text-muted); line-height: 1.5; margin-top: var(--cb-sp-2); }
+.cb-inputs__setup-hint {
+  font-size: var(--cb-fs-meta); color: var(--cb-text); background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border); border-radius: var(--cb-r-tile);
+  padding: var(--cb-sp-2-5) var(--cb-sp-3); margin-top: var(--cb-sp-3); font-family: monospace;
+}
+
+/* Upload destinations: where a pushed plan actually lands. */
+.cb-inputs__dest-list {
+  font-size: var(--cb-fs-meta);
+  line-height: 1.45;
+  margin-top: var(--cb-sp-1);
+}

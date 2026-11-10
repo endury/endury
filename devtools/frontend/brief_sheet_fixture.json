@@ -1,0 +1,341 @@
+{
+  "session": {
+    "subject": {
+      "kind": "session",
+      "handle": "session:412",
+      "title": "Long trail run",
+      "sport": "running",
+      "date": "2026-10-18",
+      "days_away": 2,
+      "duration_min": 180,
+      "distance_km": null,
+      "climb_m": null,
+      "priority": null,
+      "load": 168,
+      "optional": false
+    },
+    "purpose": {
+      "intent": "Long aerobic run on hilly ground.",
+      "why": [
+        "The long run matters most."
+      ],
+      "cues": [
+        "Hike the steep pitches."
+      ]
+    },
+    "state": {
+      "as_of": "2026-10-16",
+      "ctl": 50.0,
+      "atl": 52.0,
+      "tsb": -2.0,
+      "tsb_read": "Carrying load, not fresh",
+      "projected": {
+        "date": "2026-10-18",
+        "ctl": 49.0,
+        "tsb": 5.3
+      },
+      "wellness": {
+        "hrv": 70,
+        "hrv_baseline": 66,
+        "resting_hr": 48,
+        "sleep_h": 7.5
+      },
+      "flags": [],
+      "recent": [
+        {
+          "date": "2026-10-11",
+          "name": "Riverside Running",
+          "duration_min": 90,
+          "avg_hr": 127,
+          "load": 86,
+          "distance_km": 15.4,
+          "climb_m": 302
+        }
+      ]
+    },
+    "hold": {
+      "anchors": [
+        {
+          "label": "First hour",
+          "hr_max": 150
+        },
+        {
+          "label": "Then",
+          "hr_min": 152,
+          "hr_max": 158
+        },
+        {
+          "label": "Hike anything that pushes you over",
+          "hr_max": 160
+        }
+      ],
+      "card": [
+        "Easy warm-up 10 min"
+      ],
+      "proven": [
+        {
+          "duration_min": 270,
+          "avg_hr": 158,
+          "date": "2026-04-18",
+          "name": "Coastal Trail Running"
+        }
+      ],
+      "climb_rate_m_per_h": 600,
+      "power": null
+    },
+    "fuel": {
+      "carbs_g_per_h": [
+        60,
+        80
+      ],
+      "carbs_total_g": [
+        180,
+        240
+      ],
+      "fluid_ml_per_h": [
+        400,
+        700
+      ],
+      "before": "A normal meal 2-3 hours before.",
+      "carb_load": null,
+      "notes": [
+        "Up to 90 g an hour only if you have practised it."
+      ]
+    },
+    "conditions": {
+      "recent_temp_c": [
+        7,
+        17
+      ],
+      "kit": [
+        "Long sleeve or a shirt with arm warmers",
+        "Thin gloves and a buff"
+      ]
+    },
+    "routes": [
+      {
+        "date": "2026-10-04",
+        "name": "Hillside Trail Running",
+        "distance_km": 24.1,
+        "climb_m": 1112,
+        "duration_min": 159
+      }
+    ],
+    "estimate": null,
+    "logistics": null,
+    "rubric": [
+      {
+        "label": "First third under 155 bpm",
+        "metric": "hr_first_third_max",
+        "value": 155
+      },
+      {
+        "label": "60-80 g of carbs an hour",
+        "metric": "carbs_g_per_h",
+        "value": [
+          60,
+          80
+        ]
+      },
+      {
+        "label": "Finish feeling you had another 5 km in you",
+        "metric": "finish_feel",
+        "value": "in hand"
+      }
+    ],
+    "thin": [
+      "No run over three hours in the last twelve months, so the hold line rests on shorter efforts."
+    ]
+  },
+  "race": {
+    "subject": {
+      "kind": "race",
+      "handle": "race:2026-10-17",
+      "title": "Forest Trail",
+      "sport": "running",
+      "date": "2026-10-18",
+      "days_away": 2,
+      "duration_min": 223,
+      "distance_km": 50,
+      "climb_m": 1800,
+      "priority": "A",
+      "load": 168,
+      "optional": false
+    },
+    "purpose": {
+      "intent": "Your A race; the plan tapers into it.",
+      "why": [
+        "The long run matters most."
+      ],
+      "cues": [
+        "Hike the steep pitches."
+      ]
+    },
+    "state": {
+      "as_of": "2026-10-16",
+      "ctl": 50.0,
+      "atl": 52.0,
+      "tsb": -2.0,
+      "tsb_read": "Carrying load, not fresh",
+      "projected": {
+        "date": "2026-10-18",
+        "ctl": 49.0,
+        "tsb": 5.3
+      },
+      "wellness": {
+        "hrv": 70,
+        "hrv_baseline": 66,
+        "resting_hr": 48,
+        "sleep_h": 7.5
+      },
+      "flags": [],
+      "recent": [
+        {
+          "date": "2026-10-11",
+          "name": "Riverside Running",
+          "duration_min": 90,
+          "avg_hr": 127,
+          "load": 86,
+          "distance_km": 15.4,
+          "climb_m": 302
+        }
+      ]
+    },
+    "hold": {
+      "anchors": [
+        {
+          "label": "First third",
+          "hr_max": 153
+        },
+        {
+          "label": "Middle third",
+          "hr_min": 154,
+          "hr_max": 160
+        },
+        {
+          "label": "Last third",
+          "open": true
+        }
+      ],
+      "card": [],
+      "proven": [
+        {
+          "duration_min": 270,
+          "avg_hr": 158,
+          "date": "2026-04-18",
+          "name": "Coastal Trail Running"
+        }
+      ],
+      "climb_rate_m_per_h": 600,
+      "power": null
+    },
+    "fuel": {
+      "carbs_g_per_h": [
+        60,
+        80
+      ],
+      "carbs_total_g": [
+        180,
+        240
+      ],
+      "fluid_ml_per_h": [
+        400,
+        700
+      ],
+      "before": "A normal meal 2-3 hours before.",
+      "carb_load": {
+        "g_per_kg": [
+          7,
+          10
+        ],
+        "g": [
+          546,
+          780
+        ],
+        "days": 1
+      },
+      "notes": [
+        "Up to 90 g an hour only if you have practised it."
+      ]
+    },
+    "conditions": {
+      "recent_temp_c": [
+        7,
+        17
+      ],
+      "kit": [
+        "Long sleeve or a shirt with arm warmers",
+        "Thin gloves and a buff"
+      ]
+    },
+    "routes": [],
+    "estimate": {
+      "range_min": [
+        215,
+        230
+      ],
+      "method": "Your three recent long trail runs, scaled to the race's distance and climb.",
+      "basis": [
+        {
+          "date": "2026-10-04",
+          "name": "Hillside Trail Running",
+          "distance_km": 24.1,
+          "climb_m": 1112,
+          "duration_min": 159
+        }
+      ]
+    },
+    "logistics": {
+      "notes": "Start 08:00, bag drop at 07:15."
+    },
+    "rubric": [
+      {
+        "label": "First third under 155 bpm",
+        "metric": "hr_first_third_max",
+        "value": 155
+      },
+      {
+        "label": "60-80 g of carbs an hour",
+        "metric": "carbs_g_per_h",
+        "value": [
+          60,
+          80
+        ]
+      },
+      {
+        "label": "Finish feeling you had another 5 km in you",
+        "metric": "finish_feel",
+        "value": "in hand"
+      }
+    ],
+    "thin": [
+      "No run over three hours in the last twelve months, so the hold line rests on shorter efforts."
+    ]
+  },
+  "empty": {
+    "purpose": null,
+    "state": null,
+    "hold": null,
+    "fuel": null,
+    "conditions": null,
+    "estimate": null,
+    "logistics": null,
+    "subject": {
+      "kind": "session",
+      "handle": "session:412",
+      "title": "Long trail run",
+      "sport": "running",
+      "date": "2026-10-18",
+      "days_away": 2,
+      "duration_min": 180,
+      "distance_km": null,
+      "climb_m": null,
+      "priority": null,
+      "load": 168,
+      "optional": false
+    },
+    "routes": [],
+    "rubric": [],
+    "thin": []
+  }
+}

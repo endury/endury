@@ -1,0 +1,116 @@
+/* Endury — module base: font, reset, app canvas.
+   Tokens live in tokens.css; component styles in components.css;
+   layout composition in shells/. */
+
+/* Extra tokens needed while building components, not part of the base set
+   in tokens.css. Kept separate so tokens.css stays a clean, verbatim list. */
+:root {
+  --cb-sport-bike-rgb: 0,176,80;
+  --cb-sport-run-rgb: 255,149,0;
+  --cb-sport-swim-rgb: 0,120,215;
+  --cb-sport-strength-rgb: 155,89,182;
+  --cb-sport-rest-rgb: 142,142,147;
+  --cb-sport-other-rgb: 142,142,147;
+  --cb-bar-muted:   #48484a;  /* inactive chart bars, sheet handle */
+  --cb-col-bg:      #1e1e20;  /* week-grid day column background */
+  --cb-toast-bg:    #0f0f10;
+  --cb-zone-hot:    #A85F57;  /* 5th step of the activity time-in-zone bar */
+  --cb-phase-build: #6F6454;  /* phase pills (base shares build's tone); all four darkened so --cb-text clears AA 4.5:1 */
+  --cb-phase-peak:  #6B6280;
+  --cb-phase-taper: #4F6A70;
+  --cb-phase-recovery: #6C617A;
+  --cb-phase-maintain: #516B57;  /* maintenance blocks (raceless plans) */
+  --cb-coach-top:   #212123;  /* the web shell's coach column gradient */
+  --cb-coach-bot:   #1b1b1d;
+  --cb-bar-bot:     #1f1f21;  /* the web shell's top bar foot and status strips */
+}
+
+/* The light theme's values for the extras (tokens.css has the base set). */
+:root[data-theme="light"] {
+  --cb-bar-muted:   #C9C7C2;
+  --cb-col-bg:      #F4F3F0;
+  --cb-toast-bg:    #FFFFFF;
+  --cb-phase-build: #E4DACB;  /* light tints, so the dark --cb-text clears AA */
+  --cb-phase-peak:  #DEDAEA;
+  --cb-phase-taper: #D3E3E6;
+  --cb-phase-recovery: #E2DAE8;
+  --cb-phase-maintain: #D5E5D8;
+  --cb-coach-top:   #F6F5F2;
+  --cb-coach-bot:   #EFEEEA;
+  --cb-bar-bot:     #F2F1EE;
+}
+
+/* Mobile type scale. The base scale (body 13 / meta 11 / label 10 /
+   micro 9px) is not tuned for a phone: at 390px it puts coach prose, card
+   titles and every button under the 15px reading floor, and badges, tags
+   and day-of-week letters under iOS's 11pt legibility minimum (MD3's
+   smallest role is 11sp too). Re-value the same tokens for the mobile
+   shell only — every consumer already reads its font-size off these token
+   names, so nothing else has to change and the web shell keeps the :root
+   values verbatim. --cb-fs-input is deliberately never redeclared here:
+   16px is the iOS focus-zoom floor.
+   Selector precedent: html[data-shell="web"]
+   .cb-toast (kit.css:286); main.js:11 stamps dataset.shell on <html>. */
+html[data-shell="mobile"] {
+  --cb-fs-body:   15px;
+  --cb-fs-meta:   12px;
+  --cb-fs-label:  11px;
+  --cb-fs-micro:  var(--cb-fs-label);
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('vendor/inter/InterVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* Installed on iOS, body{overflow:hidden} alone does not hold the document: a
+   rubber-band drag leaves it scrolled, the app bar stuck under the status bar
+   with no way back. Pin body to the viewport, and paint html so any overscroll
+   shows the app's own colour instead of the white default. */
+/* iOS inflates text when the phone turns to landscape and keeps the inflated
+   size after it turns back; pin the adjustment so the type scale above is what
+   the athlete sees in both orientations (legal.css does the same). */
+html {
+  background: var(--cb-bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+  font-family: var(--cb-font);
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(160deg, var(--cb-bg-grad-top), var(--cb-bg-grad-bot));
+  color: var(--cb-text);
+  font-size: var(--cb-fs-body);
+  overflow: hidden;
+}
+
+button, input, textarea {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cb-accent);
+  outline-offset: 1px;
+}
+
+.cb-app {
+  height: 100%;
+}

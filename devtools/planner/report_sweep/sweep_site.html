@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planner Sweep</title>
+<style>
+:root {
+  --bg: #f7f6f3; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6a66; --line: #e4e2dc; --accent: #185fa5;
+  --swim: #7f77dd; --bike: #1d9e75; --run: #d85a30; --load: #888780; --sel: rgba(136,135,128,.16);
+  --swim-bg: #eeedfe; --swim-ink: #3c3489; --bike-bg: #e1f5ee; --bike-ink: #085041;
+  --run-bg: #faece7; --run-ink: #712b13; --race-bg: #f1efe8; --race-ink: #444441; --warn: #a32d2d;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161615; --panel: #1f1f1d; --ink: #ecebe6; --muted: #9b9a94; --line: #34332f; --accent: #85b7eb;
+    --sel: rgba(180,178,169,.16);
+    --swim-bg: #3c3489; --swim-ink: #cecbf6; --bike-bg: #085041; --bike-ink: #9fe1cb;
+    --run-bg: #712b13; --run-ink: #f5c4b3; --race-bg: #444441; --race-ink: #f1efe8; --warn: #f09595;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 22px; font-weight: 500; margin: 0 0 2px; }
+.sub { color: var(--muted); margin: 0 0 16px; font-size: 13px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 10px; }
+select, button { font: inherit; font-size: 13px; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 5px 11px; cursor: pointer; }
+button.on { border-color: var(--accent); color: var(--accent); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 12px 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
+.card .l { font-size: 12px; color: var(--muted); }
+.card .v { font-size: 18px; font-weight: 500; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); margin: 0 0 4px; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { fill: var(--muted); font-size: 11px; }
+.nav { display: flex; align-items: center; gap: 8px; margin: 16px 0 8px; }
+.nav span { flex: 1; text-align: center; font-weight: 500; }
+.grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.dh { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 2px; }
+.chip { font-size: 11px; line-height: 1.3; padding: 3px 5px; border-radius: 6px; margin: 0 0 3px; overflow-wrap: anywhere; }
+.swimming { background: var(--swim-bg); color: var(--swim-ink); }
+.cycling { background: var(--bike-bg); color: var(--bike-ink); }
+.running { background: var(--run-bg); color: var(--run-ink); }
+.race { background: var(--race-bg); color: var(--race-ink); font-weight: 500; }
+.q { outline: 1px solid currentColor; outline-offset: -1px; }
+.t { outline: 1px dashed currentColor; outline-offset: -1px; }
+.o { opacity: .6; outline: 1px dotted currentColor; outline-offset: -1px; }
+.keys { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11px; margin: 0 0 8px; }
+.keys .chip { margin: 0; background: var(--panel); color: var(--muted); }
+.list { margin-top: 12px; font-size: 12px; color: var(--muted); }
+.list div { padding: 2px 0; }
+.list b { font-weight: 500; color: var(--ink); }
+.warn { color: var(--warn); font-size: 13px; margin: 8px 0; }
+</style>
+</head>
+<body>
+<main>
+<h1>Planner sweep</h1>
+<p class="sub" id="count"></p>
+<div class="row"><select id="goal" aria-label="Goal"></select><span id="tiers" class="row" style="margin:0"></span></div>
+<div class="row" id="plans"></div>
+<p class="sub" id="about"></p>
+<div id="body"></div>
+</main>
+<script>
+const DATA = /*DATA*/null;
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const SPORTS = ["swimming", "cycling", "running"];
+const LABEL = { swimming: "Swim", cycling: "Bike", running: "Run" };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+let plan = DATA[0], sel = 1;
+
+function hours(w) { return w[3][0] + w[3][1] + w[3][2]; }
+function kind(i) { const w = plan.weeks[i]; return `${w[0]}, ${w[1].replace("_", " ")}`; }
+function mainSet(card) { const p = card.split(" → "); return p.length >= 3 ? p.slice(1, -1).join(" → ") : card; }
+function variant(p) { return p.name.slice(p.goal.length + p.tier.length + 2).replace(/_/g, " ").replace("wk", " wk").replace(" B", " + B").replace("BC", "B + C"); }
+
+function pick(p, week) {
+  plan = p;
+  if (week !== undefined) sel = week;
+  if (plan.weeks) sel = Math.min(Math.max(sel, 1), plan.weeks.length);
+  location.hash = `${p.name}/${sel}`;
+  controls();
+  show();
+}
+
+function controls() {
+  const goals = [...new Set(DATA.map(p => p.goal))];
+  const g = document.getElementById("goal");
+  g.innerHTML = goals.map(x => `<option ${x === plan.goal ? "selected" : ""}>${esc(x)}</option>`).join("");
+  g.onchange = () => pick(DATA.find(p => p.goal === g.value && p.tier === plan.tier) || DATA.find(p => p.goal === g.value));
+  const tiers = [...new Set(DATA.filter(p => p.goal === plan.goal).map(p => p.tier))];
+  document.getElementById("tiers").innerHTML = tiers.map(t => `<button class="${t === plan.tier ? "on" : ""}" data-t="${t}">${esc(t)}</button>`).join("");
+  document.querySelectorAll("#tiers button").forEach(b => b.onclick = () => {
+    const same = DATA.filter(p => p.goal === plan.goal && p.tier === b.dataset.t);
+    pick(same.find(p => variant(p) === variant(plan)) || same[0]);
+  });
+  const here = DATA.filter(p => p.goal === plan.goal && p.tier === plan.tier);
+  document.getElementById("plans").innerHTML = here.length > 1 ? here.map((p, i) => `<button class="${p === plan ? "on" : ""}" data-i="${i}">${esc(variant(p))}</button>`).join("") : "";
+  document.querySelectorAll("#plans button").forEach(b => b.onclick = () => pick(here[+b.dataset.i]));
+  document.getElementById("about").textContent = `${plan.about} ${plan.athlete}`;
+}
+
+function cards() {
+  const ws = plan.weeks;
+  const total = ws.reduce((s, w) => s + hours(w), 0);
+  const big = Math.max(...ws.filter(w => w[1] !== "race").map(hours));
+  const split = SPORTS.map((s, i) => [s, ws.reduce((t, w) => t + w[3][i], 0)]).filter(([, h]) => h > 0);
+  const firstBuild = ws.findIndex(w => w[0] === "build" && w[1] === "load");
+  const lastBase = ws.slice(0, Math.max(firstBuild, 0)).map(w => w[0] === "base" && w[1] === "load").lastIndexOf(true);
+  const step = firstBuild > 0 && lastBase >= 0 ? Math.round((ws[firstBuild][2] / ws[lastBase][2] - 1) * 100) : null;
+  const items = [
+    ["Total", `${Math.round(total)} h`],
+    ["Biggest week", `${big.toFixed(1)} h`],
+    [split.map(([s]) => LABEL[s]).join(" / "), split.map(([, h]) => Math.round(h / total * 100)).join(" / ") + " %"],
+    ["Into build (load)", step === null ? "—" : `${step >= 0 ? "+" : ""}${step} %`],
+  ];
+  return `<div class="cards">${items.map(([l, v]) => `<div class="card"><div class="l">${esc(l)}</div><div class="v">${esc(v)}</div></div>`).join("")}</div>`;
+}
+
+function chart() {
+  const ws = plan.weeks, n = ws.length, W = 1000, H = 230, L = 40, R = 46, T = 20, B = 22;
+  const pw = W - L - R, ph = H - T - B, bw = pw / n;
+  const maxH = Math.max(1, ...ws.map(hours)) * 1.1, maxT = Math.max(1, ...ws.map(w => w[2])) * 1.1;
+  const y = h => T + ph - h / maxH * ph, yl = t => T + ph - t / maxT * ph, x = i => L + i * bw;
+  const parts = [`<rect x="${x(sel - 1)}" y="${T}" width="${bw}" height="${ph}" fill="${css("--sel")}"/>`];
+  for (let k = 0; k <= 4; k++) {
+    const h = maxH / 1.1 * k / 4, t = maxT / 1.1 * k / 4;
+    parts.push(`<line x1="${L}" x2="${W - R}" y1="${y(h)}" y2="${y(h)}" stroke="${css("--line")}"/>`,
+      `<text x="${L - 6}" y="${y(h) + 4}" text-anchor="end">${h.toFixed(h < 10 ? 1 : 0)}</text>`,
+      `<text x="${W - R + 6}" y="${yl(t) + 4}">${Math.round(t)}</text>`);
+  }
+  parts.push(`<text x="${L - 6}" y="${T - 8}" text-anchor="end">h</text><text x="${W - R + 6}" y="${T - 8}">TSS</text>`);
+  let start = 0;
+  ws.forEach((w, i) => {
+    if (i > 0 && w[0] !== ws[i - 1][0]) {
+      parts.push(`<line x1="${x(i)}" x2="${x(i)}" y1="${T}" y2="${T + ph}" stroke="${css("--load")}" stroke-dasharray="3 3"/>`);
+      start = i;
+    }
+    if (i === start) parts.push(`<text x="${x(i) + 4}" y="${T + 11}">${esc(w[0])}</text>`);
+    let base = 0;
+    SPORTS.forEach((s, k) => {
+      const h = w[3][k];
+      if (h > 0) parts.push(`<rect x="${x(i) + bw * .15}" y="${y(base + h)}" width="${bw * .7}" height="${y(base) - y(base + h)}" fill="${css("--" + { swimming: "swim", cycling: "bike", running: "run" }[s])}"/>`);
+      base += h;
+    });
+    if ((i + 1) % (n > 20 ? 2 : 1) === 0 || i === 0) parts.push(`<text x="${x(i) + bw / 2}" y="${H - 6}" text-anchor="middle">${i + 1}</text>`);
+  });
+  plan.races.forEach(([wk, , pri]) => parts.push(`<text x="${x(wk) + bw / 2}" y="${T - 6}" text-anchor="middle" style="fill:${css("--warn")};font-weight:500">${esc(pri)}</text>`));
+  parts.push(`<polyline fill="none" stroke="${css("--load")}" stroke-width="1.5" points="${ws.map((w, i) => `${x(i) + bw / 2},${yl(w[2])}`).join(" ")}"/>`);
+  ws.forEach((w, i) => parts.push(`<rect class="hit" data-w="${i + 1}" x="${x(i)}" y="${T}" width="${bw}" height="${ph}" fill="transparent" style="cursor:pointer"><title>Week ${i + 1}, ${esc(kind(i))}: ${hours(w).toFixed(1)} h, ${w[2]} TSS</title></rect>`));
+  return `<div class="legend">${SPORTS.filter((s, k) => plan.weeks.some(w => w[3][k] > 0)).map(s => `<span><span class="sw" style="background:var(--${{ swimming: "swim", cycling: "bike", running: "run" }[s]})"></span>${LABEL[s]} h</span>`).join("")}<span><span class="sw" style="height:2px;width:16px;background:var(--load)"></span>Load (TSS)</span>${plan.races.length ? `<span style="color:var(--warn)">A / B / C: race weeks</span>` : ""}</div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Weekly hours by sport and weekly load">${parts.join("")}</svg>`;
+}
+
+function week() {
+  const i = sel - 1, w = plan.weeks[i];
+  const head = `<div class="nav"><button id="prev" aria-label="Previous week">&larr;</button><span>Week ${sel} of ${plan.weeks.length} · ${esc(kind(i))} · ${hours(w).toFixed(1)} h · ${w[2]} TSS</span><button id="next" aria-label="Next week">&rarr;</button></div>`;
+  const keys = `<div class="keys"><span class="chip q">quality</span><span class="chip t">test</span><span class="chip o">optional</span></div>`;
+  const chip = s => {
+    const [name, min, sport, flags, card] = s;
+    const cls = ["chip", sport, flags & 2 ? "t" : flags & 1 ? "q" : "", flags & 4 ? "o" : ""].join(" ");
+    return `<div class="${cls}" title="${esc(plan.cards[card])}">${esc(plan.names[name])} ${min}′</div>`;
+  };
+  const cols = w[4].map((day, d) => {
+    const races = plan.races.filter(([wk, dy]) => wk === i && dy === d).map(([, , pri, goal]) => `<div class="chip race">${esc(pri)} race: ${esc(goal.replace(/_/g, " "))}</div>`);
+    return `<div><div class="dh">${DAYS[d]}</div>${races.join("")}${day.map(chip).join("")}</div>`;
+  }).join("");
+  const list = w[4].flatMap((day, d) => day.map(s => {
+    const [name, min, , flags, card] = s;
+    const label = `${DAYS[d]} · ${esc(plan.names[name])} ${min}′${flags & 4 ? " (optional)" : ""}`;
+    return `<div>${flags & 3 ? `<b>${label}</b>` : label} &nbsp;${esc(mainSet(plan.cards[card]))}</div>`;
+  })).join("");
+  return head + keys + `<div class="grid">${cols}</div><div class="list">${list}</div>`;
+}
+
+function show() {
+  const body = document.getElementById("body");
+  if (plan.error) { body.innerHTML = `<p class="warn">The planner rejected this plan: ${esc(plan.error)}</p>`; return; }
+  sel = Math.min(Math.max(sel, 1), plan.weeks.length);
+  const issues = plan.issues.length ? `<div class="warn">${plan.issues.map(esc).join("<br>")}</div>` : "";
+  body.innerHTML = issues + cards() + chart() + week();
+  document.querySelectorAll("svg .hit").forEach(r => r.onclick = () => pick(plan, +r.dataset.w));
+  document.getElementById("prev").onclick = () => pick(plan, sel - 1);
+  document.getElementById("next").onclick = () => pick(plan, sel + 1);
+}
+
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "SELECT") return;
+  if (e.key === "ArrowLeft") pick(plan, sel - 1);
+  if (e.key === "ArrowRight") pick(plan, sel + 1);
+});
+document.getElementById("count").textContent = `${DATA.length} plans, each goal on its default athlete per tier. Click a week in the chart, or use the arrow keys.`;
+function fromHash() {
+  const [name, wk] = decodeURIComponent(location.hash.slice(1)).split("/");
+  pick(DATA.find(p => p.name === name) || DATA[0], +wk || 1);
+}
+window.addEventListener("hashchange", () => { if (location.hash !== `#${plan.name}/${sel}`) fromHash(); });
+fromHash();
+</script>
+</body>
+</html>

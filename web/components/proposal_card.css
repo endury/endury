@@ -1,0 +1,85 @@
+/* Endury — Apply cards under a coach reply (proposal_card.js): the open
+   card with Apply / Dismiss, and the one-line outcome it settles into. */
+
+.cb-proposal {
+  padding: var(--cb-sp-3);
+  background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-tile);
+  text-align: left;
+}
+
+/* Under a reply; a restored outcome line stands on its own in the thread. */
+.cb-msg .cb-proposal { margin-top: var(--cb-sp-3); }
+
+.cb-proposal__title {
+  font-size: var(--cb-fs-label);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--cb-text-strong);
+  margin-bottom: var(--cb-sp-1);
+}
+
+.cb-proposal__summary {
+  font-size: var(--cb-fs-body);
+  line-height: 1.45;
+  color: var(--cb-text);
+}
+
+.cb-proposal__note {
+  font-size: var(--cb-fs-meta);
+  line-height: 1.45;
+  color: var(--cb-text-muted);
+  margin-top: var(--cb-sp-1-5);
+}
+
+.cb-proposal__actions {
+  display: flex;
+  gap: var(--cb-sp-2);
+  margin-top: var(--cb-sp-3);
+}
+
+.cb-proposal__btn {
+  font-family: inherit;
+  font-size: var(--cb-fs-body);
+  font-weight: 500;
+  min-height: 32px;
+  padding: var(--cb-sp-1-5) var(--cb-sp-4);
+  color: var(--cb-accent);
+  background: transparent;
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-chip);
+  cursor: pointer;
+  transition: background var(--cb-dur-fast), border-color var(--cb-dur-fast);
+}
+
+.cb-proposal__btn--apply {
+  font-weight: 600;
+  color: var(--cb-accent-ink);
+  background: var(--cb-accent);
+  border-color: var(--cb-accent);
+}
+
+.cb-proposal__btn:disabled { opacity: .5; cursor: default; }
+.cb-proposal__btn:not(:disabled):hover { border-color: var(--cb-accent); }
+.cb-proposal__btn--apply:not(:disabled):hover { background: var(--cb-text-strong); }
+
+/* Settled: one quiet line where the card was. */
+.cb-proposal--applied,
+.cb-proposal--dismissed {
+  display: flex;
+  align-items: baseline;
+  gap: var(--cb-sp-2);
+  padding: var(--cb-sp-2) var(--cb-sp-3);
+  font-size: var(--cb-fs-meta);
+  line-height: 1.45;
+  color: var(--cb-text-muted);
+}
+
+.cb-proposal__mark {
+  flex: none;
+  font-weight: 600;
+}
+
+.cb-proposal--applied .cb-proposal__mark { color: var(--cb-good); }

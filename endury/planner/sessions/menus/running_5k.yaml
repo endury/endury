@@ -1,0 +1,192 @@
+# running_5k session menus. Format and validation ladder: AUTHORING.md.
+goal: running_5k
+progressions:
+  # intent: 5K long run.
+  - running_5k_long_run
+menus:
+  base/load:
+    contract:
+      must_contain: [run_long]
+    slots:
+      - name: 5k_base_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [55, 65]}
+        progression: running_5k_long_run
+        why: >-
+          Even for a race as short as 5K, the long run is what grows the aerobic
+          engine everything else runs on. A bigger engine means the hard
+          sessions later in the plan hurt less and clear faster, so base is
+          where this run steadily gets longer.
+      - name: 5k_base_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {scaled: [25, 35]}
+        why: >-
+          Most of your aerobic adaptation is bought at easy pace, not in the
+          hard sessions. Keep this one genuinely conversational — run it too
+          quick and it stops being easy without ever becoming quality.
+      - name: 5k_base_thu_strides
+        day: thu
+        activity: run_strides
+        minutes: {scaled: [25, 35]}
+        why: >-
+          Short, relaxed accelerations inside an easy run teach your legs to
+          turn over fast at almost no cost in fatigue. They live in base so a
+          touch of speed stays alive while the aerobic work does the heavy
+          lifting.
+      - name: 5k_base_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [20, 30]}
+        why: >-
+          A second easy run adds aerobic volume for very little fatigue. At this
+          stage frequency beats heroics — more days of running matters more than
+          any single run being impressive.
+
+  base/recovery:
+    slots: &base_recovery
+      - name: 5k_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {scaled: [20, 30]}
+        why: >-
+          A recovery week is where the last block's work actually turns into
+          fitness. Run this short and easy — you adapt while you are backing
+          off, not while you are grinding.
+      - name: 5k_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [15, 25]}
+        why: >-
+          A second short easy run to keep the habit and the blood flowing.
+          Resist the urge to make up for the lighter week — that urge is exactly
+          what the week is protecting you from.
+      - name: 5k_rec_wed_test
+        day: wed
+        activity: run_threshold_test
+        minutes: {scaled: [44, 44]}
+        why: >-
+          A short honest time trial to re-measure your threshold pace, so every
+          zone in this plan stays calibrated to the runner you are now. It sits
+          in a recovery week because you are fresh enough to give a true reading
+          without wrecking the block.
+
+  build/load:
+    slots:
+      - name: 5k_build_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [65, 75]}
+        progression: running_5k_long_run
+        why: >-
+          The long run keeps growing through the build because it underwrites
+          everything else: it is what lets you absorb two hard sessions a week
+          and still come back for the next one.
+      - name: 5k_build_tue_tempo
+        day: tue
+        activity: run_tempo
+        rotation: [run_tempo, run_fartlek]
+        minutes: {scaled: [30, 40]}
+        why: >-
+          Sustained comfortably-hard running raises the pace you can hold before
+          lactate runs away from you — the ceiling that decides whether 5K pace
+          feels controllable or frantic. It starts now because base gave you the
+          aerobic foundation to handle it.
+      - name: 5k_build_thu_vo2max
+        day: thu
+        activity: run_vo2max
+        rotation: [run_vo2max, run_hill_repeats]
+        minutes: {scaled: [25, 35]}
+        why: >-
+          Hard intervals near your aerobic ceiling are what actually lift
+          VO2max, and a 5K is run close enough to that ceiling for it to show up
+          directly in your finish time. This work belongs in the build: it is
+          potent, it is costly, and its benefit lasts weeks.
+      - name: 5k_build_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [20, 30]}
+        why: >-
+          Easy volume sitting between the hard days. Its whole job is to let
+          Tuesday's and Thursday's work stick, so run it slower than you think
+          you should.
+
+  build/recovery:
+    slots: *base_recovery
+
+  peak/load:
+    slots:
+      - name: 5k_peak_sun_long_run
+        day: sun
+        activity: run_long
+        minutes: {scaled: [70, 75]}
+        progression: running_5k_long_run
+        why: >-
+          In peak the long run holds its ground instead of growing — enough
+          endurance to stay durable, without stealing the freshness the sharp
+          sessions now need.
+      - name: 5k_peak_tue_vo2max
+        day: tue
+        activity: run_vo2max
+        minutes: {scaled: [25, 35]}
+        why: >-
+          One last dose of top-end work while there is still time to absorb it
+          before race day. Peak keeps the intensity high and the total amount
+          deliberately small.
+      - name: 5k_peak_thu_race_pace
+        day: thu
+        activity: run_5k_race_pace
+        minutes: {scaled: [25, 30]}
+        why: >-
+          Intervals at exactly the pace you intend to race. This is where your
+          goal stops being a number and becomes a feeling your legs recognise —
+          and it only makes sense here, once the fitness exists to hold that
+          pace.
+      - name: 5k_peak_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {scaled: [20, 30]}
+        why: >-
+          Easy running to keep the legs turning over between the sharp sessions.
+          This close to the race, recovery is part of the training rather than a
+          break from it.
+
+  peak/recovery:
+    slots: *base_recovery
+
+  taper/taper:
+    slots:
+      - name: 5k_taper_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {scaled: [20, 30]}
+        why: >-
+          Volume drops hard in the taper; this run keeps your rhythm and routine
+          intact without adding fatigue. The fitness is already banked — the
+          only job left is arriving fresh.
+      - name: 5k_taper_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {scaled: [15, 20]}
+        why: >-
+          A few short accelerations keep your legs sharp while everything else
+          winds down. A taper cuts volume, not intensity — strip out the speed
+          entirely and you turn up flat.
+
+  taper/race:
+    slots:
+      - name: 5k_race_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: [20, 20]
+        why: >-
+          Short and easy — just enough running to feel normal. Nothing you do
+          this week can make you fitter; plenty of it could make you slower.
+      - name: 5k_race_thu_strides
+        day: thu
+        activity: run_strides
+        minutes: [15, 15]
+        why: >-
+          A handful of relaxed accelerations to wake the legs up and remind them
+          what race turnover feels like. Fast for seconds, not minutes.

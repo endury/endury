@@ -1,0 +1,19 @@
+#!/bin/sh
+# Repo-managed pre-push hook. Active only in clones that ran `make
+# install-hooks` — core.hooksPath is per-clone config, not tracked by git.
+#
+# 1. Lint: ruff, mypy and the architecture checks.
+# 2. The offline test gate.
+# 3. The scorecard baseline gates, including the `slow` planner matrix that
+#    `make test` excludes for runtime (see devtools/quality/
+#    baselines/README.md).
+# 4. The site build.
+#
+# Escape hatch: `git push --no-verify`.
+set -e
+
+cd "$(git rev-parse --show-toplevel)"
+make lint
+make test
+make test-scorecards
+make site

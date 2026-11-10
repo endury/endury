@@ -1,0 +1,1561 @@
+[
+  {
+    "slot_id": "menu:running:run_strides:w0:i2",
+    "date": "2026-01-08",
+    "week_index": 0,
+    "phase_type": "base",
+    "sport": "running",
+    "activity_key": "run_strides",
+    "family": "easy",
+    "is_recovery_week": false,
+    "coaching_intent": "Aerobic maintenance \u2014 conversational effort, keep it genuinely easy. Base phase: consistency over intensity.",
+    "target_tss": 22.4,
+    "achieved_tss": 22.4,
+    "duration_minutes": 25.0,
+    "distance_meters": 0.0,
+    "hardness": {
+      "is_hard_overall": false,
+      "is_hard_physiologically": false,
+      "is_hard_mentally": false
+    },
+    "workout": {
+      "name": "Easy Run + Strides",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy warm-up \u2014 gradually increase effort, keep HR in Zone 1-2",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 420.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 420.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 4,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "Stride \u2014 20-30 s of relaxed acceleration at 5K/mile effort. Fast leg turnover, tall posture, smooth arms; float to the finish rather than sprinting all-out",
+              "duration_seconds": 20.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 20.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 5
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 9
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Easy jog between strides \u2014 fully recover before the next rep, shake out arms and reset posture",
+              "duration_seconds": 90.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 90.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 3
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy cool-down \u2014 flush legs and bring HR down gradually",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        }
+      ]
+    },
+    "duration_target_minutes": 25.0,
+    "tid_fractions": {
+      "z_low": 0.9516837481698389,
+      "z_mid": 0.0,
+      "z_high": 0.048316251830161056
+    }
+  },
+  {
+    "slot_id": "menu:running:run_vo2max:w4:i2",
+    "date": "2026-02-05",
+    "week_index": 4,
+    "phase_type": "build",
+    "sport": "running",
+    "activity_key": "run_vo2max",
+    "family": "interval",
+    "is_recovery_week": false,
+    "coaching_intent": "High-intensity intervals \u2014 sharpens top-end fitness and economy. Build phase: progressive overload toward race demands.",
+    "target_tss": 44.9,
+    "achieved_tss": 44.9,
+    "duration_minutes": 45.0,
+    "distance_meters": 0.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "VO\u2082max Intervals",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy warm-up \u2014 gradually increase effort, keep HR in Zone 1-2",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 1440.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 1440.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 4,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "VO\u2082max effort \u2014 hard, near maximal sustainable",
+              "duration_seconds": 180.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 180.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 5
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 9
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Active recovery \u2014 keep moving, very easy effort",
+              "duration_seconds": 180.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 180.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy cool-down \u2014 flush legs and bring HR down gradually",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        }
+      ]
+    },
+    "duration_target_minutes": 26.5,
+    "tid_fractions": {
+      "z_low": 0.7272727272727273,
+      "z_mid": 0.0,
+      "z_high": 0.27272727272727276
+    }
+  },
+  {
+    "slot_id": "menu:running:run_tempo:w5:i1",
+    "date": "2026-02-10",
+    "week_index": 5,
+    "phase_type": "build",
+    "sport": "running",
+    "activity_key": "run_fartlek",
+    "family": "interval",
+    "is_recovery_week": false,
+    "coaching_intent": "High-intensity intervals \u2014 sharpens top-end fitness and economy. Build phase: progressive overload toward race demands.",
+    "target_tss": 32.4,
+    "achieved_tss": 32.4,
+    "duration_minutes": 40.0,
+    "distance_meters": 0.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "Fartlek Run",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy warm-up \u2014 gradually increase effort, keep HR in Zone 1-2",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "rpe",
+            "rpe": 2
+          },
+          "secondary_target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          }
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 1080.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 1080.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 6,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "VO\u2082max effort \u2014 hard, near maximal sustainable",
+              "duration_seconds": 60.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 60.0
+              },
+              "target": {
+                "target_type": "rpe",
+                "rpe": 9
+              },
+              "secondary_target": {
+                "target_type": "heart_rate_zone",
+                "zone": 5
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Active recovery \u2014 keep moving, very easy effort",
+              "duration_seconds": 120.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 120.0
+              },
+              "target": {
+                "target_type": "rpe",
+                "rpe": 3
+              },
+              "secondary_target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy cool-down \u2014 flush legs and bring HR down gradually",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "rpe",
+            "rpe": 2
+          },
+          "secondary_target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          }
+        }
+      ]
+    },
+    "duration_target_minutes": 32.5,
+    "tid_fractions": {
+      "z_low": 0.8421052631578947,
+      "z_mid": 0.0,
+      "z_high": 0.15789473684210525
+    }
+  },
+  {
+    "slot_id": "menu:running:run_vo2max:w5:i2",
+    "date": "2026-02-12",
+    "week_index": 5,
+    "phase_type": "build",
+    "sport": "running",
+    "activity_key": "run_hill_repeats",
+    "family": "interval",
+    "is_recovery_week": false,
+    "coaching_intent": "High-intensity intervals \u2014 sharpens top-end fitness and economy. Build phase: progressive overload toward race demands.",
+    "target_tss": 45.7,
+    "achieved_tss": 45.7,
+    "duration_minutes": 50.0,
+    "distance_meters": 0.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "Hill Repeats",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy warm-up \u2014 gradually increase effort, keep HR in Zone 1-2",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "rpe",
+            "rpe": 2
+          },
+          "secondary_target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          }
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 1800.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 1800.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 6,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "Threshold effort \u2014 sustainably hard, at or near lactate threshold",
+              "duration_seconds": 120.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 120.0
+              },
+              "target": {
+                "target_type": "rpe",
+                "rpe": 8
+              },
+              "secondary_target": {
+                "target_type": "heart_rate_zone",
+                "zone": 4
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Active recovery \u2014 keep moving, very easy effort",
+              "duration_seconds": 180.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 180.0
+              },
+              "target": {
+                "target_type": "rpe",
+                "rpe": 2
+              },
+              "secondary_target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy cool-down \u2014 flush legs and bring HR down gradually",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "rpe",
+            "rpe": 2
+          },
+          "secondary_target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          }
+        }
+      ]
+    },
+    "duration_target_minutes": 27.5,
+    "tid_fractions": {
+      "z_low": 0.76,
+      "z_mid": 0.0,
+      "z_high": 0.24
+    }
+  },
+  {
+    "slot_id": "menu:running:run_5k_race_pace:w10:i2",
+    "date": "2026-03-19",
+    "week_index": 10,
+    "phase_type": "peak",
+    "sport": "running",
+    "activity_key": "run_5k_race_pace",
+    "family": "interval",
+    "is_recovery_week": false,
+    "coaching_intent": "High-intensity intervals \u2014 sharpens top-end fitness and economy. Peak phase: race-specific sharpening.",
+    "target_tss": 40.8,
+    "achieved_tss": 40.8,
+    "duration_minutes": 40.0,
+    "distance_meters": 0.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "5K Race-Pace Intervals",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy warm-up \u2014 gradually increase effort, keep HR in Zone 1-2",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 1320.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 1320.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 5,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "VO\u2082max effort \u2014 hard, near maximal sustainable",
+              "duration_seconds": 120.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 120.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 5
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 9
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Active recovery \u2014 keep moving, very easy effort",
+              "duration_seconds": 150.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 150.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy cool-down \u2014 flush legs and bring HR down gradually",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        }
+      ]
+    },
+    "duration_target_minutes": 25.3,
+    "tid_fractions": {
+      "z_low": 0.7647058823529411,
+      "z_mid": 0.0,
+      "z_high": 0.23529411764705882
+    }
+  },
+  {
+    "slot_id": "menu:swimming:swim_drill:w0:i8",
+    "date": "2026-01-05",
+    "week_index": 0,
+    "phase_type": "base",
+    "sport": "swimming",
+    "activity_key": "swim_drill",
+    "family": "easy",
+    "is_recovery_week": false,
+    "coaching_intent": "Aerobic maintenance \u2014 conversational effort, keep it genuinely easy. Base phase: consistency over intensity.",
+    "target_tss": 18.8,
+    "achieved_tss": 18.8,
+    "duration_minutes": 30.0,
+    "distance_meters": 1300.0,
+    "hardness": {
+      "is_hard_overall": false,
+      "is_hard_physiologically": false,
+      "is_hard_mentally": false
+    },
+    "workout": {
+      "name": "Technique Drills",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy swim warm-up \u2014 choice of stroke, gradually loosen up; build pace and rotation in the last 100 m",
+          "duration_seconds": 270.0,
+          "duration_meters": 200.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 200.0,
+            "value_seconds": 270.0
+          },
+          "target": {
+            "target_type": "open"
+          },
+          "secondary_target": null
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 1260.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 1260.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 20,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "Freestyle technique drill \u2014 rotate one per set: catch-up (lead-hand extended until trailing hand touches), fingertip drag (relaxed recovery, brush water with fingers), 6-3-6 switch (six kicks on each side, three strokes between), or single-arm freestyle (non-stroking arm at side). Focus on the cue, not pace.",
+              "duration_seconds": 30.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 30.0
+              },
+              "target": {
+                "target_type": "swim_pace_zone",
+                "zone": 1
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 3
+              }
+            },
+            {
+              "type": "interval",
+              "description": "Freestyle, easy whole-stroke \u2014 apply the drill focus",
+              "duration_seconds": 30.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 30.0
+              },
+              "target": {
+                "target_type": "swim_pace_zone",
+                "zone": 1
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 3
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy swim cool-down \u2014 relaxed freestyle or backstroke, focus on technique, bring HR down",
+          "duration_seconds": 150.0,
+          "duration_meters": 100.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 100.0,
+            "value_seconds": 150.0
+          },
+          "target": {
+            "target_type": "open"
+          },
+          "secondary_target": null
+        }
+      ]
+    },
+    "duration_target_minutes": 30.0,
+    "tid_fractions": {
+      "z_low": 1.0,
+      "z_mid": 0.0,
+      "z_high": 0.0
+    }
+  },
+  {
+    "slot_id": "menu:cycling:bike_cadence:w0:i6",
+    "date": "2026-01-06",
+    "week_index": 0,
+    "phase_type": "base",
+    "sport": "cycling",
+    "activity_key": "bike_cadence",
+    "family": "easy",
+    "is_recovery_week": false,
+    "coaching_intent": "Aerobic maintenance \u2014 conversational effort, keep it genuinely easy. Base phase: consistency over intensity.",
+    "target_tss": 21.4,
+    "achieved_tss": 21.4,
+    "duration_minutes": 40.0,
+    "distance_meters": 0.0,
+    "hardness": {
+      "is_hard_overall": false,
+      "is_hard_physiologically": false,
+      "is_hard_mentally": false
+    },
+    "workout": {
+      "name": "Cadence Drills",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy warm-up \u2014 gradually increase effort, keep HR in Zone 1-2",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "rpe",
+            "rpe": 2
+          },
+          "secondary_target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          }
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 1500.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 1500.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 5,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "Easy aerobic effort \u2014 conversational pace, building base endurance",
+              "duration_seconds": 180.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 180.0
+              },
+              "target": {
+                "target_type": "rpe",
+                "rpe": 3
+              },
+              "secondary_target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              },
+              "additional_targets": [
+                {
+                  "target_type": "cadence",
+                  "low_rpm": 100,
+                  "high_rpm": 110
+                }
+              ]
+            },
+            {
+              "type": "recovery",
+              "description": "Active recovery \u2014 keep moving, very easy effort",
+              "duration_seconds": 120.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 120.0
+              },
+              "target": {
+                "target_type": "rpe",
+                "rpe": 2
+              },
+              "secondary_target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy cool-down \u2014 flush legs and bring HR down gradually",
+          "duration_seconds": 300.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 300.0
+          },
+          "target": {
+            "target_type": "rpe",
+            "rpe": 2
+          },
+          "secondary_target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          }
+        }
+      ]
+    },
+    "duration_target_minutes": 40.0,
+    "tid_fractions": {
+      "z_low": 1.0,
+      "z_mid": 0.0,
+      "z_high": 0.0
+    }
+  },
+  {
+    "slot_id": "menu:swimming:swim_css:w0:i7",
+    "date": "2026-01-07",
+    "week_index": 0,
+    "phase_type": "base",
+    "sport": "swimming",
+    "activity_key": "swim_css",
+    "family": "threshold",
+    "is_recovery_week": false,
+    "coaching_intent": "Threshold development \u2014 extends time near your sustainable red line. Base phase: consistency over intensity.",
+    "target_tss": 29.0,
+    "achieved_tss": 29.0,
+    "duration_minutes": 25.0,
+    "distance_meters": 1400.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "CSS Intervals",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy swim warm-up \u2014 choice of stroke, gradually loosen up; build pace and rotation in the last 100 m",
+          "duration_seconds": 480.0,
+          "duration_meters": 400.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 400.0,
+            "value_seconds": 480.0
+          },
+          "target": {
+            "target_type": "open"
+          },
+          "secondary_target": null
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 780.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 780.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 5,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "freestyle, CSS pace",
+              "duration_seconds": 150.0,
+              "duration_meters": 150.0,
+              "duration": {
+                "duration_type": "distance",
+                "value_meters": 150.0,
+                "value_seconds": 150.0
+              },
+              "target": {
+                "target_type": "swim_pace_zone",
+                "zone": 4
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 7
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Wall rest between reps \u2014 stay on pace clock, keep breathing easy",
+              "duration_seconds": 20.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 20.0
+              },
+              "target": {
+                "target_type": "open"
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy swim cool-down \u2014 relaxed freestyle or backstroke, focus on technique, bring HR down",
+          "duration_seconds": 300.0,
+          "duration_meters": 250.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 250.0,
+            "value_seconds": 300.0
+          },
+          "target": {
+            "target_type": "open"
+          },
+          "secondary_target": null
+        }
+      ]
+    },
+    "duration_target_minutes": 27.8,
+    "tid_fractions": {
+      "z_low": 0.5301204819277109,
+      "z_mid": 0.0,
+      "z_high": 0.46987951807228917
+    }
+  },
+  {
+    "slot_id": "menu:running:run_speed:w0:i5",
+    "date": "2026-01-08",
+    "week_index": 0,
+    "phase_type": "base",
+    "sport": "running",
+    "activity_key": "run_speed",
+    "family": "interval",
+    "is_recovery_week": false,
+    "coaching_intent": "High-intensity intervals \u2014 sharpens top-end fitness and economy. Base phase: consistency over intensity.",
+    "target_tss": 33.8,
+    "achieved_tss": 33.8,
+    "duration_minutes": 50.0,
+    "distance_meters": 0.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "Speed Intervals",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy warm-up \u2014 gradually increase effort, keep HR in Zone 1-2",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 1680.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 1680.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 8,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "VO\u2082max effort \u2014 hard, near maximal sustainable",
+              "duration_seconds": 30.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 30.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 5
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 9
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Active recovery \u2014 keep moving, very easy effort",
+              "duration_seconds": 180.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 180.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy cool-down \u2014 flush legs and bring HR down gradually",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        }
+      ]
+    },
+    "duration_target_minutes": 30.8,
+    "tid_fractions": {
+      "z_low": 0.9166666666666666,
+      "z_mid": 0.0,
+      "z_high": 0.08333333333333337
+    }
+  },
+  {
+    "slot_id": "menu:swimming:swim_css:w1:i7",
+    "date": "2026-01-14",
+    "week_index": 1,
+    "phase_type": "base",
+    "sport": "swimming",
+    "activity_key": "swim_threshold",
+    "family": "threshold",
+    "is_recovery_week": false,
+    "coaching_intent": "Threshold development \u2014 extends time near your sustainable red line. Base phase: consistency over intensity.",
+    "target_tss": 37.2,
+    "achieved_tss": 37.2,
+    "duration_minutes": 30.0,
+    "distance_meters": 1700.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "Threshold Swim Intervals",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy swim warm-up \u2014 choice of stroke, gradually loosen up; build pace and rotation in the last 100 m",
+          "duration_seconds": 480.0,
+          "duration_meters": 400.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 400.0,
+            "value_seconds": 480.0
+          },
+          "target": {
+            "target_type": "open"
+          },
+          "secondary_target": null
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 1140.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 1140.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 4,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "freestyle, threshold pace",
+              "duration_seconds": 240.0,
+              "duration_meters": 300.0,
+              "duration": {
+                "duration_type": "distance",
+                "value_meters": 300.0,
+                "value_seconds": 240.0
+              },
+              "target": {
+                "target_type": "swim_pace_zone",
+                "zone": 4
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 7
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Wall rest between reps \u2014 stay on pace clock, keep breathing easy",
+              "duration_seconds": 30.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 30.0
+              },
+              "target": {
+                "target_type": "open"
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy swim cool-down \u2014 relaxed freestyle or backstroke, focus on technique, bring HR down",
+          "duration_seconds": 240.0,
+          "duration_meters": 200.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 200.0,
+            "value_seconds": 240.0
+          },
+          "target": {
+            "target_type": "open"
+          },
+          "secondary_target": null
+        }
+      ]
+    },
+    "duration_target_minutes": 30.5,
+    "tid_fractions": {
+      "z_low": 0.4147339699863574,
+      "z_mid": 0.0,
+      "z_high": 0.5852660300136425
+    }
+  },
+  {
+    "slot_id": "menu:swimming:swim_css_test:w3:i5",
+    "date": "2026-01-30",
+    "week_index": 3,
+    "phase_type": "base",
+    "sport": "swimming",
+    "activity_key": "swim_css_test",
+    "family": "test",
+    "is_recovery_week": true,
+    "coaching_intent": "Fitness test \u2014 pace it honestly so your zones stay calibrated.",
+    "target_tss": 40.0,
+    "achieved_tss": 40.0,
+    "duration_minutes": 35.0,
+    "distance_meters": 1700.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "CSS Swim Test",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy swim warm-up \u2014 choice of stroke, gradually loosen up; build pace and rotation in the last 100 m",
+          "duration_seconds": 780.0,
+          "duration_meters": 600.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 600.0,
+            "value_seconds": 780.0
+          },
+          "target": {
+            "target_type": "open"
+          },
+          "secondary_target": null
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 270.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 270.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 4,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "50 m build to race pace",
+              "duration_seconds": 50.0,
+              "duration_meters": 50.0,
+              "duration": {
+                "duration_type": "distance",
+                "value_meters": 50.0,
+                "value_seconds": 50.0
+              },
+              "target": {
+                "target_type": "rpe",
+                "rpe": 7
+              },
+              "secondary_target": null
+            },
+            {
+              "type": "recovery",
+              "description": "easy",
+              "duration_seconds": 20.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 20.0
+              },
+              "target": {
+                "target_type": "rpe",
+                "rpe": 2
+              },
+              "secondary_target": null
+            }
+          ]
+        },
+        {
+          "type": "interval",
+          "description": "400 m TT + 200 m TT \u2014 establish critical swim speed; this is the first all-out leg",
+          "duration_seconds": 360.0,
+          "duration_meters": 400.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 400.0,
+            "value_seconds": 360.0
+          },
+          "target": {
+            "target_type": "rpe",
+            "rpe": 9
+          },
+          "secondary_target": null
+        },
+        {
+          "type": "recovery",
+          "description": "Wall rest between time trials \u2014 easy breathing, stay on the pace clock",
+          "duration_seconds": 180.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 180.0
+          },
+          "target": {
+            "target_type": "rpe",
+            "rpe": 2
+          },
+          "secondary_target": null
+        },
+        {
+          "type": "interval",
+          "description": "200 m time trial \u2014 go all-out; CSS is derived from this and the 400 m time",
+          "duration_seconds": 180.0,
+          "duration_meters": 200.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 200.0,
+            "value_seconds": 180.0
+          },
+          "target": {
+            "target_type": "rpe",
+            "rpe": 9
+          },
+          "secondary_target": null
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy swim cool-down \u2014 relaxed freestyle or backstroke, focus on technique, bring HR down",
+          "duration_seconds": 420.0,
+          "duration_meters": 300.0,
+          "duration": {
+            "duration_type": "distance",
+            "value_meters": 300.0,
+            "value_seconds": 420.0
+          },
+          "target": {
+            "target_type": "open"
+          },
+          "secondary_target": null
+        }
+      ]
+    },
+    "duration_target_minutes": 47.0,
+    "tid_fractions": {
+      "z_low": 0.6112650960205899,
+      "z_mid": 0.10097010492971689,
+      "z_high": 0.28776479904969315
+    }
+  },
+  {
+    "slot_id": "menu:cycling:bike_threshold:w5:i6",
+    "date": "2026-02-10",
+    "week_index": 5,
+    "phase_type": "build",
+    "sport": "cycling",
+    "activity_key": "bike_threshold",
+    "family": "threshold",
+    "is_recovery_week": false,
+    "coaching_intent": "Threshold development \u2014 extends time near your sustainable red line. Build phase: progressive overload toward race demands.",
+    "target_tss": 38.2,
+    "achieved_tss": 38.2,
+    "duration_minutes": 50.0,
+    "distance_meters": 0.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "Threshold Intervals",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy warm-up \u2014 gradually increase effort, keep HR in Zone 1-2",
+          "duration_seconds": 900.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 900.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 1440.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 1440.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 2,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "Threshold effort \u2014 sustainably hard, at or near lactate threshold",
+              "duration_seconds": 480.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 480.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 4
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 7
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Active recovery \u2014 keep moving, very easy effort",
+              "duration_seconds": 240.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 240.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy cool-down \u2014 flush legs and bring HR down gradually",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        }
+      ]
+    },
+    "duration_target_minutes": 43.2,
+    "tid_fractions": {
+      "z_low": 0.673469387755102,
+      "z_mid": 0.32653061224489804,
+      "z_high": 0.0
+    }
+  },
+  {
+    "slot_id": "menu:cycling:bike_threshold:w6:i6",
+    "date": "2026-02-17",
+    "week_index": 6,
+    "phase_type": "build",
+    "sport": "cycling",
+    "activity_key": "bike_sweet_spot",
+    "family": "tempo",
+    "is_recovery_week": false,
+    "coaching_intent": "Sustained steady-state work \u2014 raises the pace you can hold for hours. Build phase: progressive overload toward race demands.",
+    "target_tss": 59.3,
+    "achieved_tss": 59.3,
+    "duration_minutes": 65.0,
+    "distance_meters": 0.0,
+    "hardness": {
+      "is_hard_overall": true,
+      "is_hard_physiologically": true,
+      "is_hard_mentally": true
+    },
+    "workout": {
+      "name": "Sweet Spot Intervals",
+      "steps": [
+        {
+          "type": "warmup",
+          "description": "Easy warm-up \u2014 gradually increase effort, keep HR in Zone 1-2",
+          "duration_seconds": 900.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 900.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        },
+        {
+          "type": "repeat",
+          "description": "",
+          "duration_seconds": 2400.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 2400.0
+          },
+          "target": null,
+          "secondary_target": null,
+          "iterations": 2,
+          "steps": [
+            {
+              "type": "interval",
+              "description": "Tempo effort \u2014 comfortably hard, short phrases only",
+              "duration_seconds": 900.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 900.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 3
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 7
+              }
+            },
+            {
+              "type": "recovery",
+              "description": "Active recovery \u2014 keep moving, very easy effort",
+              "duration_seconds": 300.0,
+              "duration_meters": 0.0,
+              "duration": {
+                "duration_type": "time",
+                "value_seconds": 300.0
+              },
+              "target": {
+                "target_type": "heart_rate_zone",
+                "zone": 1
+              },
+              "secondary_target": {
+                "target_type": "rpe",
+                "rpe": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "cooldown",
+          "description": "Easy cool-down \u2014 flush legs and bring HR down gradually",
+          "duration_seconds": 600.0,
+          "duration_meters": 0.0,
+          "duration": {
+            "duration_type": "time",
+            "value_seconds": 600.0
+          },
+          "target": {
+            "target_type": "heart_rate_zone",
+            "zone": 1
+          },
+          "secondary_target": {
+            "target_type": "rpe",
+            "rpe": 2
+          }
+        }
+      ]
+    },
+    "duration_target_minutes": 41.3,
+    "tid_fractions": {
+      "z_low": 0.5384615384615384,
+      "z_mid": 0.46153846153846156,
+      "z_high": 0.0
+    }
+  }
+]

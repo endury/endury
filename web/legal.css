@@ -1,0 +1,47 @@
+/* Endury — the two static legal pages (impressum.html, privacy.html):
+   the app's tokens and font on a plain scrolling text page. base.css is
+   the app canvas (no page scroll), so it is not loaded here. */
+
+@font-face {
+  font-family: 'Inter';
+  src: url('vendor/inter/InterVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  background: var(--cb-bg);
+  color: var(--cb-text);
+  font: 15px/1.6 'Inter', system-ui, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { max-width: 680px; margin: 0 auto; padding: 32px 20px 64px; }
+
+h1 { font-size: 24px; line-height: 1.25; margin: 0 0 8px; }
+h2 { font-size: 17px; margin: 32px 0 8px; }
+p, li { margin: 0 0 12px; }
+ul { padding-left: 22px; }
+a { color: var(--cb-accent); }
+
+.legal-nav { font-size: 13px; color: var(--cb-text-muted); margin-bottom: 24px; }
+.legal-nav a { color: var(--cb-text-muted); }
+.legal-meta { font-size: 13px; color: var(--cb-text-muted); }
+
+table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 0 0 12px; }
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 6px 10px 6px 0;
+  border-bottom: 1px solid var(--cb-border);
+}
+
+/* Not filled in yet: unmistakable, so an unedited copy never looks finished. */
+.legal-fill {
+  background: #6b2b2b;
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}

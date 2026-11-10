@@ -1,0 +1,3 @@
+{"setup": {"athlete": {"name": "Alex", "experience_level": "intermediate", "primary_sport": "running"}, "health_summary": "Sleep: 5h, score 42. Resting HR: 62 (up 10). HRV: 28ms (down 40%).", "alerts": ["Sleep score critically low for 3 nights", "Resting HR elevated 10 bpm above baseline"]}}
+{"role": "user", "content": "Should I do my interval session today?"}
+{"role": "assistant", "content": "Given your recovery metrics, I'd suggest modifying today's session.", "expect_not_contains": ["error"]}

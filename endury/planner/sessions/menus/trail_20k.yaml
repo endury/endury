@@ -1,0 +1,945 @@
+# trail_20k session menus. Format and validation ladder: AUTHORING.md.
+#
+# Design notes (trail 20K = UTMB 20-50 km-effort band). A 20K is not an
+# ultra: tr §1 puts it at 20-50 km-effort — a 25-45 km trail race with
+# 1,000-2,500 m of gain — and tr §13.1 derives a ~3 h 15 mid-pack finish.
+# That is a hilly half marathon with mountains in it, not a short ultra: no
+# back-to-backs (tr §13.7), no 4 h nutrition rehearsal (tr §12.3 — gut
+# training is explicitly not a planning concern at this distance), and an
+# intensity budget that carries the plan rather than riding along behind
+# volume (GOAL_INTENSITY_INDEX 0.40, between the road half's 0.25 and the
+# 10K's 0.60).
+#
+# Every 20K row in tr §13 is flagged [EX] — pure downward extrapolation
+# below the 50K row with no corroboration of any kind. tr §13.4 puts the COMPETITIVE
+# peak at 8-10 h/wk, which is high for this distance. This
+# menu
+# therefore sits at the bottom of each §13.4 band (BASIC ~4.3 h, MODERATE
+# ~7.0 h, COMPETITIVE ~8.1 h at the race-sim week), as low as the [EX] table allows
+# without abandoning it.
+#
+# Authored against docs/research/trail_running.md (cited as tr §N): hard days
+# kept apart, midweek and on Friday, with the long run on Sunday.
+#
+# Week shape (all load phases): Mon rest, Tue climb-specific quality, Wed
+# easy, Thu easy, Fri sustained quality, Sat easy, Sun trail long run.
+# Saturday fires for MODERATE and COMPETITIVE only. Monday carries an
+# optional recovery spin in every load and recovery week.
+#
+# BASIC (reviewed with the maintainer) runs four days with one
+# hard day: Tue climb, Wed easy, Thu rest, Fri rhythm run, Sun trail long
+# run, and optional rides on Monday and Saturday. Recurring days, varied
+# sessions: Tuesday alternates hill repeats and a power hike (downhill
+# repeats join late in BUILD); Friday alternates a steady aerobic tempo with
+# strides (BASE), fartlek (BUILD) or a progression run (PEAK). Its bounds sit
+# at the cards' own sizes rather than scaling the COMPETITIVE literals.
+#
+# Three deliberate departures are recorded in the slot rationales: there is
+# no strength/core slot (the planner has no strength activity), the
+# back-to-back long-run weekend is forbidden goal-wide, and the
+# descent-conditioning bouts open in late BUILD — the only phase that can
+# fire one at every horizon — and then close with a second bout in
+# mid-PEAK wherever PEAK is long enough to hold a non-simulation LOAD week.
+#
+# intent: Key sessions (`key:`, session_generator R-SESS-033). The climbing
+# session and the long run are what make this a trail plan, so a week too
+# short for its menu keeps them at their size and shrinks, then drops, the
+# easy runs instead. The number is the largest share of a squeezed week the
+# session may take; a week too small for that share drops the session as
+# before. The shares are hypotheses, not measurements, carried down from
+# the 50K anchors (every 20K row in tr §13 is [EX]): climbing 0.25 on hard
+# work being ~20 % of sessions and ~10 % of hours (tr §10.2); long run 0.5
+# on longest session ~50 % of weekly time (tr §8.3); the race-sim long run
+# 0.67 as at 50K (tr §5.4 inside tr §3.2's peak-block floor). A week under
+# ~2.9 h cannot give the 50-min hill card its quarter and keeps its easy
+# runs instead. Recovery and race-week menus carry no key.
+#
+# intent: Eased long runs (`eases:`, session_generator R-SESS-034). The
+# recovery and taper long runs are not on the ramp, so their bounds would
+# outrun an athlete still climbing it; `eases:` caps them at 0.75 of the
+# longest long run the plan has reached (the athlete's recent longest
+# before the first), the top of tr §13.5's "the rest at 50-75 % of the
+# ceiling".
+goal: trail_20k
+offered: [basic]
+progressions:
+  # intent: The Sunday trail long run — the endurance spine of a hilly-half
+  # preparation. Prescribed in time, not distance, for the same reason km-effort
+  # exists: a 2 h mountain long run and a 2 h road long run are comparable
+  # stimuli at wildly different distances (tr §5.1). The ramp runs BASE ~1 h15
+  # -> BUILD ~2 h -> PEAK 2 h15-2 h35, with the one race-simulation week at tr
+  # §13.5's 2-3 h ceiling. It stops there on purpose: unlike the ultra menus
+  # there is no 4 h nutrition-rehearsal target to reach for (tr §5.4's floor is
+  # a 50K-and-up concern, and tr §12.3 is explicit that gut training is not a
+  # planning concern at 20K), so the ceiling is set by tr §13.5 alone and tr
+  # §5.3's frequency rule applies — 1-2 long runs a month at the ceiling, the
+  # rest at 50-75% of it.
+  - trail_20k_long_run
+menus:
+  base/load:
+    contract:
+      must_contain: [run_trail_long]
+      must_not_contain: [run_10k_race_pace, run_5k_race_pace, run_downhill_repeats, run_trail_b2b, run_vo2max]
+    slots:
+      - name: t20_basic_base_sun_easy
+        day: sun
+        activity: run_easy
+        minutes: {basic: [45, 60]}
+        window: [0.0, 0.05]
+        group: t20_base_sun
+        # intent: BASIC's test week (R-SESS-B-000, 2026-10-11): the Tuesday
+        # test plus easy sessions only, so the long run opens in week 2 from
+        # the athlete's recent longest. The window fires on the first base
+        # week alone; the long run below wins the group from the second.
+        why: >-
+          An easy Sunday run in your opening week. The week is for the test,
+          so the weekend stays light and the long run starts next week from
+          the length you already run.
+      - name: t20_base_sun_long_run
+        day: sun
+        activity: run_trail_long
+        key: 0.5
+        group: t20_base_sun
+        minutes: {basic: [50, 105], moderate: [64, 89], competitive: [75, 105]}
+        # intent: BASIC's base cap 105 (was 70, then 90): an athlete who
+        # already runs 90 min opened at 70 for the whole base, then held 90
+        # for five base weeks; the ramp from the athlete's own longest still
+        # governs an athlete below the cap. The 50-min minimum stays: at 45
+        # the default athlete's opener fell to 46 min, 0.78 of their longest
+        #.
+        progression: trail_20k_long_run
+        why: >-
+          The long run is the backbone of your 20K — a hilly trail race is won
+          on being able to keep climbing and descending long after the legs
+          would rather stop. In base it stays easy and grows slowly; everything
+          sharper gets built on top of it later.
+      - name: t20_base_tue_vert_hike
+        day: tue
+        activity: run_vert_hike
+        key: 0.35  # as t20_basic_base_tue_climb: a 2.4 h week keeps its climb
+        minutes: {basic: [44, 50], moderate: [42, 60], competitive: [50, 70]}
+        window: [0.0, 0.4]
+        group: t20_base_tue_climb
+        # intent: One sustained power-hiking block at the top of BASE, and only
+        # there. A 20K with 1,000-2,500 m of gain (tr §1) is run with 60-75% of
+        # the clock going uphill (tr §2.2), and above ~28% grade hiking is
+        # strictly the more economical gait (tr §8.1) — so the climbing gait is
+        # worth one honest rehearsal at this distance. It is deliberately rare:
+        # tr §8.3 puts the explicit
+        # requirement to *train* the hike at 100 miles, and the frac gate closes
+        # it after the first ~40% of BASE.
+        why: >-
+          Your race spends most of its clock going uphill, and above a certain
+          steepness hiking is simply faster and cheaper than running. One honest
+          power-hiking block early on teaches you where that switch is, so you
+          are not improvising it on race day.
+      - name: t20_base_tue_hills
+        day: tue
+        activity: run_hill_repeats
+        key: 0.25
+        minutes: {moderate: [38, 47], competitive: [45, 55]}
+        window: [0.4, 1.0]
+        group: t20_base_tue_climb
+        # intent: Uphill intervals take over the Tuesday for the rest of BASE —
+        # the session tr §7.1 wants ~80% of interval work spent on. Short reps on a 6-8% grade:
+        # the aerobic and neuromuscular stimulus without the eccentric cost,
+        # which is why this is the climb session BASE can carry and the descent
+        # repeats are not (tr §9.4).
+        why: >-
+          Short, hard climbs are the most trail-specific way to build fitness:
+          the aerobic work and the strong, springy stride, without the pounding
+          of fast flat running. They open the plan because climbing is what your
+          race asks for most.
+      - name: t20_basic_base_tue_climb
+        day: tue
+        activity: run_hill_repeats
+        rotation: [run_hill_repeats, run_vert_hike]
+        # intent: 0.35 (the trail menus' usual 0.25) so a 2.4 h base week
+        # keeps its 50-min climb and shortens the easy run instead; at 0.25
+        # an athlete at 0.75 of the default volume lost the climb in two of
+        # five base weeks.
+        key: 0.35
+        # intent: the climb grows through the plan: 50-52 min is 6 x 2.0-2.3
+        # min of climbing (12-14 min) here, 15-17 in build, 19 in peak, the
+        # 10-to-20-minute progression of tr §7.1; the card was the same
+        # 50-55 from week 1 to the taper.
+        minutes: {basic: [50, 52]}
+        window: [0.4, 1.0]
+        group: t20_base_tue_climb
+        # intent: BASIC's climb day alternates hill repeats with a power-hiking
+        # block once the opening hikes are done: the same day and role every week, a different way up
+        # the hill each time. Bounds sit at the cards' own sizes (hill
+        # repeats >= 50 min, the hike >= 44), so the plan books what the
+        # card holds.
+        why: >-
+          Tuesday is your climbing day. One week it is short, hard climbs that
+          build a strong, springy stride; the next a steady power hike that
+          teaches you the climbing gait your race will spend hours in. Same
+          day, same job, two ways up the hill.
+      - name: t20_basic_base_tue_test
+        day: tue
+        activity: run_threshold_test
+        minutes: {basic: [55, 55]}
+        cadence_weeks: 8
+        key: 0.75
+        group: t20_base_tue_climb
+        # intent: Week 1 is the test week (R-SESS-B-000, 2026-10-11): the
+        # test opens the plan in the climb's place, so the zones exist from
+        # day one, and it fires again every eight weeks in a recovery week
+        # (the cadence slots in the recovery menus), never in peak. Before
+        # this the one test sat in the last tenth of base: it never fired at
+        # 12-13 weeks or at 0.75 of the default volume, since the fixed
+        # 55-minute protocol was the first thing a squeezed week dropped.
+        # key 0.75: the fixed card is three quarters of a 1.25 h week (half
+        # the default volume), and a test whose share falls short is the
+        # first thing the fit drops; the easy runs shorten or go optional
+        # before the test does.
+        why: >-
+          Your first week opens with the test that sets the training zones
+          every run in this plan is written against: a 30-minute threshold
+          effort after a proper warm-up, in place of the climbing session.
+          Run it rested and honest — the number only has to be yours. If you
+          have tested in the last six weeks, run this as an easy aerobic
+          session instead.
+      - name: t20_base_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {basic: [40, 50], moderate: [38, 51], competitive: [45, 60]}
+        why: >-
+          Easy running between the hard days is what lets the hard days be hard.
+          It builds the aerobic base your whole 20K rests on, at an effort you
+          could hold a conversation through.
+      - name: t20_base_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {moderate: [38, 51], competitive: [45, 60]}
+        why: >-
+          A second easy day, deliberately unremarkable. Most of your week should
+          be comfortable — the climbing and the long run are where the strain
+          belongs, and this run keeps the volume up without adding to it.
+      - name: t20_base_fri_aerobic_tempo
+        day: fri
+        activity: run_aerobic_tempo
+        minutes: {moderate: [34, 47], competitive: [40, 55]}
+        # intent: The second quality day starts as steady running at race
+        # effort, not at threshold: for a ~3 h 15 race (tr §13.1)
+        # that is the effort the day is actually run at, and tr §10.2 has
+        # ultra-trail athletes putting 89-92% of training below threshold
+        # even at a distance far more intense than 50K.
+        why: >-
+          Your second quality day starts as steady running at the effort you
+          will actually race at, not at threshold. A trail 20K is a couple of
+          hours of sustained work, so learning to hold a firm but controlled
+          effort is worth more early on than short, sharp speed.
+      - name: t20_basic_base_fri_rhythm
+        day: fri
+        activity: run_strides
+        rotation: [run_strides, run_aerobic_tempo]
+        minutes: {basic: [30, 36]}
+        # intent: BASIC runs four days with one hard day, the Tuesday climb
+        #. Friday is the rhythm run: every
+        # other week a steady aerobic tempo, the recurring half of the
+        # pattern; in between a session that changes with the phase (strides
+        # in BASE, fartlek in BUILD, a progression run in PEAK). 36 min is
+        # the strides card's ceiling.
+        why: >-
+          Friday is your rhythm run. One week it is easy running with a few
+          short, relaxed pickups to keep your stride quick; the next a steady,
+          comfortably firm run at the effort you will race at. Neither should
+          leave you tired for Sunday.
+      - name: t20_base_sat_easy
+        day: sat
+        activity: run_easy
+        minutes: {moderate: [44, 60], competitive: [52, 70]}
+        # intent: The sixth running day, which BASIC does not get. Leaving it out
+        # keeps the BASIC week
+        # inside its capacity ceiling without shaving the long run.
+        why: >-
+          An extra easy day for athletes with time for a sixth run. It is the
+          cheapest volume in the week — pure aerobic time at almost no cost —
+          and the first thing to go when life gets busy, which is exactly why
+          the leaner plans do without it.
+      - &t20_mon_spin
+        name: t20_mon_spin
+        day: mon
+        activity: bike_recovery
+        minutes: {basic: [30, 40], moderate: [35, 45], competitive: [40, 50]}
+        optional: true
+        # intent: Optional cross-training, the maintainer's call:
+        # a ride adds aerobic time without the impact that limits how much a
+        # runner can run. It sits outside the load model (session_generator
+        # R-SESS-040), so the running plan is the same with or without it, and
+        # it goes only on a day the menu leaves free of running.
+        why: >-
+          A very easy spin the day after your long run. It moves stiff legs
+          without any of the impact of running, so the week starts fresher, not
+          more tired.
+      - &t20_sat_ride
+        name: t20_sat_ride
+        day: sat
+        activity: bike_endurance
+        minutes: {basic: [45, 60]}
+        optional: true
+        why: >-
+          More aerobic time without more pounding: on the bike your heart and
+          lungs work as they would on an easy run while your legs skip the impact.
+          Keep it easy; the long run is tomorrow and matters more.
+
+  base/recovery:
+    slots: &base_recovery
+      - name: t20_rec_sun_long_run
+        day: sun
+        activity: run_trail_long
+        minutes: {basic: [45, 60], moderate: [64, 81], competitive: [75, 95]}
+        # intent: BASIC's base recovery long run tops out at 50 (was 60): three
+        # quarters of the 68-min opener, so an easier week never outruns its
+        # own rule once the base cap is 90.
+        eases: trail_20k_long_run
+        # intent: A recovery week sheds volume and the quality session, not the
+        # trail long day: tr §3.1 ranks total volume first and periodization
+        # ninth, so what a down week protects is the athlete, not the block
+        # structure.
+        why: >-
+          A down week sheds volume and the hard sessions, not the trail long
+          day. Time on trails is what made you fit in the first place; what a
+          recovery week protects is you, not the structure of the plan.
+      - name: t20_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [35, 45], moderate: [38, 47], competitive: [45, 55]}
+        group: t20_rec_tue
+        why: >-
+          An easy run where a hard climbing session would normally sit. This is
+          the whole point of a down week: the effort comes off so the fitness
+          you have been building can surface.
+      - name: t20_basic_rec_tue_test
+        day: tue
+        activity: run_threshold_test
+        minutes: {basic: [55, 55]}
+        cadence_weeks: 8
+        key: 0.75
+        group: t20_rec_tue
+        # intent: BASIC's eight-week test (R-SESS-B-000, 2026-10-11): on the
+        # recovery week nearest each eight-week mark the easy Tuesday is the
+        # threshold test, at the card's 55 minutes. key 0.75: the card is
+        # three quarters of a 1.25 h recovery week (0.75 of the default
+        # volume), and a test whose share falls short is the first thing
+        # the fit drops; the long run and strides give way or go optional
+        # before it does. Every other recovery week keeps the easy run.
+        why: >-
+          Every eight weeks, in a lighter week when you are rested enough for
+          the number to mean something, this easy Tuesday is the threshold
+          test instead: a 30-minute effort after a proper warm-up, which
+          updates the paces the rest of your running is built on.
+      - name: t20_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {moderate: [30, 38], competitive: [35, 45]}
+        why: >-
+          Short and easy. Recovery weeks work because you let them — resist the
+          urge to top this one up.
+      - name: t20_basic_rec_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {basic: [30, 36]}
+        # intent: BASIC's lighter week keeps the four-day rhythm minus the
+        # Wednesday run: an easy Tuesday, Friday strides, the Sunday long run.
+        why: >-
+          An easy run with a few relaxed pickups. In a lighter week this is
+          all the speed you need: enough to keep your legs quick, nothing to
+          recover from.
+      - name: t20_rec_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {moderate: [34, 42], competitive: [40, 50]}
+        why: >-
+          An easy midweek run to keep your rhythm during a lighter week. Nothing
+          more is being asked of you.
+      - *t20_mon_spin
+      - &t20_rec_sat_spin
+        name: t20_rec_sat_spin
+        day: sat
+        activity: bike_recovery
+        minutes: {basic: [30, 40], moderate: [35, 45], competitive: [40, 50]}
+        optional: true
+        why: >-
+          A very easy spin in a lighter week. It keeps you moving without giving
+          your legs anything to recover from; if you would rather rest, rest.
+
+  build/load:
+    contract:
+      must_contain: [run_downhill_repeats, run_trail_long]
+      must_not_contain: [run_trail_b2b]
+    slots:
+      - name: t20_build_sun_long_run
+        day: sun
+        activity: run_trail_long
+        key: 0.5
+        minutes: {basic: [70, 120], moderate: [89, 119], competitive: [105, 140]}
+        # intent: BASIC's build cap 120 (was 100): at 100 the long run stalled
+        # from week 11 of a 20-week plan and peak could not reach a 2 h-plus
+        # rehearsal for a ~3 h race.
+        progression: trail_20k_long_run
+        why: >-
+          The long run steps up now, and it belongs on trails that resemble your
+          race: climbing, descending, uneven footing. Build is where endurance
+          gets specific — the point is not just time on feet but time on the
+          kind of ground you will be racing over.
+      - name: t20_build_tue_hills
+        day: tue
+        activity: run_hill_repeats
+        key: 0.25
+        minutes: {moderate: [38, 47], competitive: [45, 55]}
+        window: [0.0, 0.55]
+        group: t20_build_tue_climb
+        # intent: Early BUILD keeps the Tuesday on the climb: tr §7.1's
+        # uphill-interval progression grows from ~10 min of total work toward
+        # ~20 min, a usual ladder over the first three weeks.
+        why: >-
+          Uphill intervals keep growing through early build, a little more
+          climbing each time. This is the fitness that decides how much you have
+          left at the top of your race's biggest climb.
+      - name: t20_basic_build_tue_climb
+        day: tue
+        activity: run_hill_repeats
+        rotation: [run_hill_repeats, run_vert_hike]
+        key: 0.25
+        # intent: 52-56 min is 6 x 2.3-2.8 min of climbing, the middle step
+        # of the base-build-peak progression.
+        minutes: {basic: [52, 56]}
+        window: [0.0, 0.55]
+        group: t20_build_tue_climb
+        why: >-
+          Your climbing day carries on into the build, still alternating hard
+          hill repeats with a steady power hike. Later in the build the
+          downhill repeats join the rotation.
+      - name: t20_build_tue_downhill
+        day: tue
+        activity: run_downhill_repeats
+        key: 0.25
+        rotation: [run_downhill_repeats, run_hill_repeats]
+        # intent: basic 52-56 so the rotation's hill weeks carry build's
+        # climbing dose.
+        minutes: {basic: [52, 56], moderate: [38, 47], competitive: [45, 55]}
+        window: [0.55, 1.0]
+        group: t20_build_tue_climb
+        # intent: The plan's descent conditioning, and the reason a trail 20K is
+        # not a road half: descending is limited by eccentric tolerance rather
+        # than aerobic capacity (tr §2.3 — athletes race downhill at under a
+        # third of the speed their aerobic system would allow), and that
+        # tolerance is trainable (tr §9.2: +15% eccentric MVT over four weeks).
+        # It is a strength stimulus with no aerobic return, so it is budgeted
+        # against the week's quality allowance, not its easy volume (tr §10.4).
+        # The rotation is the spacing mechanism: bouts can only land on
+        # alternate weeks, which satisfies tr §9.3's hard window (a 5-day gap
+        # adds no repeated-bout protection; >9 weeks washes it out) and keeps
+        # the 4-5 day damage window and 48-72 h DOMS peak clear of the Sunday
+        # long run. Downhill leads the rotation so the single guaranteed
+        # exposure lands even when late BUILD is only one LOAD week long — tr
+        # §9.4's minimum effective dose is 1-2 sessions, and tr §13.7's 20K row
+        # asks for exactly 1-2.
+        why: >-
+          Downhill repeats are the session that makes a trail 20K a different
+          animal from a road half. Descending fast is limited by how much
+          pounding your legs can absorb, not by your lungs, and that tolerance
+          is trainable — but only by descending. They land on alternating weeks,
+          because the soreness they cause needs a wide berth around your long
+          run.
+      - name: t20_build_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {basic: [40, 45], moderate: [42, 55], competitive: [50, 65]}
+        # intent: BASIC capped at 45 (was 55): in a squeezed first build week
+        # the rhythm run's minutes landed here and the easy run grew to 55
+        # beside a 60-min long run.
+        why: >-
+          Easy running around the hard days. In build this run's job is recovery
+          as much as fitness — you should finish it feeling better than you
+          started.
+      - name: t20_build_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {moderate: [38, 51], competitive: [45, 60]}
+        why: >-
+          The last easy day before the week's second quality session. Keep it
+          genuinely easy; whatever you take out of this run, you will be missing
+          in that session.
+      - name: t20_build_fri_fartlek
+        day: fri
+        activity: run_fartlek
+        minutes: {moderate: [38, 47], competitive: [45, 55]}
+        window: [0.0, 0.5]
+        group: t20_build_fri_quality
+        # intent: Fartlek opens the Friday quality. On trail it is the right shape for a hard
+        # session — the reps are steered by effort and terrain rather than pace,
+        # which tr §7.1 insists on because pace is meaningless on variable
+        # grade.
+        why: >-
+          Fast, playful efforts steered by feel and terrain rather than by pace
+          — which is the only way intensity works on trails, where the ground
+          changes what any given pace means. Run the quick parts at roughly the
+          effort you could hold for an hour.
+      - name: t20_build_fri_threshold
+        day: fri
+        activity: run_threshold
+        minutes: {moderate: [38, 51], competitive: [45, 60]}
+        window: [0.5, 1.0]
+        group: t20_build_fri_quality
+        # intent: Late BUILD converts the broken reps into one continuous
+        # threshold block — 20-30 min at about one-hour effort, which is the
+        # definition of threshold. It arrives late on purpose: tr §10.4 is
+        # explicit that the hard budget is shared across uphill intervals,
+        # descent conditioning and threshold work rather than allowanced
+        # separately, so the continuous block only appears once it can sit
+        # opposite a Tuesday that has stopped growing.
+        why: >-
+          Late in build the broken efforts join up into one sustained block at a
+          comfortably hard effort, the pace you could just about hold for an
+          hour. It arrives now rather than earlier because your Tuesday climbing
+          has stopped growing and there is finally room for a second genuinely
+          hard session.
+      - name: t20_basic_build_fri_rhythm
+        day: fri
+        activity: run_fartlek
+        rotation: [run_fartlek, run_aerobic_tempo]
+        minutes: {basic: [38, 45]}
+        # intent: BUILD's changing half of the Friday rhythm is fartlek: fast
+        # efforts steered by feel and terrain; the steady aerobic tempo stays
+        # every other week. No threshold block for BASIC: its card needs
+        # 50 min and a second hard day.
+        why: >-
+          Friday's rhythm run steps up in the build. One week a fartlek: fast,
+          playful efforts by feel and terrain, at roughly the effort you could
+          hold for an hour. The next the steady run at race effort you know
+          from base.
+      - name: t20_build_sat_easy
+        day: sat
+        activity: run_easy
+        minutes: {moderate: [49, 66], competitive: [58, 78]}
+        why: >-
+          More easy aerobic time for athletes running six days. Nothing to prove
+          here — it is volume, and volume is the biggest single driver of trail
+          endurance.
+      - *t20_mon_spin
+      - *t20_sat_ride
+
+  build/recovery:
+    slots:
+      - name: t20_rec_sun_long_run
+        day: sun
+        activity: run_trail_long
+        minutes: {basic: [45, 75], moderate: [64, 81], competitive: [75, 95]}
+        eases: trail_20k_long_run
+        # intent: A recovery week sheds volume and the quality session, not the
+        # trail long day: tr §3.1 ranks total volume first and periodization
+        # ninth, so what a down week protects is the athlete, not the block
+        # structure.
+        why: >-
+          A down week sheds volume and the hard sessions, not the trail long
+          day. Time on trails is what made you fit in the first place; what a
+          recovery week protects is you, not the structure of the plan.
+      - name: t20_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [35, 45], moderate: [38, 47], competitive: [45, 55]}
+        group: t20_rec_tue
+        why: >-
+          An easy run where a hard climbing session would normally sit. This is
+          the whole point of a down week: the effort comes off so the fitness
+          you have been building can surface.
+      - name: t20_basic_rec_tue_test
+        day: tue
+        activity: run_threshold_test
+        minutes: {basic: [55, 55]}
+        cadence_weeks: 8
+        key: 0.75
+        group: t20_rec_tue
+        # intent: as the base recovery week's test (R-SESS-B-000): week 8 is
+        # a build recovery week at every horizon from 12 to 20 weeks.
+        why: >-
+          Every eight weeks, in a lighter week when you are rested enough for
+          the number to mean something, this easy Tuesday is the threshold
+          test instead: a 30-minute effort after a proper warm-up, which
+          updates the paces the rest of your running is built on.
+      - name: t20_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {moderate: [30, 38], competitive: [35, 45]}
+        why: >-
+          Short and easy. Recovery weeks work because you let them — resist the
+          urge to top this one up.
+      - name: t20_basic_rec_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {basic: [30, 36]}
+        why: >-
+          An easy run with a few relaxed pickups. In a lighter week this is
+          all the speed you need: enough to keep your legs quick, nothing to
+          recover from.
+      - name: t20_rec_wed_test
+        day: wed
+        activity: run_threshold_test
+        minutes: {moderate: [37, 37], competitive: [44, 44]}
+        why: >-
+          A short, honest test effort in a lighter week, when you are rested
+          enough for the number to mean something. It is how your training
+          efforts get recalibrated so the rest of the plan stays pitched
+          correctly.
+      - *t20_mon_spin
+      - *t20_rec_sat_spin
+
+  peak/load:
+    contract:
+      must_contain: [run_hill_repeats, run_trail_long]
+      must_not_contain: [run_trail_b2b]
+      weekly_quality_sessions: [1, 4]
+    slots:
+      - name: t20_peak_sun_long_run
+        day: sun
+        activity: run_trail_long
+        key: 0.5
+        minutes: {basic: [95, 130], moderate: [106, 132], competitive: [125, 155]}
+        progression: trail_20k_long_run
+        group: t20_peak_sun_long
+        # intent: The routine PEAK long run sits inside tr §13.5's 20K band (2-3
+        # h) and stops short of its top, leaving the ceiling to the one
+        # race-simulation week — tr §5.3's frequency rule is that only 1-2 long
+        # runs a month sit at the maximum and the rest at 50-75% of it. At most
+        # horizons this variant never fires at all: a TRAIL_20K PEAK carries a
+        # single LOAD week up to 14 weeks, and that week is the race-sim week.
+        why: >-
+          A long run at close to full length, but deliberately not the longest
+          of your plan. Only one or two long runs a month should sit at your
+          ceiling; the rest sit comfortably under it, which is what lets you
+          keep stacking them.
+      - name: t20_peak_sun_race_sim
+        day: sun
+        activity: run_trail_long
+        key: 0.67
+        minutes: {basic: [130, 130], moderate: [145, 155], competitive: [165, 180]}
+        # intent: BASIC a fixed 130 (was 110-120; a 130-145 range booked 132
+        # after a 105-min long run at 18 weeks, past the 25 % step) with the
+        # peak long run at 95-130
+        # (was 85-105): the 20-week plan now reaches a 2 h 10 rehearsal, two
+        # thirds of a ~3 h race (trail_running.md puts the category's longest
+        # run at 2-3 h); the 16-week plan's last long runs reach 1 h 51
+        # without the rehearsal firing.
+        progression: trail_20k_long_run
+        group: t20_peak_sun_long
+        race_sim: true
+        # intent: The one race-simulation weekend, ~5 weeks out. Deliberately
+        # modest: this is a 2 h30-3 h trail run on race-matched terrain with
+        # race-pace segments inside it, not an ultra's epic mountain day. tr
+        # §12.3 rules out the usual reason a long run turns into a rehearsal —
+        # at a ~3 h race, gut training is not a planning concern and tr §5.4's
+        # four-hour nutrition floor does not apply — so what is being rehearsed
+        # is terrain, vertical density at the race's Mountain Index (tr §7.2),
+        # descending on tired legs, and pacing. Run it as a
+        # progression: easy to the last third, then race effort.
+        why: >-
+          Your dress rehearsal: the longest run of your plan, on terrain that
+          looks like your race, with stretches at race effort inside it. Run it
+          as a progression — easy until the last third, then race effort — so
+          you find out what descending on tired legs feels like before it
+          counts.
+      - name: t20_peak_tue_hills
+        day: tue
+        activity: run_hill_repeats
+        key: 0.25
+        # intent: basic 56-60 is 6 x 2.8 to 7 x 2.7 min of climbing (17-19
+        # min), the top of the base-build-peak progression; the card builds
+        # no longer than 60.
+        minutes: {basic: [56, 60], moderate: [38, 47], competitive: [45, 55]}
+        window: [0.0, 0.3]
+        group: t20_peak_tue_climb
+        # intent: PEAK opens on uphill intervals. Vertical adaptation is the
+        # fastest-decaying thing the athlete owns (tr §7.3,
+        # 'easy-come-easy-go'), so the climb session runs unbroken from BASE
+        # into the taper.
+        why: >-
+          Peak opens on uphill intervals. Climbing fitness is the fastest thing
+          you lose, so the climb session runs unbroken from the first week of
+          the plan right into the taper.
+      - name: t20_peak_tue_descent
+        day: tue
+        activity: run_downhill_repeats
+        key: 0.25
+        minutes: {basic: [50, 55], moderate: [38, 47], competitive: [45, 55]}
+        # intent: one descent per peak. At 12-20 weeks the 3:1 cadence and
+        # the two-week taper window (R-PHASE-015) leave the peak's load weeks
+        # at 0, 0.5 or 0.67 and 1.0 of the phase, so this window books one
+        # bout, two or three weeks after build's last and three weeks out;
+        # at 2:1 an athlete whose rehearsal did not fire had load weeks at
+        # 0.33 and 0.67 and descended two weeks running, which tr §9.3 says
+        # adds no protection.
+        window: [0.3, 0.7]
+        group: t20_peak_tue_climb
+        # intent: The second descent bout, and the reason PEAK no longer bars
+        # eccentric work outright. With the bouts confined to late BUILD the
+        # plan delivered exactly one at every swept horizon and it drifted later
+        # as the horizon grew (16 and 20 wk: 6-7 weeks out), leaving the last
+        # six weeks before a race limited by eccentric tolerance rather than
+        # aerobic capacity (tr §2.3) with no eccentric conditioning in them.
+        # This window lands the final bout 3-4 weeks out, which is tr §9.4's
+        # target, and the >=2 week spacing from the BUILD bout is what tr §9.3's
+        # repeated-bout effect needs.
+        why: >-
+          Your last block of descent conditioning, three to four weeks out. That
+          timing is deliberate: late enough that your legs still remember it on race day, early enough that the soreness is long gone. Without it
+          the final weeks before a mountain race would carry no downhill
+          preparation at all.
+      - name: t20_peak_tue_hills_late
+        day: tue
+        activity: run_hill_repeats
+        key: 0.25
+        minutes: {basic: [56, 60], moderate: [38, 47], competitive: [45, 55]}
+        window: [0.7, 1.0]
+        group: t20_peak_tue_climb
+        # intent: The last PEAK week is always a climb week. It sits two weeks
+        # from the gun on a two-week taper, and tr §9.4 puts the final descent
+        # bout 3-4 weeks out — a bout here would carry its 4-5 day damage window
+        # into the taper, which is the reason the taper menu bars descent work
+        # by contract.
+        why: >-
+          The last hard week before the taper stays on the climbs. A downhill
+          session this close would leave you carrying sore legs into the run-in,
+          and there is nothing left to gain from one by now.
+      - name: t20_peak_tue_hills_sim
+        day: tue
+        activity: run_hill_repeats
+        key: 0.25
+        minutes: {basic: [56, 60], moderate: [38, 47], competitive: [45, 55]}
+        group: t20_peak_tue_climb
+        race_sim: true
+        # intent: On the race-sim week the Tuesday must not be a descent bout:
+        # its 48-72 h DOMS peak would sit five days under the longest run of the
+        # plan. The climb session takes the slot instead — the week still needs
+        # its vertical touch.
+        why: >-
+          On the week of your big rehearsal run the Tuesday is climbing rather
+          than descending. Downhill repeats leave you sore for two or three
+          days, and that soreness would land squarely under the longest run of
+          your plan.
+      - name: t20_peak_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {basic: [40, 55], moderate: [53, 70], competitive: [62, 82]}
+        why: >-
+          Easy running, trimmed back in peak. The long run is the big day of the
+          week; this one exists to keep you moving, not to add to the pile.
+      - name: t20_peak_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {moderate: [47, 62], competitive: [55, 72]}
+        why: >-
+          Short and easy. In the biggest weeks of the plan the support runs get
+          smaller so the key sessions can stay whole.
+      - name: t20_peak_fri_progression
+        day: fri
+        activity: run_progression
+        minutes: {moderate: [42, 55], competitive: [50, 65]}
+        # intent: PEAK's second quality day is a progression run — a
+        # block at 2-hour race pace rolling straight into a block at 1-hour race
+        # pace. It is the most race-specific session in the plan and it is
+        # deliberately moderate rather than hard: this week already carries the
+        # Tuesday climb and the biggest long run of the preparation, and tr
+        # §10.4 counts all three against one shared budget. tr §10.3's
+        # trajectory argument points the same way — as work turns race-specific
+        # the distribution moves toward the race's own intensity, which for a ~3
+        # h trail race is sustained, not sharp.
+        why: >-
+          A run that starts at your longer-race effort and rolls into something
+          firmer — the most race-like session in the plan. It is kept moderate
+          rather than brutal on purpose: this week already carries hard climbing
+          and the biggest long run of your preparation.
+      - name: t20_basic_peak_fri_rhythm
+        day: fri
+        activity: run_progression
+        rotation: [run_progression, run_aerobic_tempo]
+        minutes: {basic: [35, 45]}
+        # intent: PEAK's changing half of the Friday rhythm is the progression
+        # run, the most race-like session in the plan; the steady aerobic
+        # tempo stays every other week.
+        why: >-
+          In the peak weeks Friday's rhythm run turns up a notch. One week a
+          progression run: easy at first and a little quicker every few minutes
+          until it is comfortably hard. The next the steady run you know by now.
+      - name: t20_peak_sat_easy
+        day: sat
+        activity: run_easy
+        minutes: {moderate: [53, 70], competitive: [62, 82]}
+        why: >-
+          Easy aerobic time for six-day weeks. Feet on trails, effort low.
+      - *t20_mon_spin
+      - *t20_sat_ride
+
+  peak/recovery:
+    # intent: base's recovery list with a longer basic long run: at 45-50 a
+    # peak recovery week read 0.47 of the load week (long runs of 95-130
+    # around it), under the 0.5-0.7 band and the planner's "about half";
+    # 55-70 stays under three quarters of the longest run before it
+    #.
+    slots:
+      - name: t20_rec_sun_long_run
+        day: sun
+        activity: run_trail_long
+        minutes: {basic: [60, 80], moderate: [64, 81], competitive: [75, 95]}
+        eases: trail_20k_long_run
+        why: >-
+          A down week sheds volume and the hard sessions, not the trail long
+          day. Time on trails is what made you fit in the first place; what a
+          recovery week protects is you, not the structure of the plan.
+      - name: t20_rec_tue_easy
+        day: tue
+        activity: run_easy
+        minutes: {basic: [35, 45], moderate: [38, 47], competitive: [45, 55]}
+        why: >-
+          An easy run where a hard climbing session would normally sit. This is
+          the whole point of a down week: the effort comes off so the fitness
+          you have been building can surface.
+      - name: t20_rec_fri_easy
+        day: fri
+        activity: run_easy
+        minutes: {moderate: [30, 38], competitive: [35, 45]}
+        why: >-
+          Short and easy. Recovery weeks work because you let them — resist the
+          urge to top this one up.
+      - name: t20_basic_rec_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {basic: [30, 36]}
+        why: >-
+          An easy run with a few relaxed pickups. In a lighter week this is
+          all the speed you need: enough to keep your legs quick, nothing to
+          recover from.
+      - name: t20_rec_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {moderate: [34, 42], competitive: [40, 50]}
+        why: >-
+          An easy midweek run to keep your rhythm during a lighter week. Nothing
+          more is being asked of you.
+      - *t20_mon_spin
+      - *t20_rec_sat_spin
+
+  taper/taper:
+    contract:
+      must_contain: [run_hill_repeats, run_trail_long]
+      must_not_contain: [run_downhill_repeats, run_trail_b2b]
+      weekly_quality_sessions: [1, 1]
+    slots:
+      - name: t20_taper_sun_long_run
+        day: sun
+        activity: run_trail_long
+        key: 0.5
+        minutes: {basic: [60, 75], moderate: [76, 94], competitive: [90, 110]}
+        eases: trail_20k_long_run
+        # intent: The long run survives the taper, shortened: tr §11.3's
+        # 'frequency maintained or reduced by at most one day' keeps a real long
+        # day on the calendar. Keeping it on trail is not optional:
+        # tr §11.3's named anti-example is the athlete who swaps mountain trails
+        # for a flat track before the race.
+        why: >-
+          The long run stays, shortened. You will not gain endurance now, but
+          your legs need to keep remembering what trail running feels like — so
+          keep it on trails, not on flat road or a treadmill.
+      - name: t20_basic_taper_tue_hills
+        day: tue
+        activity: run_hill_repeats
+        key: 0.45
+        minutes: {basic: [50, 55]}
+        # intent: BASIC's taper climb takes up to 0.45 of a squeezed week, as
+        # the maintenance block's climb day does. Its card cannot go under
+        # 50 min, and a hard session that cannot fit leaves a taper week
+        # outright: at the shared 0.25 a taper week under 3.3 h (the 8-week
+        # plan, an athlete at 0.75 of the default volume) lost the climb and
+        # kept its easy run and strides. At 0.45 the climb and the long run
+        # stay and the easy run turns optional.
+        why: >-
+          Climbing continues into the taper: same effort, less of it. Climbing
+          fitness fades quickly, so the last thing to cut is the intensity —
+          what gets cut is the volume. Downhill work is off the table now; that
+          soreness would still be with you on race day.
+      - name: t20_taper_tue_hills
+        day: tue
+        activity: run_hill_repeats
+        key: 0.25
+        minutes: {moderate: [38, 47], competitive: [45, 55]}
+        # intent: Vertical specificity is maintained through the taper,
+        # unchanged in kind and cut only in volume — tr §7.3 makes vert the
+        # adaptation that decays fastest, and tr §11.3 preserves intensity while
+        # cutting the volume of intensity (worked example: 4x10' tempo -> 3x5'
+        # -> 2x5'). The zone never changes; the clock does.
+        # Descent work is excluded by contract: its 48-72 h DOMS peak has no
+        # place in the run-in.
+        why: >-
+          Climbing continues into the taper: same effort, less of it. Climbing
+          fitness fades quickly, so the last thing to cut is the intensity —
+          what gets cut is the volume. Downhill work is off the table now; that
+          soreness would still be with you on race day.
+      - name: t20_taper_wed_easy
+        day: wed
+        activity: run_easy
+        minutes: {basic: [35, 45], moderate: [38, 49], competitive: [45, 58]}
+        why: >-
+          Easy running, shorter than usual. The training is done; this is about
+          staying loose and keeping your rhythm.
+      - name: t20_taper_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {moderate: [34, 42], competitive: [40, 50]}
+        why: >-
+          A short, easy run. If it feels too easy, that is the taper working.
+      - name: t20_taper_fri_strides
+        day: fri
+        activity: run_strides
+        minutes: {basic: [27, 33], moderate: [30, 38], competitive: [35, 45]}
+        # intent: Short, relaxed, fast — the taper's one piece of pure
+        # neuromuscular upkeep.
+        why: >-
+          A handful of short, fast, relaxed pickups — enough to remind your legs
+          how to move quickly, nowhere near enough to tire them. This is the
+          taper's only piece of pure sharpening.
+
+  taper/race:
+    contract:
+      must_not_contain: [run_downhill_repeats, run_trail_b2b]
+    slots:
+      - name: t20_race_tue_fartlek
+        day: tue
+        activity: run_fartlek
+        minutes: {basic: [38, 38], moderate: [38, 38], competitive: [42, 42]}
+        # intent: Race week keeps one genuine effort, five days out: short reps at race pace
+        # and faster, finishing with plenty left in the tank. This is tr §11.3's
+        # rule made concrete — intensity is preserved, the volume of intensity
+        # is cut.
+        why: >-
+          One genuine effort five days out: a set of short, fast reps at race pace and a touch quicker. It keeps you sharp and finishes
+          with plenty left in the tank — the fitness is already banked.
+      - name: t20_race_thu_easy
+        day: thu
+        activity: run_easy
+        minutes: {basic: [25, 25], moderate: [28, 28], competitive: [30, 30]}
+        why: >-
+          A short easy run two days out. Circulation and rhythm, nothing more.
+      - name: t20_basic_race_sat_shakeout
+        day: sat
+        activity: run_easy
+        minutes: {basic: [20, 20]}
+        # intent: the strides card cannot build under 27 min (10 min warm-up
+        # and cool-down around the strides), longer than the moderate and
+        # competitive shake-outs; a basic athlete gets a plain 20-minute
+        # easy run the day before.
+        why: >-
+          Twenty relaxed minutes the day before, nothing more: legs loose,
+          nerves settled, everything else saved for tomorrow.
+      - name: t20_race_sat_strides
+        day: sat
+        activity: run_strides
+        minutes: {moderate: [22, 22], competitive: [25, 25]}
+        # intent: Openers the day before: a short easy run carrying a handful of
+        # relaxed strides.
+        why: >-
+          Openers the day before: a short jog carrying a few relaxed strides. It
+          takes the flatness out of rested legs so race morning does not feel
+          like your first hard effort in a week.

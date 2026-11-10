@@ -1,0 +1,305 @@
+/* Endury — web shell composition (1440×900 reference): top bar,
+   3-pane split, the continuous calendar (week rows + summary column),
+   coach column. Component styles live in components/*.css; only layout
+   lives here. */
+
+.cbw-app { height: 100%; display: flex; flex-direction: column; color: var(--cb-text); }
+
+/* Top bar */
+.cbw-topbar {
+  height: 66px; flex: none; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 var(--cb-sp-6);
+  background: linear-gradient(180deg, var(--cb-surface-2), var(--cb-bar-bot));
+  border-bottom: 1px solid var(--cb-border);
+}
+.cbw-topbar-left { display: flex; align-items: center; gap: var(--cb-sp-3); min-width: 0; }
+.cbw-logo {
+  width: 34px; height: 34px; border-radius: 9px; flex: none;
+  background: linear-gradient(135deg, rgb(from var(--cb-text-strong) r g b / .14), rgb(from var(--cb-text-strong) r g b / .04));
+  border: 1px solid var(--cb-accent); display: flex; align-items: center;
+  justify-content: center; font-size: var(--cb-fs-title); font-weight: 600; color: var(--cb-accent);
+}
+.cbw-topbar-race { font-size: 11px; color: var(--cb-text-muted); }
+.cbw-topbar-title { font-size: var(--cb-fs-title); font-weight: 600; letter-spacing: -.01em; }
+/* Neutral chrome: the label text carries the phase; a phase-hued
+   fill here made gold mean race priority, peak-day, and phase at once. */
+.cbw-phase-pill {
+  font-size: var(--cb-fs-label); font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--cb-text-muted); background: var(--cb-surface-2); border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-pill); padding: var(--cb-sp-1) var(--cb-sp-2-5); margin-left: var(--cb-sp-1-5); white-space: nowrap;
+}
+.cbw-topbar-right { display: flex; align-items: center; gap: var(--cb-sp-2-5); }
+/* The Weekly-load explainer affordance — a visible control, unlike
+   the hover-only title= gloss it complements. */
+.cbw-hint-btn {
+  width: 16px; height: 16px; padding: 0; margin-left: 6px; vertical-align: 2px;
+  border-radius: 50%; border: 1px solid var(--cb-border-strong); background: none;
+  color: var(--cb-text-muted); font-size: 10px; font-weight: 700; line-height: 1;
+  cursor: pointer; font-family: inherit;
+}
+.cbw-hint-btn:hover { color: var(--cb-text); border-color: var(--cb-text-muted); }
+.cbw-seg { display: flex; gap: var(--cb-sp-0-5); background: var(--cb-bg); border: 1px solid var(--cb-border); border-radius: 9px; padding: var(--cb-sp-0-5); }
+.cbw-seg button {
+  padding: var(--cb-sp-1-5) var(--cb-sp-3-5); border-radius: var(--cb-r-chip); font-size: var(--cb-fs-body); font-weight: 600;
+  cursor: pointer; font-family: inherit; border: none; background: transparent;
+  color: var(--cb-text-muted);
+}
+.cbw-seg button[aria-pressed="true"] { background: var(--cb-accent); color: var(--cb-accent-ink); }
+.cbw-navbtn {
+  height: 34px; padding: 0 var(--cb-sp-3-5); border-radius: 9px; border: 1px solid var(--cb-border);
+  background: var(--cb-surface-2); color: var(--cb-text); font-size: var(--cb-fs-body); font-weight: 500;
+  cursor: pointer; font-family: inherit;
+  transition: background var(--cb-dur-fast), border-color var(--cb-dur-fast);
+}
+.cbw-navbtn:hover { background: var(--cb-surface-3); border-color: var(--cb-accent); }
+/* Kept in the layout so the arrows never shift when it goes away. */
+.cbw-navbtn.is-hidden { visibility: hidden; }
+.cbw-arrow {
+  width: 32px; height: 32px; border-radius: var(--cb-r-tile); border: 1px solid var(--cb-border);
+  background: var(--cb-surface-2); color: var(--cb-accent); cursor: pointer; font-size: var(--cb-fs-body);
+}
+.cbw-arrow:hover { background: var(--cb-surface-3); border-color: var(--cb-accent); }
+.cbw-range { min-width: 118px; text-align: center; font-size: 13px; font-weight: 500; }
+.cbw-divider-v { width: 1px; height: 26px; background: var(--cb-border); }
+.cbw-iconbtn {
+  width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--cb-border);
+  background: var(--cb-surface-2); color: var(--cb-accent);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+/* The slot is a flex item even with nothing to report (no key, no plan, or
+   the status not fetched yet) — leave it in and the bar's gap lands twice
+   beside the divider. */
+.cbw-sync-slot:empty { display: none; }
+/* With an active plan the phase pill and Today button also share this bar —
+   below 1100px drop the sync label and keep just the dot (title tooltip
+   still explains it) so the bar can't overflow. */
+@media (max-width: 1100px) {
+  .cbw-topbar .cb-sync-status__text { display: none; }
+}
+
+/* Status strips */
+.cbw-genstrip {
+  padding: var(--cb-sp-2) var(--cb-sp-6); border-bottom: 1px solid var(--cb-border); background: var(--cb-bar-bot);
+  display: flex; align-items: center; gap: var(--cb-sp-3); flex: none;
+}
+.cbw-genstrip .cbw-genbar { flex: 1; height: 4px; border-radius: 2px; background: var(--cb-border); overflow: hidden; }
+.cbw-genstrip .cbw-genfill { position: relative; overflow: hidden; height: 100%; border-radius: 2px; background: var(--cb-accent); transition: width var(--cb-dur-med); }
+/* The planner's stages arrive seconds apart: a sweep keeps the bar visibly alive between them. */
+.cbw-genstrip .cbw-genfill::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(from var(--cb-text) r g b / .45), transparent);
+  animation: cb-sweep 1.1s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .cbw-genstrip .cbw-genfill::after { animation: none; } }
+.cbw-genstrip span { font-size: 11px; color: var(--cb-text-muted); white-space: nowrap; }
+.cbw-previewbar {
+  padding: var(--cb-sp-2-5) var(--cb-sp-6); border-bottom: 1px solid rgb(from var(--cb-accent) r g b / .35);
+  background: rgb(from var(--cb-accent) r g b / .07); display: flex; align-items: center; gap: var(--cb-sp-3); flex: none;
+}
+.cbw-previewbar .cbw-pv-title { font-size: var(--cb-fs-body); font-weight: 700; }
+.cbw-previewbar .cbw-pv-diff { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); margin-left: var(--cb-sp-2-5); }
+.cbw-previewbar .cbw-pv-warning { font-size: var(--cb-fs-meta); color: var(--cb-warn); margin-top: var(--cb-sp-0-5); }
+.cbw-btn-ghost {
+  font-size: 11px; font-weight: 500; color: var(--cb-text-muted); background: var(--cb-surface-2);
+  border: 1px solid var(--cb-border); border-radius: var(--cb-r-tile); padding: var(--cb-sp-2) var(--cb-sp-3);
+  cursor: pointer; font-family: inherit; flex: none;
+}
+.cbw-btn-accent {
+  font-size: 11px; font-weight: 600; color: var(--cb-accent-ink); background: var(--cb-accent);
+  border: none; border-radius: var(--cb-r-tile); padding: var(--cb-sp-2) var(--cb-sp-3-5); cursor: pointer; font-family: inherit; flex: none;
+}
+
+/* 3-pane body */
+.cbw-body { flex: 1; display: flex; min-height: 0; }
+.cbw-rail {
+  width: 312px; flex: none; border-right: 1px solid var(--cb-border);
+  background: var(--cb-surface-1); overflow-y: auto; padding: var(--cb-sp-5);
+  display: flex; flex-direction: column; gap: var(--cb-sp-4);
+}
+.cbw-center { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--cb-bg); min-height: 0; }
+.cbw-coach {
+  width: 372px; flex: none; border-left: 1px solid var(--cb-border);
+  background: linear-gradient(180deg, var(--cb-coach-top), var(--cb-coach-bot));
+  display: flex; flex-direction: column; min-height: 0;
+}
+
+/* Rail bits */
+.cbw-ring-card {
+  background: var(--cb-surface-2); border: 1px solid var(--cb-border); border-radius: var(--cb-r-card);
+  padding: var(--cb-sp-5); display: flex; align-items: center; gap: var(--cb-sp-4);
+}
+/* Continuous calendar */
+.cbw-loading { padding: var(--cb-sp-7) var(--cb-sp-5); font-size: var(--cb-fs-body); color: var(--cb-text-muted); }
+.cbw-scroller {
+  position: relative; flex: 1; min-height: 0; overflow-y: auto;
+  padding: 0 var(--cb-sp-4) var(--cb-sp-7);
+}
+.cbw-sentinel { height: 1px; }
+.cbw-weekrow {
+  display: grid; grid-template-columns: 1fr 168px; gap: var(--cb-sp-3);
+  align-items: start; padding-bottom: var(--cb-sp-4);
+}
+.cbw-weekrow.is-cursor > .cbw-weeksum { border-color: var(--cb-accent); }
+.cbw-weekrow.is-skeleton .cbw-daycol { opacity: .35; }
+.cbw-weekrow.is-compact .cbw-daycol { min-height: 96px; }
+.cbw-monthlabel {
+  grid-column: 1 / -1; position: sticky; top: 0; z-index: 2;
+  font-size: var(--cb-fs-label); font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--cb-text-muted);
+  background: var(--cb-bg); padding: var(--cb-sp-3) 0 var(--cb-sp-1-5);
+}
+.cbw-weekgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--cb-sp-2); min-width: 0; }
+
+/* Per-week summary column */
+.cbw-weeksum {
+  display: flex; flex-direction: column; gap: var(--cb-sp-1-5);
+  border: 1px solid var(--cb-border); border-radius: var(--cb-r-tile);
+  background: var(--cb-surface-2); padding: var(--cb-sp-3); margin-top: var(--cb-sp-4);
+}
+.cbw-weeksum__head { display: flex; align-items: center; justify-content: space-between; gap: var(--cb-sp-1-5); }
+.cbw-weeksum__wk { font-size: var(--cb-fs-meta); font-weight: 600; }
+.cbw-weeksum__now { color: var(--cb-accent); margin-right: var(--cb-sp-1); }
+.cbw-weeksum .cb-phase-pill { align-self: flex-start; }
+.cbw-weeksum__row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--cb-sp-1-5); }
+.cbw-weeksum__k { font-size: var(--cb-fs-micro); color: var(--cb-text-muted); }
+.cbw-weeksum__v { font-size: var(--cb-fs-meta); font-weight: 600; }
+.cbw-weeksum__mix { display: flex; gap: var(--cb-sp-0-5); height: 4px; }
+.cbw-weeksum__seg { border-radius: var(--cb-r-bar); min-width: 0; }
+.cbw-weeksum__status {
+  font-size: var(--cb-fs-micro); font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+/* The 168px column costs the day grid a quarter of its width — 96px down to
+   69px per day at the 1440 reference, which clips a session card's own badge.
+   Under a wide centre pane the same summary lays out as a strip beneath the
+   week instead of beside it. */
+@media (max-width: 1600px) {
+  .cbw-weekrow { grid-template-columns: 1fr; }
+  .cbw-weeksum {
+    flex-direction: row; align-items: center; flex-wrap: wrap;
+    gap: var(--cb-sp-4); margin-top: var(--cb-sp-2); padding: var(--cb-sp-2) var(--cb-sp-3);
+  }
+  .cbw-weeksum__mix { width: 140px; }
+  .cbw-weeksum__row { gap: var(--cb-sp-2); }
+  .cbw-weeksum__status { margin-left: auto; }
+}
+
+/* Compact density */
+.cbw-loadbar { height: 3px; border-radius: var(--cb-r-bar); background: var(--cb-border); overflow: hidden; }
+.cbw-loadbar__fill { display: block; height: 100%; background: var(--cb-accent); border-radius: var(--cb-r-bar); }
+.cbw-chip {
+  display: flex; align-items: center; gap: var(--cb-sp-1-5); width: 100%; text-align: left;
+  border: 1px solid var(--cb-border); border-left: 2px solid var(--cb-border);
+  border-radius: var(--cb-r-chip); background: var(--cb-surface-3); color: var(--cb-text);
+  font-family: inherit; font-size: var(--cb-fs-micro); padding: var(--cb-sp-1) var(--cb-sp-1-5);
+  cursor: pointer;
+}
+.cbw-chip:hover { border-color: var(--cb-border-strong); }
+.cbw-chip__dot { width: 6px; height: 6px; border-radius: var(--cb-r-bar); flex: none; }
+.cbw-chip__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cbw-daycol {
+  display: flex; flex-direction: column; border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-tile); background: var(--cb-col-bg); min-height: 248px; min-width: 0;
+  transition: background var(--cb-dur-fast);
+}
+.cbw-daycol.is-today, .cbw-daycol.is-selected { border-color: var(--cb-accent); }
+.cbw-daycol.is-selected:not(.is-today) { box-shadow: inset 0 0 0 1px var(--cb-accent); }
+/* The anchor (key-session) day marks itself structurally with the
+   one chrome accent — an accent rule under the day head plus a dot beside
+   the day number — so gold on the calendar means "a race" and nothing else. */
+.cbw-daycol.cb-drop { background: rgb(from var(--cb-accent) r g b / .08); box-shadow: inset 0 0 0 2px var(--cb-accent); }
+.cbw-daycol.is-droptarget { box-shadow: inset 0 0 0 1px var(--cb-border-strong); }
+.cbw-daycol.is-dropblocked { opacity: .45; }
+.cbw-dayhead {
+  display: block; width: 100%; text-align: left; border: none; font-family: inherit;
+  border-radius: 9px 9px 0 0; padding: var(--cb-sp-2-5) var(--cb-sp-2-5) var(--cb-sp-2); cursor: pointer;
+  background: var(--cb-surface-3); color: var(--cb-text);
+}
+.cbw-daycol.is-today > .cbw-dayhead { background: var(--cb-accent); color: var(--cb-accent-ink); }
+.cbw-daycol.is-anchor > .cbw-dayhead { border-bottom: 2px solid var(--cb-accent); }
+.cbw-daycol.is-anchor:not(.is-today) .cbw-dayhead-num::after {
+  content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--cb-accent); margin-left: 4px; vertical-align: 2px;
+}
+.cbw-daycol.is-today > .cbw-dayhead .cbw-daytss { color: var(--cb-accent-ink); opacity: .7; }
+.cbw-dayhead-row { display: flex; align-items: baseline; justify-content: space-between; }
+.cbw-dayhead-dow { font-size: 10px; font-weight: 600; letter-spacing: .04em; }
+.cbw-dayhead-num { font-size: var(--cb-fs-body); font-weight: 700; }
+.cbw-daytss { font-size: 9px; color: var(--cb-text-muted); margin-top: var(--cb-sp-0-5); }
+.cbw-daycol.is-race:not(.is-today):not(.is-selected) { border-color: rgb(from var(--cb-race-a) r g b / .55); }
+.cbw-daycol.is-race > .cbw-dayhead { border-bottom: 2px solid var(--cb-race-a); }
+.cbw-daytss.is-race { color: var(--cb-race-a); font-weight: 700; letter-spacing: .03em; }
+.cbw-racecard {
+  display: flex; align-items: center; gap: var(--cb-sp-1-5);
+  width: 100%; text-align: left; font-family: inherit; cursor: pointer;
+  font-size: 11px; font-weight: 600; color: var(--cb-text);
+  border: 1px solid color-mix(in srgb, var(--cb-race-a) 40%, transparent);
+  border-radius: var(--cb-r-tile); padding: var(--cb-sp-2) var(--cb-sp-2-5);
+  background: color-mix(in srgb, var(--cb-race-a) 8%, transparent);
+}
+.cbw-racecard-badge {
+  flex: none; width: 16px; height: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: var(--cb-accent-ink);
+  background: var(--cb-race-a);
+}
+.cbw-daycards { display: flex; flex-direction: column; gap: var(--cb-sp-2); padding: var(--cb-sp-2) var(--cb-sp-1-5); min-width: 0; }
+
+/* Coach column */
+.cbw-coach-head {
+  padding: var(--cb-sp-4) var(--cb-sp-5) var(--cb-sp-3); border-bottom: 1px solid var(--cb-border); flex: none;
+  display: flex; align-items: center; gap: var(--cb-sp-2-5);
+}
+.cbw-coach-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cb-good-bright); flex: none; }
+.cbw-coach-name { font-size: var(--cb-fs-body); font-weight: 600; }
+.cbw-coach-sub { font-size: 10px; color: var(--cb-text-muted); }
+.cbw-digest-btn,
+.cbw-memory-btn,
+.cbw-newchat-btn {
+  display: flex; align-items: center; gap: var(--cb-sp-1); font-size: 11px; font-weight: 600;
+  color: var(--cb-accent); background: var(--cb-surface-2); border: 1px solid var(--cb-border);
+  border-radius: var(--cb-r-pill); padding: var(--cb-sp-1-5) var(--cb-sp-3); cursor: pointer; font-family: inherit;
+}
+.cbw-digest-btn { margin-left: auto; }
+/* Icon-only and muted: starting over is a rare, quiet action next to the
+   two labelled ones. */
+.cbw-newchat-btn { color: var(--cb-text-muted); padding: var(--cb-sp-1-5) var(--cb-sp-2); }
+.cbw-msgs { flex: 1; overflow-y: auto; padding: var(--cb-sp-4) var(--cb-sp-5); display: flex; flex-direction: column; gap: var(--cb-sp-5); }
+.cbw-inputwrap { padding: var(--cb-sp-3) var(--cb-sp-4) var(--cb-sp-4); flex: none; border-top: 1px solid var(--cb-border); }
+.cbw-inputrow {
+  display: flex; align-items: flex-end; gap: var(--cb-sp-2); background: var(--cb-surface-2);
+  border: 1.5px solid var(--cb-border); border-radius: var(--cb-r-sheet); padding: var(--cb-sp-2);
+}
+/* "What you can ask": example questions, opened beside the draft. */
+.cbw-ideas-btn {
+  width: 34px; height: 34px; border-radius: 50%; background: none; border: none;
+  color: var(--cb-text-muted); display: flex; align-items: center; justify-content: center;
+  flex: none; cursor: pointer;
+}
+.cbw-ideas-btn:hover { color: var(--cb-accent); }
+.cbw-inputrow textarea {
+  flex: 1; background: none; border: none; outline: none; resize: none;
+  font-family: var(--cb-font); font-size: 13px; color: var(--cb-text);
+  line-height: 1.5; max-height: 90px; padding: var(--cb-sp-1-5) 0;
+}
+.cbw-send {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--cb-accent); border: none;
+  color: var(--cb-accent-ink); display: flex; align-items: center; justify-content: center;
+  flex: none; cursor: pointer; transition: transform var(--cb-dur-fast);
+}
+.cbw-send:hover { transform: scale(1.06); }
+.cbw-send:active { transform: scale(.96); }
+
+/* Scrollbars */
+.cbw-rail::-webkit-scrollbar, .cbw-msgs::-webkit-scrollbar,
+.cbw-scroller::-webkit-scrollbar { width: 8px; height: 8px; }
+.cbw-rail::-webkit-scrollbar-thumb, .cbw-msgs::-webkit-scrollbar-thumb,
+.cbw-scroller::-webkit-scrollbar-thumb { background: var(--cb-border); border-radius: var(--cb-r-bar); }
+
+/* Out-of-sync chip row (above the calendar, under the strips) — the
+   always-visible sync state lives in the topbar's #cbw-sync slot, so
+   this row only renders when workouts are actually out of sync. */
+.cbw-sync-row {
+  display: flex;
+  align-items: center;
+  padding: var(--cb-sp-2) var(--cb-sp-5);
+}

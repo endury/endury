@@ -1,0 +1,15 @@
+{
+ "model": "anthropic/claude-sonnet-5",
+ "ok": false,
+ "text": "",
+ "finish_reason": "length",
+ "prompt_tokens": null,
+ "completion_tokens": null,
+ "reasoning_tokens": null,
+ "cost_usd": null,
+ "latency_s": 0.0,
+ "provider": "claude-code subagent (Max subscription, unmetered)",
+ "served_model": "claude-code alias 'sonnet'",
+ "error": "the answer exceeded the 64000 output token maximum before any plan was written",
+ "brief_sha": "d43b298c48432825"
+}

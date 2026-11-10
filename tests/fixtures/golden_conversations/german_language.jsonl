@@ -1,0 +1,3 @@
+{"setup": {"athlete": {"name": "Hans", "experience_level": "advanced", "primary_sport": "cycling", "language": "de"}}}
+{"role": "user", "content": "Wie war mein Training diese Woche?"}
+{"role": "assistant", "content": "Dein Training war gut.", "expect_not_contains": ["error"]}

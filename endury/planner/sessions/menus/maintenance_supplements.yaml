@@ -1,0 +1,27 @@
+# Cross-category B/C-goal maintenance supplements, keyed by A-goal.
+#
+# When a B/C-race week's effective goal covers fewer sports than the A-goal
+# (e.g. a marathon B-race inside an Ironman plan), the session generator adds
+# these sessions so the under-trained sports still get a weekly touch. They
+# sit outside the per-goal menus because the A-goal, not the B-goal, drives
+# them. Swim bounds are metres, everything else minutes.
+ironman:
+  - {activity: bike_endurance, day: sun, minutes: [60, 90]}
+  - {activity: swim_endurance, day: fri, metres: [1500, 2000]}
+  - {activity: swim_recovery, day: mon, metres: [1250, 1750]}
+half_ironman:
+  - {activity: bike_endurance, day: sun, minutes: [50, 75]}
+  - {activity: swim_endurance, day: fri, metres: [1250, 1750]}
+  - {activity: swim_drill, day: mon, metres: [1000, 1500]}
+olympic_triathlon:
+  - {activity: bike_endurance, day: sun, minutes: [45, 60]}
+  - {activity: swim_endurance, day: fri, metres: [1000, 1500]}
+sprint_triathlon:
+  - {activity: bike_endurance, day: sun, minutes: [30, 45]}
+  - {activity: swim_endurance, day: fri, metres: [750, 1250]}
+# A triathlon maintenance block takes a tune-up of any type (R-PHASE-019);
+# a running or trail B race week keeps a swim and a ride, sized between the
+# olympic and the half-distance supplements, like the block's moderate tier.
+triathlon_maintenance:
+  - {activity: bike_endurance, day: sun, minutes: [45, 75]}
+  - {activity: swim_endurance, day: fri, metres: [1250, 1750]}
