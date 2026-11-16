@@ -11,6 +11,7 @@ from endury.coach.context import NO_ACTIVE_PLAN
 from endury.coach.messages import has_tool_calls
 from endury.coach.tools.registry import coach_tool
 from endury.coach.turn import (
+    ModelCallError,
     TurnResult,
     _build_llm_input,
     _build_system_message,
@@ -244,6 +245,16 @@ async def test_simple_text_turn_returns_the_reply():
     assert turn_log[0]["content"] == "hi"
     # Stamped for the LLM input; the raw content is what the log carries.
     assert turn_log[0]["sent_at"]
+
+
+@pytest.mark.asyncio
+async def test_a_failed_model_call_carries_the_services_reason():
+    class Refusing(FakeLLM):
+        async def complete(self, messages, tools=None, model=None):
+            raise RuntimeError("Error code: 401 - No auth credentials found")
+
+    with pytest.raises(ModelCallError, match="No auth credentials found"):
+        await _drive(_runtime(tools=[]), [], "hi", Refusing())
 
 
 # run_turn — tool loop

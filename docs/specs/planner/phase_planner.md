@@ -110,7 +110,7 @@ Status legend: `[x]` holds · `[!]` violated (see Known violations) · `[~]` par
   window took four weeks of a 30-week competitive Ironman with a
   half-Ironman B race (two B-goal PEAK weeks, a taper week, the race week)
   and put its biggest week 13 weeks before the A race (9 now).
-  The long-B-race recovery week (Kim, 2026-09-25) goes further than usual practice,
+  The long-B-race recovery week (the maintainer, 2026-09-25) goes further than usual practice,
   where a long B race is followed by a full-volume week with half the quality sessions.
   A marathon or ultra tune-up raced near full effort costs well over a week
   (`docs/research/trail_running.md` §13.2), so the planner

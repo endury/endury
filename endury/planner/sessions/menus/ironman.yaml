@@ -1813,7 +1813,7 @@ menus:
         load_weeks: true
         group: im_peak_sat_bike
         # intent: MOD/COMP Sat race-pace long ride, early window. COMPETITIVE is
-        # capped at 5.5 h (320-330 min) per commit 3997308: tlc §4 puts the IM
+        # capped at 5.5 h (320-330 min): tlc §4 puts the IM
         # race-pace durability ride at 70-80% of race duration, so a longer
         # rehearsal is over-long. Lead half; p2 recedes late.
         why: >-
@@ -2267,7 +2267,7 @@ menus:
         # intent: Two-step taper: step 1 retains the race-pace long ride as its
         # held quality session (tlc §7: retain 1-2 quality sessions), crossing
         # to plain endurance at frac 0.34 for step 2. MODERATE's p1 bound was
-        # raised (commit 906deea) so the taper lands ~40% of peak rather than an
+        # raised so the taper lands ~40% of peak rather than an
         # over-deloaded ~32% risking detraining/staleness (defends
         # taper_volume_drop).
         why: >-
@@ -2314,7 +2314,7 @@ menus:
         group: im_taper_sun_run
         # intent: Two-step taper: the first-third keeps a longer run to hold
         # durability, dropping to easy at frac 0.34 for step 2. MODERATE's p1
-        # bound was raised (commit 906deea) so the Sun long run helps the taper
+        # bound was raised so the Sun long run helps the taper
         # land ~40% of peak instead of an over-deloaded ~32% (defends
         # taper_volume_drop).
         why: >-

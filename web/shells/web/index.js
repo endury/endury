@@ -174,7 +174,7 @@ export function mount(root) {
       els.phase.hidden = false;
       // Neutral chrome — the word carries the phase; the
       // --cb-phase-* fills stay a chart encoding (block-overview bands),
-      // so gold stops moonlighting as a phase colour in the header.
+      // so gold is never a phase colour in the header.
       els.phase.textContent = `${phase.name} · Wk ${Math.max(1, wkIdx)}`;
     } else {
       els.phase.hidden = true;

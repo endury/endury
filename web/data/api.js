@@ -1,7 +1,7 @@
-/* Endury — API layer. The same exports the shells have always called, now
-   answered by the Python worker (worker/py_worker.js) instead of a server:
-   each call posts {method, params} — params named like the old route's
-   query/path params, a body's fields spread in — and unwraps the
+/* Endury — API layer. The exports the shells call, answered by the
+   Python worker (worker/py_worker.js) rather than a server: each call
+   posts {method, params} — params named like a route's query/path
+   params, a body's fields spread in — and unwraps the
    {ok, result | error, error_code} envelope endury.browser.rpc.dispatch
    answers with. A failed envelope throws an Error carrying `code` (the
    envelope's error_code). All shape mapping happens in adapters.js; nothing

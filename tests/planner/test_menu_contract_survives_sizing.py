@@ -1,4 +1,4 @@
-"""A squeezed trail week keeps its climbing session (session_generator V7).
+"""A squeezed trail week keeps its climbing session (session_generator).
 
 A menu's ``must_contain`` is a menu-level contract checked when the menu
 loads (R-SESS-018), not a promise about every emitted week: the race-sim

@@ -7,7 +7,7 @@ instrument and fails if any composite has moved up.
 
 | File | Instrument | Re-measure with | Runtime |
 | --- | --- | --- | --- |
-| `planner_matrix.json` | `planner/score_quality.py` | `make run-devtool TOOL=planner_score_quality ARGS='--matrix --json'` | Seconds: one base, `_wide`, `_low` and `_high` cell per plan on offer, every workout card built and read. |
+| `planner_matrix.json` | `planner/score_quality.py` | `make run-devtool TOOL=planner_score_quality ARGS='--matrix --json'` | Seconds: a base, a `_low` and a `_high` cell per plan on offer, and a `_wide` cell for some, every workout card built and read. |
 
 ## What is gated, and where it runs
 
@@ -21,8 +21,8 @@ fails the gate and the file cannot go quietly stale.
 
 The planner matrix is marked `slow` and excluded from `make test`
 (`PYTEST_MARKERS` in the Makefile), so the everyday gate stays fast.
-`make test-scorecards` runs it, and `.githooks/pre-push` runs `make test`
-followed by `make test-scorecards`. The hook exists only in clones that
+`make test-scorecards` runs it, and `.githooks/pre-push` runs `make lint`,
+`make test`, `make test-scorecards` and `make site`. The hook exists only in clones that
 ran `make install-hooks`: `core.hooksPath` is per-clone config and cannot
 be tracked by git.
 

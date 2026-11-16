@@ -1,5 +1,5 @@
 /* Endury — module base: font, reset, app canvas.
-   Tokens live in tokens.css; component styles in components.css;
+   Tokens live in tokens.css; component styles in components/*.css;
    layout composition in shells/. */
 
 /* Extra tokens needed while building components, not part of the base set

@@ -23,13 +23,11 @@ Endury's own plan structure, so the benchmark never asks it of a contestant.
 
 The committed run under [`results/`](results/README.md) is graded on
 rulebook version 6; the saved answers were regraded without a new call.
-It covers Endury, the planner of 2026-10-11 graded on its workout cards,
-on every cell; Gemini 3.5 Flash Lite at five samples on the two headline
-cells and three elsewhere; and DeepSeek V4.1 Flash, Gemini 3.8 Flash,
+It covers Endury, graded on its workout cards, on every cell; Gemini 3.5
+Flash Lite at five samples on the two headline cells and three elsewhere; and DeepSeek V4.1 Flash, Gemini 3.8 Flash,
 Grok 4.7, GPT-6 Sol, Claude Opus 5.5 and Claude Sonnet 5 at one sample
-per cell, except the 22-week Ironman, which only Endury has: the planner
-now needs 22 weeks for an Ironman, and the 20-week cell went with the
-answers it held. GPT-6 Astra was left out for cost. The Claude models ran as Claude Code
+per cell, except the 22-week Ironman, which only Endury has. GPT-6 Astra
+was left out for cost. The Claude models ran as Claude Code
 subagents on a subscription, not through OpenRouter, so their cost is an
 estimate and their time is not comparable. One sample per AI
 model is a first reading, not a ranking: Flash Lite's five draws on one
@@ -128,6 +126,7 @@ them, and `TOOL=bench_plan_view ARGS='--scenarios ironman_32wk'` draws
 every contestant's plan, week by week and session by session, as one HTML
 page in the temp directory.
 
-To add a contestant, pass a callable from a `Scenario` to a `Plan` as
-`local=` to `bench.run.main`. `devtools/bench/endury_contestant.py` shows
+To add a contestant, pass a dictionary from its name to a callable from a
+`Scenario` to a `Plan` as `local=` to `bench.run.main`.
+`devtools/bench/endury_contestant.py` shows
 the export, including how a workout card's targets map to the zones.

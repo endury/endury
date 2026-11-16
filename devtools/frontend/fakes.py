@@ -168,6 +168,17 @@ class FakeOpenRouter:
 Responder = Callable[[str, str, Mapping[str, str], Any], FakeResponse]
 
 
+class BurstHTTPServer(ThreadingHTTPServer):
+    """A localhost server that survives a page's burst of parallel requests.
+
+    ``http.server`` listens with a backlog of 5. A page that opens dozens of
+    connections at once overflows it, and macOS resets the ones that do not
+    fit, so a module or a stylesheet fails to load.
+    """
+
+    request_queue_size = 128
+
+
 class CorsJsonServer:
     """Serve a fake's ``handle`` over HTTP on localhost, open to any origin.
 
@@ -231,7 +242,7 @@ class CorsJsonServer:
             def log_message(self, format: str, *args: Any) -> None:
                 """Stay quiet: the harness reports what matters."""
 
-        self._server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+        self._server = BurstHTTPServer(("127.0.0.1", port), Handler)
         self._thread = threading.Thread(target=self._server.serve_forever, daemon=True)
 
     @property
@@ -252,6 +263,7 @@ class CorsJsonServer:
 
 __all__ = [
     "MAX_DESCRIPTION_CHARS",
+    "BurstHTTPServer",
     "CorsJsonServer",
     "FakeIntervals",
     "FakeOpenRouter",

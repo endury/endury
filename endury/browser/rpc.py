@@ -43,9 +43,10 @@ from pydantic import ValidationError
 from pydantic_core import to_jsonable_python
 
 from endury import store
-from endury.browser import BrowserApp, RpcError, api, demo
+from endury.browser import CRASH_MESSAGE, BrowserApp, RpcError, api, demo
 from endury.coach.runtime import CoachRuntime
 from endury.coach.tools.analysis_tools import Executor
+from endury.coach.turn import ModelCallError
 from endury.common import clock
 from endury.intervals.client import (
     IntervalsApiError,
@@ -158,6 +159,7 @@ _ERROR_CODES: tuple[tuple[type[Exception], str], ...] = (
     (IntervalsAuthError, "intervals_auth"),
     (IntervalsApiError, "upstream_error"),
     (httpx.HTTPError, "upstream_error"),
+    (ModelCallError, "upstream_error"),
     # Planning refusals (no active plan, a date outside the plan, ...) raise
     # ValueError with an athlete-readable message: not a crash.
     (ValueError, "refused"),
@@ -176,7 +178,7 @@ def _failure(exc: Exception) -> dict[str, Any]:
     code = next((code for kind, code in _ERROR_CODES if isinstance(exc, kind)), None)
     if code is None:
         logger.error("RPC call failed: %s", exc, exc_info=exc)
-        code = "internal_error"
+        return {"ok": False, "error": CRASH_MESSAGE, "error_code": "internal_error"}
     return {"ok": False, "error": str(exc), "error_code": code}
 
 

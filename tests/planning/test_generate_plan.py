@@ -571,8 +571,8 @@ class TestRehearsalSkippedWarning:
         From 60 min the long run reaches about 150 min (moderate,
         competitive) by the rehearsal week: the 240 and 250-min rehearsals
         are more than a quarter past it, so each plan keeps its routine long
-        run and says why (R-SESS-023; they used to jump 135 -> 180 and to
-        240). Basic's 180-min rehearsal fits since 2026-10-06: at 3:1 with
+        run and says why (R-SESS-023; none jumps 135 -> 180 or to
+        240). Basic's 180-min rehearsal fits: at 3:1 with
         no peak shed its long run reaches within a quarter of it.
         """
         start = date(2026, 9, 7)

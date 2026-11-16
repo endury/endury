@@ -94,7 +94,7 @@ GOAL_PROFILES: dict[GoalType, GoalProfile] = {
         race_duration={SportType.RUNNING: 2.2},  # ~2 h 12 min
         # Phase ratios and minimums mirror the marathon profile below; not
         # independently derived.
-        # Alpha since 2026-11-09: the moderate tier, the one on offer, is
+        # Alpha: the moderate tier, the one on offer, is
         # reviewed with the maintainer (docs/plan_maturity.md, Menu reviews)
         # and graded by the scorecard matrix.
         maturity=PlanMaturity.ALPHA,
@@ -228,7 +228,7 @@ GOAL_PROFILES: dict[GoalType, GoalProfile] = {
             SportType.CYCLING: 2.50,  # ~2 h 30 min
             SportType.RUNNING: 2.00,  # ~2 h
         },
-        # Alpha since 2026-10-10: the moderate tier, the one on offer, is
+        # Alpha: the moderate tier, the one on offer, is
         # reviewed with the maintainer (docs/plan_maturity.md, Menu reviews)
         # and graded by the scorecard matrix.
         maturity=PlanMaturity.ALPHA,
@@ -239,7 +239,7 @@ GOAL_PROFILES: dict[GoalType, GoalProfile] = {
         # existing aerobic base (docs/research/triathlon_long_course.md,
         # Preparation Length). Below this the 7-12%/wk ramp cannot build a
         # 5-6h long ride and 2.5-3h long run in time, regardless of
-        # ambition. Since 2026-09-29, 22: the competitive PEAK race-pace ride
+        # ambition. At 22 weeks the competitive PEAK race-pace ride
         # (320 min) is one long-ride step (R-SESS-013) from the BUILD ride's
         # 291-min top, which the default athlete reaches from 22 weeks.
         min_horizon_weeks=22,
@@ -257,7 +257,7 @@ GOAL_PROFILES: dict[GoalType, GoalProfile] = {
             SportType.CYCLING: 5.00,  # ~5 h
             SportType.RUNNING: 4.00,  # ~4 h
         },
-        # Alpha since 2026-11-03: the moderate tier, the one on offer, is
+        # Alpha: the moderate tier, the one on offer, is
         # reviewed with the maintainer (docs/plan_maturity.md, Menu reviews)
         # and graded by the scorecard matrix.
         maturity=PlanMaturity.ALPHA,
@@ -305,7 +305,7 @@ GOAL_PROFILES: dict[GoalType, GoalProfile] = {
             SportType.RUNNING: 0.35,
         },
         race_duration={},
-        # Moderate, the one tier on offer since 2026-10-13: a committed
+        # Moderate, the one tier on offer: a committed
         # scenario, the convergence test and a menu review
         # (docs/plan_maturity.md, Menu reviews).
         maturity=PlanMaturity.ALPHA,

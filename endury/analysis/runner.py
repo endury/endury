@@ -72,8 +72,8 @@ def run_script(payload: dict[str, Any]) -> dict[str, Any]:
     return {
         "stdout": text,
         "error": error,
-        # A chart drawn before a later line failed is whole: the model
-        # charted, then tripped over a print, and lost it (2026-10-25).
+        # A chart drawn before a later line failed is whole: a script that
+        # charted and then tripped over a print keeps its chart.
         "charts": checked_specs(list(library.CHARTS)),
     }
 

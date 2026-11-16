@@ -28,9 +28,6 @@ Native tools can open a file instead (`ENDURY_DB_PATH`).
 | `sqlite/repositories/athlete_goals.py` | Races, matched by id, by date and goal type, or by date alone. |
 | `sqlite/repositories/write_models.py` | The dataclass payloads the plan repository accepts. |
 
-Start reading: [sqlite/session.py](sqlite/session.py), then
-[sqlite/repositories/plan.py](sqlite/repositories/plan.py).
-
 Two architecture rules police this package: athlete SQL lives only in the
 athlete repository (`athlete-sql-gateway`), and no I/O runs inside a
 `cursor()` or `transaction()` block (`db-block-io`).

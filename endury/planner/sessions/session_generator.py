@@ -73,7 +73,7 @@ FLOOR_DROP_TOLERANCE: float = 0.85
 #: A session that is neither key nor on a ramp books at least this fraction of
 #: its menu minimum. A squeezed week scales every minimum alike; a session the
 #: scale takes under this stays whole and optional (R-SESS-037) rather than
-#: booking a shrunk version of itself (2026-10-08).
+#: booking a shrunk version of itself.
 SQUEEZE_TOLERANCE: float = 0.95
 
 #: The shortest session that is still the workout its card names, where the
@@ -306,9 +306,9 @@ RACE_SIM_TARGET_WEEKS_OUT: int = 5
 #: The most a rehearsal session on a ramp may outgrow the least its
 #: progression was last booked, or the athlete's recent longest when longer
 #: (R-SESS-023): it fires only while its minimum is at most a quarter longer,
-#: else the week stays routine. The maintainer's call on the
-#: measured steps: rehearsals had jumped up to 114 % past the long run before
-#: them. A variant may author its own step (``SessionSpec.max_step``: the
+#: else the week stays routine. A judgement on the measured steps:
+#: rehearsals had jumped up to 114 % past the long run before them. A variant
+#: may author its own step (``SessionSpec.max_step``: the
 #: Ironman BASIC big ride 0.3).
 REHEARSAL_STEP_FRACTION: float = 0.25
 
@@ -336,7 +336,7 @@ _TAPER_VOLUME = frozenset(
 #: between the 10K's and the marathon's (bench/rulebook.yaml,
 #: race_week_volume): a basic athlete's race week is two or three short runs
 #: of about 1.4 h, which 0.40 of a 3 h peak week cut to 16- and 19-minute
-#: runs (2026-10-07). The ultra trail races take the aggressive race-week
+#: runs. The ultra trail races take the aggressive race-week
 #: number, under 20 % (docs/research/trail_running.md §11.2: "≤2 h (<20% of
 #: normal)", and a measured 24-h racer at ~18 %).
 RACE_WEEK_SHARE: dict[GoalType, float] = defaultdict(

@@ -30,7 +30,7 @@ import httpx
 from pydantic import TypeAdapter
 
 from endury import store
-from endury.browser import BrowserApp, RpcError
+from endury.browser import CRASH_MESSAGE, BrowserApp, RpcError
 from endury.coach.memory_cleanup import MemoryCleanupError, propose_memory_cleanup
 from endury.coach.welcome import generate_welcome_message
 from endury.common import clock
@@ -147,8 +147,9 @@ def calendar_data(app: BrowserApp, start_date: str, end_date: str) -> dict[str, 
         return build_calendar_data(app.repos, app.client, start, end)
     except Exception as exc:
         logger.error("Error in calendar_data: %s", exc, exc_info=True)
+        upstream = isinstance(exc, (IntervalsApiError, httpx.HTTPError))
         return {
-            "error": str(exc),
+            "error": str(exc) if upstream else CRASH_MESSAGE,
             "activities": [],
             "ad_hoc": [],
             "plans": [],

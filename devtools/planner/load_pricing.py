@@ -4,8 +4,8 @@ Three prices for the same session hours:
 
 * **bridge** — one TSS/h per week from the TID tables
   (``tss_per_hour(get_tid_fractions(ws.phase, ws.mode, ws.effective_goal))``),
-  what the macro QP priced every hour with until 2026-09-24 and still
-  prices race hours with;
+  what the macro QP prices race hours with (every other hour is priced
+  from its session);
 * **sized** — the QP's own load: the session's activity price frozen at its
   menu target (``PlanResult.session_tss_per_hour``) times the solved hours;
 * **card** — the athlete's workout card, the activity price at the solved

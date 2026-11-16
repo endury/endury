@@ -38,11 +38,11 @@ store note still has to be uploaded; the next call, or `flush`, retries.
 | `refused` | A planning `ValueError`: an athlete-readable refusal, not a crash. |
 | `chat_disabled` | A chat call without an OpenRouter key. |
 | `intervals_auth` | intervals.icu rejected the key. |
-| `upstream_error` | intervals.icu or the network failed. |
+| `upstream_error` | intervals.icu, the AI model's service or the network failed. |
 | `store_conflict` | Another device saved since this one loaded. |
 | `store_read_only` | A newer Endury wrote the note; saving over it would drop columns. |
 | `store_corrupt` | The note exists but cannot be decoded; the boot screen offers "Start fresh". |
-| `internal_error` | Anything else, logged. |
+| `internal_error` | Anything else: logged, and the athlete reads one plain sentence. |
 
 ## Methods
 
@@ -68,7 +68,7 @@ each is for.
 | `pair_activity(activity_id, session_id or event_id)` | Link a completed activity with a planned session (moved to its day) or pair it with a workout. |
 | `unlink_activity(activity_id)` | Undo an activity's link to its planned session. |
 | `put_activity_verdict(activity_id, feel, icu_rpe)` | Write the athlete's own feel (1-5) and effort (1-10) on a completed activity. |
-| `get_inputs()`, `get_races()` | The planning-inputs snapshot; the upcoming races for the wizard's chips. |
+| `get_inputs()`, `put_thresholds(sport, …)`, `get_races()` | The planning-inputs snapshot; one sport's thresholds written to intervals.icu; the upcoming races for the wizard's chips. |
 | `welcome()`, `conversation_recent(limit)`, `reset_chat()` | The welcome line; the recent conversation; "New Chat". |
 | `chat(message, isolated)`, `apply_proposal(proposal)`, `dismiss_proposal(proposal)` | A coach turn (isolated: outside the conversation, as a take or a brief runs) and the two answers to an Apply card. |
 | `refresh_proposal(proposal)` | Bring an open card up to date after another card wrote the plan; never writes. |

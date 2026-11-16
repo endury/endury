@@ -32,6 +32,9 @@ CHAT_DISABLED_MESSAGE = (
     "Coach chat is disabled: add an OpenRouter API key in Settings to use it."
 )
 
+#: Said for a failure Endury did not foresee; the exception itself is logged.
+CRASH_MESSAGE = "Something went wrong in Endury. Reload and try again."
+
 
 class RpcError(EnduryError):
     """A method refused its call; ``code`` is the envelope's ``error_code``."""

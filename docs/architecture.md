@@ -60,7 +60,7 @@ web/data/api.js  (the exports the shells call)
   ◀── envelope {ok, result | error, error_code, unsaved, read_only}
 ```
 
-Three consequences shape the code:
+Four consequences shape the code:
 
 - **Nothing streams.** Chat, generate and replan are single calls, and
   the UI shows a spinner. The planner's progress frames are the one thing

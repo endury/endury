@@ -73,7 +73,7 @@ def test_the_site_is_one_page_with_every_plan_week_by_week(
 ):
     # The trail 20K at 16 weeks books its threshold test; the 5K's squeezed
     # recovery weeks book none since their last one moved three weeks before
-    # the race (R-PHASE-015, 2026-10-06).
+    # the race (R-PHASE-015).
     monkeypatch.setitem(sweep_site.HORIZONS, GoalType.TRAIL_20K, (16,))
     main(
         [

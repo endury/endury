@@ -39,5 +39,5 @@ The coach's side, which gathers the data and hands script and data to the
 sandbox, is `endury/coach/tools/analysis_tools.py`.
 
 Start reading:
-- [library.py](library.py) — `overview` shows every helper at work.
+- [library.py](library.py) — `overview` prints a whole session through the main helpers.
 - [runner.py](runner.py) — what a script can see and what comes back.

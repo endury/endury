@@ -469,7 +469,7 @@ class TestRefusalsSpeakToTheAthlete:
     def test_a_tune_up_gets_one_reason(
         self, weeks_from_start: int, reason: str
     ) -> None:
-        """A tune-up past the A race used to read as three separate refusals."""
+        """A tune-up past the A race reads as one refusal, not three."""
         a = _a_goal(GoalType.RUNNING_MARATHON, 20)
         b = _bc_goal(GoalType.RUNNING_10K, weeks_from_start)
         errors = validate_phase_request(_request(a, b)).errors
@@ -1385,7 +1385,7 @@ class TestValidatePhasePlan:
 
     def test_sport_split_violation_detected(self) -> None:
         plan, _req = self._make_valid_plan()
-        # WeekSpec.__post_init__ now rejects invalid splits at construction.
+        # WeekSpec.__post_init__ rejects invalid splits at construction.
         with pytest.raises(ValueError, match=r"sport_split must sum to 1\.0"):
             WeekSpec(
                 week=0,

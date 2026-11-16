@@ -34,7 +34,8 @@ stores where, and how to remove it, is in [docs/privacy.md](docs/privacy.md).
   or a tool result, that gets the coach to make a plan change that needs an
   Apply card without the athlete tapping one. A few small writes happen at
   once by design and report back in the reply: booking one workout, moving
-  a session, marking one done, saving a race, and the memory and profile.
+  a session, marking one done, saving a race, a self-reported weekly
+  volume, and the memory and profile.
 - A way for one athlete's browser to read or write another athlete's
   intervals.icu data through Endury.
 
@@ -55,7 +56,7 @@ key leaks, generate a new one at intervals.icu or OpenRouter.
 
 Please use GitHub's private vulnerability reporting: open this repository's
 "Security" tab and choose "Report a vulnerability", rather than a public
-issue.
+issue. If you cannot use it, write to contact@endury.app.
 
 Endury is maintained by one person, in their own time. There is no fixed
 response time, but you will hear back as soon as they can manage.

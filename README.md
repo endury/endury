@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://endury.app"><strong>Try it</strong></a> &nbsp;·&nbsp;
+  <a href="https://endury.app"><strong>Go to the app</strong></a> &nbsp;·&nbsp;
   <a href="VISION.md">Why Endury</a> &nbsp;·&nbsp;
   <a href="docs/privacy.md">Privacy</a> &nbsp;·&nbsp;
   <a href="CONTRIBUTING.md">Contributing</a> &nbsp;·&nbsp;
@@ -26,24 +26,23 @@
   <img alt="Your training stays on intervals.icu" src="https://img.shields.io/badge/your%20training-on%20intervals.icu-3F8A53">
 </p>
 
-<a href="https://endury.app"><img src="docs/readme/screen_web_plan.png" alt="Endury in a desktop browser, with the sample athlete: this week of a half-distance triathlon plan, next week below, the weekly load ring and the race on the left, the coach on the right"></a>
+<a href="https://endury.app"><img src="docs/readme/screen_web_plan.png" alt="Endury in a desktop browser, with the sample athlete: this week of a half-distance triathlon plan, next week below, the weekly load ring and the race on the left, and on the right the coach proposing to swap a ride for a run, with an Apply button"></a>
 
 There is no subscription and no account, and no Endury server holds your
 data. Your training stays on your
 [intervals.icu](https://intervals.icu) account, and the coaching
 logic is open to read, change and host. The optional chat coach runs on
-an AI language model through your own OpenRouter account. You pay
-OpenRouter directly, from about $0.003 a message with the default AI model;
-a full debrief or analysis costs more.
+an AI language model through your own OpenRouter account (BYOK). You pay
+OpenRouter directly, from about $0.008 a message with the default AI model.
 
 ## What it does
 
-- **Builds a plan for your race.** Six plans are on offer for now, each
-  finished before the next: the trail 20K and trail maintenance at the basic
+- **Builds a plan for your race.** Six plans are on offer for now: the trail 20K
+  and trail maintenance at the basic
   level, and the half marathon, half-distance and full-distance triathlons and
-  triathlon maintenance at the moderate level. Tune-up races of any type fit
-  in. Seven more race goals, from 5K to trail 100K and from sprint to
-  standard distance, wait in the repository.
+  triathlon maintenance at the moderate level. Seven more race goals, from 5K
+  to trail 100K and from sprint to
+  standard distance, are to be rolled out in the upcoming months.
 - **Starts from your real training.** Threshold pace and power, fitness
   and recent volume are read from intervals.icu. With little history
   there, a short questionnaire asks about your recent weeks.
@@ -96,7 +95,7 @@ in hidden notes on your account, so every device sees the same plan.
 
 ## Is it any good?
 
-Endury is based on a benchmark we developed for endurance training: 55
+Endury is based on a benchmark we use for endurance training: 55
 coaching rules, each with its band, its evidence and its sources
 ([bench/rulebook.yaml](bench/rulebook.yaml)). It is open to read and to
 argue with, but it is our own yardstick, not an independent standard.
@@ -139,9 +138,8 @@ intervals.icu in three short steps. Settings changes any of it later.
 
 ## Privacy
 
-The app sends nothing you do in it to its authors. Your keys stay in this
-browser, each sent only to its own service, and your training lives on your
-intervals.icu account. When you chat, your message and the coach's
+Your keys stay in this browser, each sent only to its own service, and your
+training lives on your intervals.icu account. When you chat, your message and the coach's
 working context, health data included, go to OpenRouter (USA) and the company
 that runs the AI model; Endury asks for services listed as keeping no data. What is stored where, and how to remove
 all of it: [docs/privacy.md](docs/privacy.md).
@@ -163,14 +161,21 @@ make serve          # serve it at http://localhost:8080
 serves it, also under a sub-path. It serves its own copy of the Python
 runtime, so visitors fetch nothing from a third party. Before you publish:
 
-- **Put your name on it.** `web/impressum.html` and `web/privacy.html`
-  are the legal notice and the privacy policy. Point the source links at your
-  repository: `SOURCE_URL` in `web/components/settings_panel.js` and the links
-  in those two pages. If you run a changed copy, the AGPL has you offer your
-  changed source and say it was changed. Put your details in `~/.config/endury/legal.json`
-  with the keys `full_name`, `street`, `city` and `email`. `make site`
-  writes them into the built pages, so they stay out of your repository,
-  and `make deploy` stops if the pages are still blank.
+- **Put your name on it.** The site carries a legal notice and a privacy
+  policy, `web/impressum.html` and `web/privacy.html`, with blank places for
+  whoever hosts it. Write your details into a file outside the repository,
+  `~/.config/endury/legal.json`:
+
+  ```json
+  {"full_name": "…", "street": "…", "city": "…", "email": "…"}
+  ```
+
+  `make site` copies them into the built pages only, so your address never
+  lands in git. `make deploy` stops while the pages are still blank.
+- **Link your own source.** Point `SOURCE_URL` in
+  `web/components/settings_panel.js` and the source links in the two legal
+  pages at your repository. If you run a changed copy, the AGPL has you
+  offer your changed source and say it was changed.
 - **Send the security headers.** The Content Security Policy in `web/_headers`
   is needed on every host, not just Cloudflare: it keeps the page to its own
   origin and completes the analysis sandbox's seal. Other hosts set it their own way.
@@ -189,8 +194,8 @@ the store run natively under pytest against in-memory fakes. Start at
 
 I like endurance sport, and I wanted to see how far coding agents, AI
 language models that write and test software, could take a hobby project.
-Further than I expected: it now has a solver, a rulebook and strong
-opinions about tapers, and I train with it myself.
+It now has a solver, a rulebook and strong
+opinions about tapers and rest days, and I train with it myself.
 
 The main algorithm is conceptually adopted from model predictive control,
 my research background: a model of fitness and fatigue, a plan optimised

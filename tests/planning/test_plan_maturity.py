@@ -224,7 +224,7 @@ def test_trail_maintenance_basic_at_its_volume_is_not_experimental():
 
 
 def test_trail_maintenance_basic_at_its_floor_is_alpha():
-    """The floor is 0.85 of the tier's 3 h (until 2026-10-08: the 3 h itself)."""
+    """The floor is 0.85 of the tier's 3 h (not the 3 h itself)."""
     verdict = _verdict(GoalType.TRAIL_MAINTENANCE, AmbitionLevel.BASIC, 8, 2.55)
     assert verdict.tier is PlanMaturity.ALPHA
 

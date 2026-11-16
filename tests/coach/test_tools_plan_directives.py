@@ -3,8 +3,8 @@
 Everything ``set_plan_directives`` calls into (``_load_replan_inputs``,
 ``replan_readback_diff``, ``run_replan``) is monkeypatched at the module
 level, the same idiom ``test_tools_plan_build.py`` uses for a use case —
-here the use case lives in the tool itself (plan.md's owned-files list has
-no separate ``planning/`` module for it), so the module under test is
+here the use case lives in the tool itself (there is no separate ``planning/``
+module for it), so the module under test is
 patched directly rather than an imported use-case function.
 """
 

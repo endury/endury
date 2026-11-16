@@ -53,8 +53,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: App version
-      description: Shown in Settings, if your build has it there.
+      label: Build
+      description: The `build` value in `version.json` at the site's root, for example https://endury.app/version.json.
     validations:
       required: false
   - type: textarea

@@ -61,7 +61,7 @@ POWER_BAND_SPECS: tuple[ZoneBandSpec, ...] = (
 # numbers their calendar shows. A run step's heart-rate zone is read at the
 # same rung (``_hr_zone`` in planner/activity/shapes/base.py), so pace and
 # heart rate name one zone. Friel's zones are in docs/research/triathlon.md's
-# references; checked 2026-10-14 against intervals.icu's defaults.
+# references; checked against intervals.icu's defaults.
 
 PACE_BAND_SPECS: tuple[ZoneBandSpec, ...] = (
     ZoneBandSpec(1, "Recovery", round(1 / 1.40, 4), 0.775),

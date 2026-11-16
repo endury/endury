@@ -1,10 +1,10 @@
 """Athlete-profile storage contract.
 
-Pins the rows of the retired ``docs/requirements/athlete.md`` that were
-worth a mechanical check: the single-row ``CHECK (id = 1)`` and the
+Pins the athlete profile's storage rules that are worth a mechanical
+check: the single-row ``CHECK (id = 1)`` and the
 no-orphan-columns rule — every DB column is either a model
-field or the one deliberate ``coach_personality`` orphan, pending
-its migration.
+field or the one deliberate ``coach_personality`` orphan, kept
+so existing databases need no migration.
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from __future__ import annotations
 from endury.database.sqlite.session import DatabaseSession
 from endury.domain.models.athlete import AthleteProfile
 
-#: The personality feature is gone; the column waits for a migration.
+#: The personality feature is gone; the dead column stays in the schema.
 _DELIBERATE_ORPHANS = {"coach_personality"}
 
 

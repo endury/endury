@@ -324,7 +324,7 @@ def clean_coach_response(content: str) -> str:
     )
     # A replayed reply names its charts in such a note (charts_for_model);
     # the model copied it into a new reply, where the athlete read it under
-    # the chart it named (2026-10-25).
+    # the chart it named.
     content = re.sub(
         r"^[ \t]*\[Chart shown under this reply:[^\]\n]*\][ \t]*\n?",
         "",

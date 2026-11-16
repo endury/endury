@@ -728,7 +728,7 @@ _AHEAD = 3
 #: switchback cut differently) ...
 _MAX_GAP = 10
 #: ... and the other file covering this many points more ground at a spot.
-#: Measured on two runs of one trail loop (2026-10-25): 9 to 25 points.
+#: Measured on two runs of one trail loop: 9 to 25 points.
 _MAX_JUMP = 20
 
 

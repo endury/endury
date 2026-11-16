@@ -126,7 +126,7 @@ def test_long_course_never_stacks_a_hard_ride_and_a_hard_run(goal):
     """No authored day may carry a hard ride and a hard run.
 
     The maintainer's rule from the Ironman menu review, for both long-course
-    goals since 2026-10-05: each hard day belongs to one land sport, and a
+    goals: each hard day belongs to one land sport, and a
     hard swim may share it because swimming spares the legs. How often a
     plan stacks hard work from two sports is graded by the
     ``cross_sport_hard_day_stacking`` band (``bench/rulebook.yaml``).

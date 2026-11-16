@@ -37,13 +37,13 @@ MAINTENANCE_WEEKLY_HOURS: dict[GoalType, dict[AmbitionLevel, float]] = {
         AmbitionLevel.MODERATE: 4.5,
         AmbitionLevel.COMPETITIVE: 6.0,
     },
-    # MODERATE 8.5 h (the maintainer's call; 7 h before): 0.63 of the
-    # half-Ironman MODERATE peak week of 13.5 h, inside the reduced-training
+    # MODERATE 8.5 h: 0.63 of the half-Ironman MODERATE peak week of
+    # 13.5 h, inside the reduced-training
     # trials, where a third to two thirds less volume held endurance for up
     # to 15 weeks while intensity and frequency held (Hickson's series,
     # reviewed by Spiering et al. 2021). It is what the one-session-a-day
-    # week holds at maintenance-sized long sessions (2:30 ride, 90-min run);
-    # the maintainer's ceiling was about 9 h. COMPETITIVE 10 h (9 h before)
+    # week holds at maintenance-sized long sessions (2:30 ride, 90-min run),
+    # under a chosen ceiling of about 9 h. COMPETITIVE 10 h
     # only so it stays above MODERATE: the wizard seeds the highest tier
     # within 1.25x of the athlete's hours, so a tie would never seed
     # MODERATE; 10 h is what its unreviewed menu reaches.

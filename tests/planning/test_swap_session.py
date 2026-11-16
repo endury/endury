@@ -352,7 +352,7 @@ class TestGuards:
 
 class TestOpenTest:
     def test_a_swap_to_a_test_moves_the_missed_one_instead(self):
-        # Live 2026-10-26: "book a threshold test instead of this session"
+        # Seen live: "book a threshold test instead of this session"
         # while Thursday's test sat missed.
         rows = [
             *_big_week(),
@@ -584,7 +584,7 @@ class TestCaveats:
         )
         assert f"{result['week']['tss_delta_percent']}% of planned load" in warning
         assert f"{result['week']['minutes_delta_percent']}% of planned hours" in warning
-        # Live 2026-10-26: the coach's own instruction reached the athlete.
+        # Seen live: the coach's own instruction reached the athlete.
         assert "Quote" not in warning
 
     def test_a_swap_this_week_says_nothing_of_a_replan(self, monkeypatch):

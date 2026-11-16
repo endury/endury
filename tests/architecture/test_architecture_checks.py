@@ -69,9 +69,8 @@ def _make_function_source(name: str, body_lines: int) -> str:
 def test_widened_scope_catches_over_budget_function_outside_activities() -> None:
     """A new over-budget function under endury/planning/ now fails.
 
-    Function-length/complexity budgets used to be scoped to a narrow
-    nominated set of modules; they were widened to all of endury/planning/,
-    endury/browser/ and endury/store/.
+    Function-length/complexity budgets cover all of endury/planning/,
+    endury/browser/ and endury/store/, not a nominated set of modules.
     """
     rel = "endury/planning/some_new_module.py"
     assert f"{rel}::over_budget" not in FUNCTION_BUDGET_WAIVERS

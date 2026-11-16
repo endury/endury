@@ -461,9 +461,9 @@ register_activity(
         if_cooldown=0.60,
         if_work=0.72,  # IM race pace (age-group 0.65-0.75)
         if_rest=0.65,  # easy Z2 float
-        # Race-pace-dense since 2026-11-03: a ride named for race pace holds
-        # most of its time there, 2-3 h by peak. It
-        # held 1 h in 5, with the filler under the plain endurance ride's power.
+        # Race-pace-dense: a ride named for race pace holds most of its time
+        # there, 2-3 h by peak, not 1 h in 5 with the filler under the plain
+        # endurance ride's power.
         rep_count_min=2,
         rep_count_max=4,
         rep_work_min=30.0,

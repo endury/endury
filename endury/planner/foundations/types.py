@@ -48,7 +48,7 @@ class SportType(StrEnum):
 #: Each sport's TID cut points ``(LT1, LT2)`` on its own intensity factor.
 #: A run reads the heart-rate table's (its IF is a fraction of threshold
 #: speed; Friel's aerobic-zone top, 0.877, counted the trail climb day as
-#: easy when measured 2026-10-14), a ride power's (Coggan's endurance zone
+#: easy when measured), a ride power's (Coggan's endurance zone
 #: tops at LT1, FTP is LT2), a swim the swim table's (zone 2 tops at 90 % of
 #: CSS speed).
 TID_CUTS: dict[SportType, tuple[float, float]] = {

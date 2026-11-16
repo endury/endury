@@ -11,6 +11,7 @@ copies it and pins the asset URLs.
 | `theme.js` | Sets the dark or light theme before the first paint; Settings switches it. |
 | `impressum.html`, `privacy.html`, `legal.css` | The hosted site's legal notice and privacy policy, linked from the landing and Settings. A self-hoster puts their own name in the marked places. |
 | `_headers` | Cloudflare's response headers: the Content Security Policy (this origin, intervals.icu and OpenRouter only) and the usual hardening. Other hosts ignore it. |
+| `robots.txt` | Lets search engines index the site. |
 | `components/` | HTML-string renderers and their CSS: session and race sheets with the coach's brief, week summary, plan editor, coach and charts, settings, front door, debrief, modal. |
 | `data/api.js` | The RPC client: unwraps the worker's envelope, holds the one-writer lock, feeds the runtime banners. |
 | `data/settings.js` | The keys and the chat consent in `localStorage`; "Forget my keys". |

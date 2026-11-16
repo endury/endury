@@ -893,7 +893,7 @@ class TestMaterializableFloors:
     def test_squeezed_quality_slot_optional_not_inflated(self) -> None:
         """A returner's test week keeps its Friday strides optional, not inflated.
 
-        The test day (week 5 carries the threshold test since 2026-10-12) and
+        The test day (week 5 carries the threshold test) and
         the long run are key, so the squeeze falls on the easy runs: the
         strides stay at their smallest honest card, never under the menu's
         own minimum (R-SESS-037).
@@ -1034,8 +1034,7 @@ class TestMaterializableFloors:
         so both shed them (R-SESS-030's taper branch). The taper share
         (R-SESS-038) shortens the taper weeks' easy and long runs first, and
         the strides book their full card in both taper weeks and race week
-        (until 2026-10-06 the first taper week, after a 2:1 base, could not
-        reach the share and kept its strides optional, R-SESS-037).
+        (R-SESS-037).
         """
         goal = RaceGoal(
             GoalType.RUNNING_MARATHON, _START + timedelta(weeks=12, days=-1), "A"
@@ -1492,7 +1491,7 @@ def _sized_trail_50k(
 def _short_notice_athlete(
     recent_hours: float,
 ) -> tuple[PhasePlan, CapacityProjection, list[PlacedSession]]:
-    """The V7 athlete: competitive trail 50K, joined at week 8 of 12."""
+    """The short-notice athlete: competitive trail 50K, joined at week 8 of 12."""
     return _sized_trail_50k(
         AmbitionLevel.COMPETITIVE,
         recent_hours,
@@ -1553,7 +1552,7 @@ class TestKeySessions:
     """R-SESS-033: a squeezed week keeps its key sessions at an honest size."""
 
     def test_easy_runs_give_way_to_the_climbing_session(self) -> None:
-        # The athlete's first visible load week is PEAK since 2026-10-06:
+        # The athlete's first visible load week is PEAK:
         # at 3:1 the week before it is the block's recovery week.
         plan, capacity, sessions = _short_notice_athlete(3.53)
         sessions = _regular(sessions)
@@ -1724,7 +1723,7 @@ class TestKeySessions:
         assert filler == strides
 
     def test_a_taper_gives_up_an_easy_run_before_its_tempo(self) -> None:
-        """The taper keeps its intensity: the V7 athlete's taper keeps its tempo."""
+        """The taper keeps its intensity: the short-notice athlete's taper keeps its tempo."""
         plan, _capacity, sessions = _short_notice_athlete(3.53)
         week = _week_of(plan, PhaseType.TAPER, WeekMode.TAPER)
         keys = [s.activity_key for s in sessions if s.week == week]

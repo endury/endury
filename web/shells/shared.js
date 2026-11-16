@@ -742,7 +742,7 @@ export function editorModel(e, todayIso) {
     } : null,
     // "Your races" (step 10): chips built from the athlete's stored race
     // table (GET /api/races); null hides the row entirely — an athlete with
-    // no races stored sees the wizard exactly as it was before this row.
+    // no races stored sees the wizard without that row.
     yourRaces: e.myRaces.length ? {
       note: isMaint
         ? 'Tap a race to add it to the block as a tune-up race.'

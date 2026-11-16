@@ -1081,8 +1081,8 @@ class TestBuildStepTargetsWithResolver:
     def test_bike_tempo_main_step_reads_tempo_beside_its_power_band(self) -> None:
         """R-SC-008: BIKE_TEMPO at FTP 250 W is a 211-224 W (Z3) step, so it reads tempo.
 
-        The description used to come from the HR table, where 0.87 is Z2
-        "Aerobic effort" — contradicting the tempo power band beside it.
+        The description comes from the power band, not the HR table, where
+        0.87 is Z2 "Aerobic effort" and would contradict the tempo band.
         """
         activity = get_activity(ActivityKey.BIKE_TEMPO)
         workout = activity.build(60.0, resolver=_cycling_resolver())
@@ -1536,8 +1536,8 @@ class TestSwimCssEdgeCases:
     def test_no_candidates_returns_clamped_target(self) -> None:
         """When no (reps, meters) combo lands in the narrow range, return target."""
         act = get_activity(ActivityKey.SWIM_CSS)
-        # Lattice values jump from ~30.56 to ~33.89 (a 500 m warm-up since
-        # 2026-10-11); range [31.0, 33.0] has none.
+        # Lattice values jump from ~30.56 to ~33.89 (its 500 m warm-up);
+        # range [31.0, 33.0] has none.
         result = act.project_target_tss(
             32.0, lower_bound_tss=31.0, upper_bound_tss=33.0
         )

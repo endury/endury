@@ -472,7 +472,7 @@ Status legend: `[x]` holds · `[!]` violated (see Known violations) · `[~]` par
   budget and a swap's week delta. Still leaving: a fixed-protocol test that cannot be done whole, a brick whose ride is gone and a session after the A
   race (day assigner). *Why:* a vanished session left the athlete no choice and no
   explanation; counting optional sessions in the load (the first version) shrank the
-  regular sessions to make room (Kim, 2026-09-29). Grid of every
+  regular sessions to make room (the maintainer, 2026-09-29). Grid of every
   race goal × tier × 0.5-1.5 of the default volume × the minimum horizon and 8 weeks
   more × a fresh plan and a join five weeks out (705 plans): 391 plans hold optional
   sessions (2,550 in all, none under 10 minutes; 34 of the 72 default plans), most of
@@ -537,7 +537,7 @@ Status legend: `[x]` holds · `[!]` violated (see Known violations) · `[~]` par
   (20K and maintenance BASIC, 100K). Spins scale 30-40 min (20K and maintenance BASIC)
   to 50-60 min (100K COMPETITIVE); rides 45-60 min to 60-80 min. *Why:* a ride
   adds aerobic time without the impact that limits how much a runner can run, and an
-  optional session costs the athlete who skips it nothing (Kim, 2026-10-01). Every trail goal x tier at the default profile and the minimum horizon
+  optional session costs the athlete who skips it nothing (the maintainer, 2026-10-01). Every trail goal x tier at the default profile and the minimum horizon
   plus four weeks (15 plans): 290 rides of 30-80 min, a median 16 % on top of the week's
   booked hours (90th percentile 50 %, at most 89 % in a BASIC maintenance recovery
   week); the booked sessions match the menus without the rides, their hours within 5

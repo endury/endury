@@ -1154,7 +1154,7 @@ _LOW_VOLUME_FRACTION = 0.85
 The plan's volume floor: the trail 20K basic at 0.85 of its default is
 2.1 h a week, the smallest week that holds its climb, long run and easy
 run; below it the plan says so (plan maturity) rather than the gate
-grading what it was not written for (0.75 until 2026-10-08). Copied into ``endury.planning.plan_maturity`` as the
+grading what it was not written for. Copied into ``endury.planning.plan_maturity`` as the
 plan-maturity volume floor; ``tests/planning/test_plan_maturity.py`` pins
 the two equal.
 """

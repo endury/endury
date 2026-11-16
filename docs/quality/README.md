@@ -15,8 +15,8 @@ flowchart TD
 
   subgraph checks["Runs by itself"]
     tests["Unit tests"]
-    fp["Fingerprints<br/>28 pinned plans"]
-    sc["Scorecard<br/>55 rules on 69 plan cells"]
+    fp["Fingerprints<br/>10 pinned plans"]
+    sc["Scorecard<br/>55 rules on 14 plan cells"]
     bench["Benchmark<br/>39 of the rules, AI models too"]
     arch["Architecture checks"]
     e2e["Browser end-to-end run"]
@@ -81,8 +81,8 @@ is generated from the rulebook by `make docs`, which `make lint` runs, and
   read those plans and no others. The unit tests still build every plan.
   A plan that returns is read afresh
   ([plan maturity](../plan_maturity.md#plans-on-offer)).
-- **Two race goals.** The 5K and the trail 100K have plans and no
-  scorecard cell.
+- **Two race goals.** The 5K and the trail 100K have menus, and the
+  scorecard has no plan lengths to grade them at yet.
 - **Most goals in the benchmark.** It asks AI language models for marathon,
   half-Ironman and Ironman plans only.
 - **The coach's live replies.** The tests run the coach against a fake AI

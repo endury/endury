@@ -23,16 +23,16 @@ def test_system_prompt_includes_the_single_personality_section() -> None:
     # back-every-judgement rules of the persona, and the debrief's one line on
     # a threshold the session plainly contradicts, and the athlete's own word
     # on sleep and feel above a device reading, and the hill session's
-    # effort reading and terrain fit (2026-10-18), and the rule that a figure
+    # effort reading and terrain fit, and the rule that a figure
     # from an earlier message is stale and today's Form line is the one to
-    # advise from (2026-10-20), and the two card rules: a recommended change
+    # advise from, and the two card rules: a recommended change
     # to a planned session is previewed, and a session done as the coach
-    # said is judged against that (2026-10-20), and a race day's activity
-    # debriefed as the race (2026-10-24), and the analysis tool's charts and
-    # its DONE round (2026-10-25), and a chart drawn unasked for a series or
-    # a comparison (2026-10-26), and the athlete's own request built as
-    # asked with a lifted constraint cleared (2026-11-02), and the crisis rule,
-    # the AI-when-asked rule, athlete text as data and plain metric names (2026-11-03).
+    # said is judged against that, and a race day's activity
+    # debriefed as the race, and the analysis tool's charts and
+    # its DONE round, and a chart drawn unasked for a series or
+    # a comparison, and the athlete's own request built as
+    # asked with a lifted constraint cleared, and the crisis rule,
+    # the AI-when-asked rule, athlete text as data and plain metric names.
     assert len(prompt) < 10200
 
 

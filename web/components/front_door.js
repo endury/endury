@@ -56,7 +56,7 @@ const FACTS = [
   'Free and open source. No subscription, no Endury account.',
   'No Endury server holds your data. Your keys stay in this browser.',
   'Your plan and training live on your own intervals.icu.',
-  'An AI coach that knows your plan and reworks your week when you ask. Optional, from about $0.003 a message with the default AI model through your own OpenRouter account; a full debrief or analysis costs more.',
+  'An AI coach that knows your plan and reworks your week when you ask. Optional, from about $0.008 a message with the default AI model through your own OpenRouter account; a full debrief or analysis costs more.',
   'Training software for adults, not medical advice. A hobby project in its early days.',
 ];
 

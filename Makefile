@@ -181,7 +181,7 @@ serve: _require-poetry
 		kill $$PID 2>/dev/null; \
 		sleep 1; \
 	fi; \
-	cd site && poetry run python -m http.server 8080
+	cd site && poetry run python -c "import http.server as h; h.ThreadingHTTPServer.request_queue_size = 128; h.test(h.SimpleHTTPRequestHandler, h.ThreadingHTTPServer, port=8080)"
 
 # Build and deploy site/ as Cloudflare Workers static assets (wrangler.jsonc:
 # the project name and custom domain). Needs `npx wrangler login` once.

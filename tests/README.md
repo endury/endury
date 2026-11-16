@@ -23,9 +23,9 @@ Each folder mirrors the package it covers.
 | `analytics/` | `endury/domain/analysis`: zone sets and the race prediction. |
 | `bench/` | `bench/`: the parser, the load model, the readings, the scoring. |
 | `devtools/` | The devtools, the scorecard baseline gate and the docs checks. |
-| `golden/` | Conversation replay fixtures. |
+| `golden/` | The conversation replay harness; its payloads are in `fixtures/`. |
 | `architecture/` | The import boundaries and the banned-reference-name scan. |
-| `fixtures/` | The golden conversation payloads. |
+| `fixtures/` | The recorded conversations the replay harness plays. |
 
 ## Running it
 
@@ -65,7 +65,7 @@ make test PYTEST_COVERAGE= PYTEST_ARGS='-k planner -vv'
 | --- | --- |
 | Layer | `unit`, `integration` |
 | Domain | `coach`, `planning`, `db`, `intervals`, `analytics`, `architecture`, `golden` |
-| Heuristic | `contract`, `llm`, `golden` |
+| Heuristic | `contract`, `llm` |
 | Runtime | `slow`, applied by hand and excluded from `make test` |
 
 ## Fixtures and doubles

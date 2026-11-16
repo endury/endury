@@ -5,7 +5,8 @@ from __future__ import annotations
 import httpx
 import pytest
 
-from endury.browser import api
+from endury.browser import CRASH_MESSAGE, api
+from endury.intervals.client import IntervalsApiError
 from endury.intervals.models import (
     ActivityStream,
     AthleteProfile,
@@ -74,9 +75,22 @@ async def test_calendar_data_answers_an_empty_payload_when_it_fails(fake, monkey
 
     payload = await ok("calendar_data", start_date="2026-10-05", end_date="2026-10-11")
 
-    assert payload["error"] == "calendar down"
+    assert payload["error"] == CRASH_MESSAGE
     assert payload["compliance_unavailable"] is True
     assert payload["plans"] == []
+
+
+async def test_calendar_data_keeps_the_reason_intervals_gave(fake, monkeypatch):
+    await boot(fake)
+
+    def boom(*_args):
+        raise IntervalsApiError(503, "busy")
+
+    monkeypatch.setattr(api, "build_calendar_data", boom)
+
+    payload = await ok("calendar_data", start_date="2026-10-05", end_date="2026-10-11")
+
+    assert payload["error"] == "intervals.icu API error 503: busy"
 
 
 async def test_delete_ad_hoc_workout_reaches_only_ad_hoc_events(fake):

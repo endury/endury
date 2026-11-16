@@ -1,7 +1,7 @@
 # Benchmark rule dossiers
 
 The research behind [`bench/rulebook.yaml`](../../../bench/rulebook.yaml):
-one dossier per rule family, compiled on 2026-09-25 from the notes in
+one dossier per rule family, compiled from the notes in
 `docs/research/` outward, with one YAML card per candidate rule. Every DOI
 in a card was resolved through Crossref and every book through a
 publisher's ISBN listing at the time of writing; each source records that

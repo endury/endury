@@ -73,12 +73,13 @@ import tempfile
 import threading
 from datetime import date, datetime, time, timedelta
 from functools import partial
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from http.server import SimpleHTTPRequestHandler
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from urllib.parse import parse_qsl, urlsplit
 
 from devtools.frontend.fakes import (
+    BurstHTTPServer,
     CorsJsonServer,
     FakeIntervals,
     FakeOpenRouter,
@@ -443,7 +444,7 @@ class Harness:
         self.step = "02-boot"
         self.wait_booted(page, ".cbw-weekrow[data-week-start]")
 
-        # Connect OpenRouter now happens from the app's own Settings panel;
+        # OpenRouter is connected from the app's own Settings panel;
         # the key is already in, so the round trip reboots straight into the
         # shell with no gate to fill in.
         page.click('[data-action="open-settings"]')
@@ -1316,7 +1317,7 @@ def main() -> int:
 
     build_site.main()
     build_id = json.loads((build_site.SITE_DIR / "version.json").read_text())["build"]
-    site = ThreadingHTTPServer(
+    site = BurstHTTPServer(
         ("127.0.0.1", args.port),
         partial(QuietSiteHandler, directory=str(build_site.SITE_DIR)),
     )

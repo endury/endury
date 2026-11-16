@@ -94,7 +94,7 @@ class TestMaintenanceSkeleton:
 
     @pytest.mark.parametrize("goal_type", _MAINTENANCE_GOALS)
     def test_every_tier_deloads_every_fourth_week(self, goal_type: GoalType) -> None:
-        """3:1 at every tier (BASIC was 2:1, recovery weeks {2, 5}, until 2026-10-06)."""
+        """3:1 at every tier (BASIC included)."""
         a = _maintenance_a_goal(goal_type)
 
         for ambition in AmbitionLevel:
@@ -164,9 +164,9 @@ def _block_with(
 
 class TestMaintenanceTuneUps:
     """A maintenance block takes a tune-up race in any of its weeks
-    (R-PHASE-019; until 2026-10-20 B/C goals were hard-rejected, so an A
-    race inside a block had no planner path and the coach hand-wrote a
-    taper the calendar never saw)."""
+    (R-PHASE-019); a B/C goal is accepted rather than rejected, so an A
+    race inside a block has a planner path and the taper reaches the
+    calendar."""
 
     def test_a_b_race_week_is_its_own_mini_taper(self) -> None:
         race = _tune_up(GoalType.TRAIL_20K, "B", 4)
@@ -877,8 +877,8 @@ class TestMaintenanceBlockHoldsFromWeekOne:
 
         if volume_fraction >= 1.0:
             # At or above the tier target: every load week within 5% of it
-            # from week one (flat, apart from recovery weeks). Amended
-            # 2026-10-13: a week whose long sessions still ramp into their
+            # from week one (flat, apart from recovery weeks). An
+            # exception: a week whose long sessions still ramp into their
             # range books at least 0.8 of it, and a load week carrying the
             # fitness tests, shorter than the quality sessions they replace,
             # at least 0.9.
@@ -895,8 +895,8 @@ class TestMaintenanceBlockHoldsFromWeekOne:
             # sessions ramp) and at most one ramp step above it (a 5%
             # allowance over the ramp step absorbs QP rounding), and load
             # weeks never fall week to week (a small tolerance absorbs the
-            # QP's own smoothing noise, see class docstring). Amended
-            # 2026-11-03: a load week carrying the fitness tests may fall to
+            # QP's own smoothing noise, see class docstring). An
+            # exception: a load week carrying the fitness tests may fall to
             # 0.9, as above: triathlon MODERATE's half-volume athlete books
             # the week before at the sweet-spot ride's 107-minute card floor.
             ramp = get_ambition_profile(ambition).hours_ramp_limit
@@ -1005,12 +1005,12 @@ class TestMaintenanceBlockHoldsFromWeekOne:
                     and volume_fraction < 1.0
                     and longest_long < longest_overall
                 ):
-                    # 2026-10-08: BASIC's trail long run now ramps up from the
+                    # BASIC's trail long run ramps up from the
                     # athlete's own longest, so a half-volume athlete (longest
                     # 30 min) opens it at 38 while the climb day cannot book
                     # under its card's 50. It is the longest again once the
                     # ramp reaches it (TestTrailMaintenanceBasicLongRunRamp).
-                    # 2026-10-12: triathlon MODERATE's long ride ramps the same
+                    # Triathlon MODERATE's long ride ramps the same
                     # way and its bike session is key, so a half-volume
                     # athlete (longest ride 45) opens the ride under the
                     # 58-minute bike session; the ride is the longest again

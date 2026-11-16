@@ -157,8 +157,8 @@ def test_longest_long_session_in_peak_discriminates(monkeypatch) -> None:
     # require the longest SWIM to peak in PEAK.
     #
     # The positive control is running_returner_10k with the peak shed forced
-    # before its two-week taper, the shape every short-taper plan had until
-    # 2026-10-06: its last BUILD long run books 58 min, and its shed PEAK
+    # before its two-week taper, the shape of a short-taper plan that
+    # sheds the peak: its last BUILD long run books 58 min, and its shed PEAK
     # weeks size their long run under it, so the longest run lands in BUILD.
     # The Ironman cells below taper three weeks and shed either way.
     from endury.planner.macro import capacity
@@ -669,8 +669,8 @@ def test_our_plans_stay_inside_the_envelope_at_odd_horizons() -> None:
     # cells, so the unswept horizons hide nothing — and sits inside the 1-6 envelope.
     # The Ironman's 3:1 blocks read 3; the half-Ironman's
     # two-week taper lets the final block run the whole cadence, four load
-    # weeks with no shed, before the taper (R-PHASE-015, R-PP-007,
-    # 2026-10-06). Running the pipeline at these horizons at all also
+    # weeks with no shed, before the taper (R-PHASE-015, R-PP-007).
+    # Running the pipeline at these horizons at all also
     # asserts they stay QP-feasible.
     from devtools.planner._shared.metrics import run_full_pipeline
     from devtools.quality.planner.score_quality import (
@@ -832,7 +832,7 @@ def test_rest_days_holds_the_seven_day_defect() -> None:
     # Ironman COMPETITIVE still holds the defect on the Ironman side; Ironman
     # MODERATE sits inside the band at 0.0, and so does olympic since its
     # two-week taper stopped shedding the peak and lost the PEAK recovery
-    # exemption (2026-10-06): its load and recovery weeks leave 0.75-2.25
+    # exemption: its load and recovery weeks leave 0.75-2.25
     # days empty.
     # Sprint sits inside from the other side (2.444 empty days a week,
     # against the band's 2.25 ceiling): R-SESS-030 re-fits the beginner's
@@ -856,11 +856,11 @@ def test_cross_sport_hard_day_stacking_reads_the_half_layouts() -> None:
     # landing on the same day. The BASIC half week puts the technique swim
     # in Tuesday's second slot and the CSS swim on the long-run day, so it
     # stacks no hard sessions across sports. The MODERATE half week pairs
-    # the CSS swim with Wednesday's quality run on purpose (2026-10-09), so
+    # the CSS swim with Wednesday's quality run on purpose, so
     # its weeks stack whenever that run is physiologically hard: 4 of 16
     # weeks (0.25), inside the half band's 0.35, so it still reads 0.0. The
     # COMPETITIVE half week pairs the quality swim with Tuesday's quality
-    # ride on purpose (the Ironman week, 2026-10-05), so it reads over the
+    # ride on purpose (the Ironman week), so it reads over the
     # half band. Our Ironman plans read inside their own wider row.
     for name in ("half_ironman_basic", "half_ironman_moderate"):
         assert score(SCENARIOS[name]).per_rule["cross_sport_hard_day_stacking"] == 0.0

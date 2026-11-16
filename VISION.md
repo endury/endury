@@ -18,7 +18,7 @@ that deletes sessions instead of shortening them. In
 [our own benchmark](bench/README.md) the planner met more of its house
 rulebook than any of the seven AI models asked for the same plans, which
 is the least you would expect, and the most expensive AI model came
-closest. Three of them returned no complete plan at least once, and five draws
+closest. Four of them returned no complete plan at least once, and five draws
 of one brief gave five different plans. A plan from an AI model costs money and
 minutes, and a preparation is replanned many times: a cold, a work trip,
 a missed week, a new race. AI language models are good at the next

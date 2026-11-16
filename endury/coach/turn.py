@@ -62,6 +62,7 @@ from endury.coach.tools.registry import (
     with_reply_contract,
 )
 from endury.common import clock
+from endury.common.exceptions import EnduryError
 
 if TYPE_CHECKING:
     from endury.coach.llm import OpenRouterClient
@@ -222,7 +223,7 @@ def requires_tools(user_message: str) -> bool:
 
 
 # Asked to see something: the coach model answered "show me my pace" from a
-# text tool alone (2026-10-25), so the turn says out loud that a chart is due.
+# text tool alone, so the turn says out loud that a chart is due.
 # English and German, like the pause words.
 _CHART_RE = re.compile(
     r"\b(?:plot(?:s|ted|ting)?|charts?|graphs?|visuali[sz]e|draw|show me"
@@ -238,7 +239,7 @@ _CHART_NOTE = (
 )
 
 
-# An analysis that drew no chart: live 2026-10-25/26 the coach model charted
+# An analysis that drew no chart: in live checks the coach model charted
 # none of 8 trend and comparison answers unasked, and a note inside the tool
 # result was skipped in 2 of 5 runs, so the turn itself asks.
 _CHART_CHECK_NOTE = (
@@ -684,6 +685,24 @@ def _has_active_plan(runtime: CoachRuntime) -> bool:
         return True
 
 
+class ModelCallError(EnduryError):
+    """The AI model's service failed a call; the message is its reason."""
+
+
+async def _ask_model(
+    llm: OpenRouterClient, messages: list[Message], tools: list[dict[str, Any]] | None
+) -> Message:
+    """Call the AI model, raising its failure as a :class:`ModelCallError`.
+
+    The athlete reads the reason (a rejected key, no credit), so it must not
+    pass for a crash of Endury's own.
+    """
+    try:
+        return await llm.complete(messages, tools=tools)
+    except Exception as exc:
+        raise ModelCallError(str(exc)) from exc
+
+
 async def run_turn(
     runtime: CoachRuntime,
     history: list[Message],
@@ -751,7 +770,7 @@ async def run_turn(
         )
         # The note belongs to the re-ask round alone.
         empty_reply = False
-        assistant = await llm.complete(llm_input, tools=tools_wire)
+        assistant = await _ask_model(llm, llm_input, tools_wire)
         turn_log.append(assistant)
 
         if has_tool_calls(assistant):
@@ -825,7 +844,7 @@ async def run_turn(
         # An analysis turn writes its reply in a round of its own: the model
         # wrote answers beside its tool calls and then closed on "my earlier
         # answer stands" or a correction to a message the athlete never saw
-        # (2026-10-25: 3 of 16 smoke turns, with DONE asked for).
+        # (3 of 16 smoke turns, with DONE asked for).
         llm_input = _build_llm_input(
             runtime,
             history,
@@ -834,7 +853,7 @@ async def run_turn(
             requires_tools=needs_tools,
             empty_reply=False,
         )
-        assistant = await llm.complete([*llm_input, WRITE_REPLY_NOTE], tools=None)
+        assistant = await _ask_model(llm, [*llm_input, WRITE_REPLY_NOTE], None)
         turn_log.append(assistant)
 
     # Whatever ships, ships without a tool call written out as text.

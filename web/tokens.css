@@ -65,13 +65,6 @@
   --cb-step-cooldown:   #BF5AF2;
   --cb-step-rest:       #636366;
 
-  /* Brand (third-party integration tiles — not part of the app palette) */
-  --cb-brand-garmin:        #0a6fb0;
-  --cb-brand-strava:        #b5541f;
-  --cb-brand-wahoo:         #3b6ea5;
-  --cb-brand-trainingpeaks: #3a7d8c;
-  --cb-brand-apple:         #9b5b6b;
-
   /* Typography */
   --cb-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --cb-fs-hero:   26px;  /* ring value, big numbers */

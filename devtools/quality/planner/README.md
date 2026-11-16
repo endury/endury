@@ -24,7 +24,7 @@ and its evaluator is Python, here.
   by the ambition tiers its menu offers (`offered:`), with three evidence
   families per cell. `_wide` is the same default athlete at the rest of
   the planner's recommended horizons (`GOAL_MATRIX_HORIZONS_WIDE`),
-  `_low` the base horizons at 0.75 times the tier's default recent
+  `_low` the base horizons at 0.85 times the tier's default recent
   volume, `_high` the same at 1.5 times.
 - `--replan`: mid-preparation replans against `REPLAN_RULES`, the
   R-PHASE-002b suffix, fixed-bound stability and seam convergence.

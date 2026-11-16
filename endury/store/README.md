@@ -31,8 +31,8 @@ found by, so they do not change.
 - **Chat and takes** have notes of their own, `coachie:chat` and
   `coachie:takes`, outside the revision. The takes note holds the coach's
   briefs on coming sessions and races beside its takes on activities. They
-  merge by time or by activity, newest wins, so chatting on two devices interleaves instead
-  of conflicting.
+  merge by time or by activity, newest wins, so chatting on two devices
+  interleaves instead of conflicting.
 
 | Module | What it does |
 | --- | --- |

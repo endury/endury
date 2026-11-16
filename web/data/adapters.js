@@ -18,7 +18,7 @@ const SPORT_MAP = {
   strength_training: 'strength', rest: 'rest',
   // Raw intervals.icu activity-type strings (endury/intervals/models.py's
   // SPORT_TYPE_MAP deliberately leaves non-endurance types unmapped, so
-  // calendar.py's _activity_payload puts them on the wire verbatim).
+  // calendar_projection.py's _activity_payload puts them on the wire verbatim).
   WeightTraining: 'strength',
 };
 

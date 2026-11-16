@@ -84,8 +84,8 @@ class CoachConfig(BaseModel):
     # OpenRouter reasoning effort for the model above (none/low/medium/high/
     # xhigh/max); None omits the field and uses the model's own default.
     # "low" because the default model reasons unasked, at length: a full
-    # activity debrief spent up to 3,961 reasoning tokens and ~45 s on it
-    # (2026-10-15). Never "none": some models answer it with a 400
+    # activity debrief spent up to 3,961 reasoning tokens and ~45 s on it.
+    # Never "none": some models answer it with a 400
     # ("Reasoning is mandatory").
     reasoning_effort: str | None = "low"
 
@@ -99,7 +99,7 @@ class CoachConfig(BaseModel):
     temperature: float = 0.4
     # Reasoning tokens count against max_tokens, and the default model
     # reasons unasked: a full activity debrief's last call measured up to
-    # 4,784 tokens, 3,961 of them reasoning (2026-10-15). The timeout above
+    # 4,784 tokens, 3,961 of them reasoning. The timeout above
     # lets a call fill the cap at the ~186 tokens a second measured.
     max_tokens: int = 8000
 

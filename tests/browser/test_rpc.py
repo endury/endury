@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from endury.browser import api, rpc
+from endury.browser import CRASH_MESSAGE, api, rpc
 from endury.common import clock
 from endury.database.sqlite.migrations import LATEST_VERSION
 from endury.intervals.client import IntervalsClient
@@ -442,7 +442,7 @@ async def test_a_planning_refusal_is_refused_not_internal(fake):
     assert envelope["error_code"] == "refused"
 
 
-async def test_an_unexpected_failure_is_an_internal_error(fake, monkeypatch):
+async def test_an_unexpected_failure_is_an_internal_error(fake, monkeypatch, caplog):
     await boot(fake)
 
     def boom(**_kwargs):
@@ -452,13 +452,15 @@ async def test_an_unexpected_failure_is_an_internal_error(fake, monkeypatch):
 
     envelope = await call("planner_bootstrap")
 
+    # The athlete reads a plain sentence; the exception goes to the log.
     assert envelope == {
         "ok": False,
-        "error": "kaput",
+        "error": CRASH_MESSAGE,
         "error_code": "internal_error",
         "unsaved": False,
         "read_only": False,
     }
+    assert "kaput" in caplog.text
 
 
 def test_the_method_table_names_every_mutating_method():

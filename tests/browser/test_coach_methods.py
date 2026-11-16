@@ -277,6 +277,7 @@ async def test_a_turn_that_fails_is_an_error_envelope(fake):
     envelope = await call("chat", message="hello")
 
     assert envelope["ok"] is False
+    assert envelope["error_code"] == "upstream_error"
     assert envelope["error"] == "OpenRouter is down"
     assert app().coach.history[-1]["role"] == "assistant"
 
