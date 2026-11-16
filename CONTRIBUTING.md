@@ -130,6 +130,11 @@ week by week with its workout cards.
 
 ## Pull requests
 
+- Start with an issue, and write code once the maintainer has agreed to
+  the change there. It saves you work on a change that would not be
+  merged. Name the issue in the pull request (`Closes #12`); a pull
+  request without an agreed issue may be closed.
+- The maintainer approves and merges every pull request.
 - One topic per pull request, with a description of what changes for the
   athlete.
 - For a menu or band change, paste what steps 2 to 5 of the ladder
