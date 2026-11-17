@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import httpx
+
 from endury.browser import CRASH_MESSAGE, api, rpc
 from endury.common import clock
 from endury.database.sqlite.migrations import LATEST_VERSION
@@ -92,6 +94,23 @@ async def test_boot_without_an_intervals_key_is_invalid_settings(fake):
     assert envelope["ok"] is False
     assert envelope["error_code"] == "invalid_settings"
     assert rpc._app is None
+
+
+async def test_boot_on_a_connect_token_needs_no_key(fake):
+    sent: list[str] = []
+    account = fake.transport()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        sent.append(request.headers["authorization"])
+        return account.handle_request(request)
+
+    envelope = await rpc.boot(
+        {"intervals_access_token": "oauth-token"},
+        transport=httpx.MockTransport(handler),
+    )
+
+    assert envelope["ok"] is True, envelope
+    assert set(sent) == {"Bearer oauth-token"}
 
 
 async def test_a_failed_reboot_leaves_the_session_unbooted(fake):

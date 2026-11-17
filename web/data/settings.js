@@ -1,6 +1,8 @@
 /* Endury — the athlete's own keys and endpoints. They live in this
    browser's localStorage only; the Python worker sends each one to its own
-   host (intervals.icu, OpenRouter) and nowhere else. Boot hands them to
+   host (intervals.icu, OpenRouter) and nowhere else. intervals.icu takes
+   the token Connect brought back (data/intervals_connect.js) or, without
+   one, the athlete's API key. Boot hands them to
    Python unchanged: most are CoachConfig's fields, `demo` ('1' while this
    browser runs the demo athlete) picks the demo boot, and Python ignores
    `athlete_name` (it only lets a password manager save the intervals.icu
@@ -19,6 +21,7 @@ export const hasChatConsent = (settings) => settings.chat_consent === CHAT_CONSE
 
 export const SETTINGS_FIELDS = [
   'intervals_api_key',
+  'intervals_access_token',
   'intervals_athlete_id',
   'openrouter_api_key',
   'model',
@@ -58,16 +61,21 @@ export function clearSettings() {
   } catch { /* nothing stored, or storage blocked: nothing to forget */ }
 }
 
-/** Planning needs the intervals.icu key (or the demo); everything else is
+/** Whether this browser can reach an intervals.icu account: by Connect's
+    token or by an API key. */
+const hasIntervals = (settings) =>
+  Boolean(settings.intervals_access_token || settings.intervals_api_key);
+
+/** Planning needs intervals.icu (or the demo); everything else is
     optional. */
 export const hasRequiredSettings = (settings) =>
-  Boolean(settings.intervals_api_key || settings.demo === '1');
+  hasIntervals(settings) || settings.demo === '1';
 
-/** True while this browser runs the demo athlete: no key of its own yet. */
-export const isDemo = (settings) => !settings.intervals_api_key && settings.demo === '1';
+/** True while this browser runs the demo athlete: no account of its own yet. */
+export const isDemo = (settings) => !hasIntervals(settings) && settings.demo === '1';
 
 /** What boot passes to Python: blanks dropped, so CoachConfig's defaults
-    apply (athlete "0" = the key's own athlete, the public base URLs, the
+    apply (athlete "0" = the credential's own athlete, the public base URLs, the
     default model, and no OpenRouter key = chat off). */
 export function bootSettings(settings) {
   return Object.fromEntries(SETTINGS_FIELDS

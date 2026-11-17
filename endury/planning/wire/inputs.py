@@ -46,8 +46,8 @@ NOT_CONFIGURED_REASON = (
     "The intervals.icu API key is not configured — add it in Settings."
 )
 
-#: Shown when intervals.icu rejects the configured API key.
-AUTH_REJECTED_REASON = "intervals.icu rejected the API key (401/403)."
+#: Shown when intervals.icu rejects the configured key or token.
+AUTH_REJECTED_REASON = "intervals.icu rejected Endury's access (401/403)."
 
 #: Fallback goal used to pick the reported sport set before any plan
 #: exists -- the raceless triathlon profile reports all three sports.

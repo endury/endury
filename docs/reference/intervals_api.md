@@ -12,9 +12,24 @@ is the source of truth for the exact field lists (`_ACTIVITY_FIELDS` in
   `curl -A "Mozilla/5.0 (endury-dev)" https://intervals.icu/api/v1/docs` (243KB
   OpenAPI 3.0.1; fetch it if you need exact field lists — set a realistic
   User-Agent or Cloudflare may block the request).
-- Auth: HTTP Basic, username literally `API_KEY`, password = the key. Athlete id `0`
-  = the authenticated athlete. Env: `INTERVALS_API_KEY`, `INTERVALS_ATHLETE_ID`
+- Auth: HTTP Basic, username literally `API_KEY`, password = the key; or
+  `Authorization: Bearer <token>` with an OAuth access token. Athlete id `0`
+  = the authenticated athlete, with either. Env: `INTERVALS_API_KEY`, `INTERVALS_ATHLETE_ID`
   (default `"0"`), `INTERVALS_BASE_URL` (override for tests/mocks).
+- OAuth ("Connect intervals.icu", `web/data/intervals_connect.js`): a public
+  client with PKCE (S256 only), so no `client_secret`. The athlete goes to
+  `https://intervals.icu/oauth/authorize?client_id=&redirect_uri=&scope=&state=&code_challenge=&code_challenge_method=S256`
+  and comes back to the registered `redirect_uri` with `?code=&state=`, or
+  `?error=access_denied`. The code is good for 2 minutes:
+  `POST https://intervals.icu/api/oauth/token` with **form** fields `client_id`,
+  `code`, `code_verifier` answers `{token_type, access_token, scope, athlete: {id, name}}`.
+  The endpoint sends CORS headers on the POST but answers no preflight, so a
+  JSON body fails from a browser. Scopes are comma-separated `AREA:READ|WRITE`
+  (WRITE implies READ) over `ACTIVITY`, `WELLNESS`, `CALENDAR`, `CHATS`,
+  `LIBRARY`, `SETTINGS`, and the athlete may untick any on the consent page.
+  The reply names no expiry and no refresh token. `DELETE /disconnect-app`
+  with the bearer withdraws it. Redirect URIs are exact, no wildcards; a
+  registered `http://localhost` matches any port.
 - Rate limits: 5,000/day, 2,500/15min, 10/sec — irrelevant at our volume, but honor
   `429` + `Retry-After` with a single retry.
 

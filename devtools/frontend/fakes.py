@@ -1,8 +1,10 @@
-"""Stand-ins for the browser E2E harness: OpenRouter and a CORS server.
+"""Stand-ins for the browser E2E harness: OpenRouter, OAuth and a CORS server.
 
 :class:`FakeOpenRouter` stands in for OpenRouter's chat-completions
 endpoint, scripted for the E2E's one coach turn: a confirm-gated tool call,
 then text. It also answers "Connect OpenRouter"'s code-for-key exchange.
+:class:`FakeIntervalsOAuth` puts intervals.icu's token endpoint in front of
+a ``FakeIntervals`` account, for "Connect intervals.icu".
 :class:`CorsJsonServer` fronts a fake's ``handle`` — this one's or
 :class:`~endury.intervals.fake.FakeIntervals`' — on a localhost port for a
 browser page served from another origin. ``FakeIntervals`` lives in
@@ -164,6 +166,72 @@ class FakeOpenRouter:
         )
 
 
+#: The scopes Endury asks intervals.icu for, as its token reply lists them.
+ENDURY_SCOPES = "ACTIVITY:WRITE,WELLNESS:READ,CALENDAR:WRITE,SETTINGS:WRITE"
+
+
+class FakeIntervalsOAuth:
+    """intervals.icu's OAuth token endpoint in front of a ``FakeIntervals`` account.
+
+    ``POST /api/oauth/token`` answers a public client's form post
+    (``client_id``, ``code``, ``code_verifier``) with ``token``, ``scope``
+    and the athlete, and logs the form in ``token_requests``; checking the
+    PKCE verifier is the caller's job. ``DELETE /api/v1/disconnect-app``
+    counts in ``disconnects``. Every other request goes to the account.
+    """
+
+    def __init__(
+        self,
+        account: FakeIntervals,
+        token: str = "fake-intervals-token",
+        scope: str = ENDURY_SCOPES,
+        athlete_name: str = "Connected Athlete",
+    ) -> None:
+        """Front ``account`` with the token endpoint.
+
+        Args:
+            account: The account every other request is answered from.
+            token: The access token a code exchange hands out.
+            scope: The granted scopes the exchange reports.
+            athlete_name: The athlete name the exchange reports.
+        """
+        self.account = account
+        self.token = token
+        self.scope = scope
+        self.athlete_name = athlete_name
+        self.token_requests: list[dict[str, Any]] = []
+        self.disconnects = 0
+
+    def handle(
+        self, method: str, path: str, params: Mapping[str, str], body: Any
+    ) -> FakeResponse:
+        """Answer one request (same signature as ``FakeIntervals.handle``).
+
+        Args:
+            method: HTTP method.
+            path: Request path.
+            params: Query parameters.
+            body: Parsed form or JSON body.
+
+        Returns:
+            The token reply, the disconnect's empty answer, or the account's.
+        """
+        route = (method.upper(), path)
+        if route == ("POST", "/api/oauth/token") and isinstance(body, dict):
+            self.token_requests.append(body)
+            reply = {
+                "token_type": "Bearer",
+                "access_token": self.token,
+                "scope": self.scope,
+                "athlete": {"id": "i1", "name": self.athlete_name},
+            }
+            return FakeResponse(200, reply)
+        if route == ("DELETE", f"{_API_PREFIX}/disconnect-app"):
+            self.disconnects += 1
+            return FakeResponse(200, {})
+        return self.account.handle(method, path, params, body)
+
+
 #: A fake's transport-free core: ``(method, path, params, body)`` to an answer.
 Responder = Callable[[str, str, Mapping[str, str], Any], FakeResponse]
 
@@ -184,7 +252,9 @@ class CorsJsonServer:
 
     The browser page runs on another port, so every answer carries CORS
     headers echoing the request's ``Origin`` and preflight
-    ``Access-Control-Request-Headers``, and ``OPTIONS`` answers 204. Calls
+    ``Access-Control-Request-Headers``, and ``OPTIONS`` answers 204. A body
+    is read as JSON, or as a form when its content type says so.
+    ``credentials`` collects every ``Authorization`` header served. Calls
     into the fake are serialized: the fakes are not thread-safe.
     """
 
@@ -196,6 +266,7 @@ class CorsJsonServer:
             port: Port on 127.0.0.1 to listen on.
         """
         lock = threading.Lock()
+        credentials = self.credentials = set[str]()
 
         class Handler(BaseHTTPRequestHandler):
             """One request: parse, call the fake, answer JSON with CORS headers."""
@@ -209,7 +280,14 @@ class CorsJsonServer:
                 url = urlsplit(self.path)
                 length = int(self.headers.get("Content-Length") or 0)
                 raw = self.rfile.read(length) if length else b""
-                body = json.loads(raw) if raw else None
+                form = (self.headers.get("Content-Type") or "").startswith(
+                    "application/x-www-form-urlencoded"
+                )
+                body: Any = dict(parse_qsl(raw.decode())) if form else None
+                if raw and not form:
+                    body = json.loads(raw)
+                if self.headers.get("Authorization"):
+                    credentials.add(self.headers["Authorization"])
                 with lock:
                     answer = respond(
                         self.command, url.path, dict(parse_qsl(url.query)), body
@@ -262,10 +340,12 @@ class CorsJsonServer:
 
 
 __all__ = [
+    "ENDURY_SCOPES",
     "MAX_DESCRIPTION_CHARS",
     "BurstHTTPServer",
     "CorsJsonServer",
     "FakeIntervals",
+    "FakeIntervalsOAuth",
     "FakeOpenRouter",
     "FakeResponse",
     "Script",

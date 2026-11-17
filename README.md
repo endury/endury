@@ -126,7 +126,7 @@ intervals.icu in three short steps. Settings changes any of it later.
 
 | Setting | Needed | Where to get it |
 | --- | --- | --- |
-| intervals.icu API key | Yes | intervals.icu → Settings → Developer Settings |
+| intervals.icu | Yes | **Connect intervals.icu** signs you in, or paste an API key from its Developer Settings. |
 | OpenRouter API key | Only for chat | **Connect OpenRouter** signs you in and fills it in, or paste one from [openrouter.ai/keys](https://openrouter.ai/keys). Give it a spend limit. |
 | AI model for the chat | No | Any OpenRouter model id. The default is `anthropic/claude-haiku-5.5`. |
 

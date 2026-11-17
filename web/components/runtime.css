@@ -273,6 +273,7 @@ body > .cb-app { flex: 1 1 auto; min-height: 0; height: auto; }
 }
 
 .cb-door__box-title { font-size: var(--cb-fs-body); font-weight: 600; color: var(--cb-text); margin-bottom: var(--cb-sp-1); }
+.cb-door__box a { color: var(--cb-accent); }
 
 .cb-door__checks { display: flex; flex-direction: column; gap: var(--cb-sp-3-5); }
 

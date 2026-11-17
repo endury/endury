@@ -41,7 +41,7 @@ READBACK_PAD_DAYS = 30
 
 NO_PLAN_REASON = "No active plan."
 NOT_CONFIGURED_REASON = "intervals.icu is not connected."
-AUTH_REJECTED_REASON = "intervals.icu rejected the API key (401/403)."
+AUTH_REJECTED_REASON = "intervals.icu rejected Endury's access (401/403)."
 
 #: Solve-payload key holding the external ids of replaced workouts a push
 #: failed to delete from intervals.icu.
@@ -203,7 +203,7 @@ def build_sync_status(
     try:
         remote = client.list_events(*window)
     except IntervalsAuthError as exc:
-        logger.warning("intervals.icu rejected the API key for sync status: %s", exc)
+        logger.warning("intervals.icu rejected the credential for sync status: %s", exc)
         return _unavailable(AUTH_REJECTED_REASON)
     except (IntervalsApiError, httpx.HTTPError) as exc:
         logger.warning("intervals.icu unreachable for sync status: %s", exc)

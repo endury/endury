@@ -35,7 +35,10 @@ def tool_error_response(
     prefix = "Database error" if is_db else "Error"
     logger.error("%s %s: %s", prefix, action, error)
     if isinstance(error, IntervalsAuthError):
-        message = "intervals.icu rejected the API key — check it in Settings."
+        message = (
+            "intervals.icu rejected Endury's access — connect again or check "
+            "the key in Settings."
+        )
     elif isinstance(error, (IntervalsApiError, httpx.HTTPError)):
         message = "intervals.icu could not be reached."
     else:

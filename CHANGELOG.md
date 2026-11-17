@@ -7,6 +7,13 @@ behind each line is in the git history.
 
 ## [Unreleased]
 
+### Added
+
+- Connect intervals.icu: sign in at intervals.icu and approve what Endury may
+  do, instead of pasting an API key. The access covers your activities,
+  wellness, calendar and settings only, and removing Endury from your apps at
+  intervals.icu ends it. An API key still works.
+
 ## [0.1.0]
 
 The first public release: a free, open-source endurance coach that runs
