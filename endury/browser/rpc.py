@@ -81,6 +81,7 @@ def set_analysis_executor(executor: Executor | None) -> None:
 #: The ``CoachConfig`` fields the settings panel may set; blank means default.
 SETTINGS_KEYS = (
     "intervals_api_key",
+    "intervals_access_token",
     "intervals_athlete_id",
     "intervals_base_url",
     "openrouter_api_key",
@@ -225,8 +226,9 @@ async def _boot(
 ) -> BrowserApp:
     """Build the session: config, client, store, history, coach, clean baseline."""
     config = _config(settings)
+    token = config.intervals_access_token
     try:
-        api_key = config.get_intervals_api_key()
+        api_key = "" if token else config.get_intervals_api_key()
     except ValueError as exc:
         raise RpcError(
             "Add your intervals.icu API key in Settings.", "invalid_settings"
@@ -236,6 +238,7 @@ async def _boot(
         athlete_id=config.intervals_athlete_id,
         base_url=config.intervals_base_url,
         transport=transport,
+        access_token=token,
     )
     repos = RepositoryContainer.in_memory()
     repos.bind_intervals_client(client)
@@ -306,10 +309,11 @@ async def boot(
     the athlete's explicit click only — deletes it and starts empty.
 
     Args:
-        settings: :data:`SETTINGS_KEYS` values; ``intervals_api_key`` is
-            required, unless a truthy ``demo`` boots the demo athlete: its
-            intervals.icu fields, ``start_fresh``, ``read_only`` and
-            ``transport`` are then ignored, its OpenRouter fields kept.
+        settings: :data:`SETTINGS_KEYS` values; ``intervals_access_token``
+            or ``intervals_api_key`` is required, unless a truthy ``demo``
+            boots the demo athlete: its intervals.icu fields,
+            ``start_fresh``, ``read_only`` and ``transport`` are then
+            ignored, its OpenRouter fields kept.
         start_fresh: Delete the store note before loading.
         read_only: Never save or write — the page's second tab, which does
             not hold the writer lock.

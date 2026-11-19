@@ -1,7 +1,8 @@
 /* Endury — boot: pick the shell by viewport (or ?shell= override),
-   register the service worker, finish a "Connect OpenRouter" round trip
-   (?code=), show the front door when there is no intervals.icu key (the
-   landing: the demo, the guided connect flow, or straight to the key),
+   register the service worker, finish a "Connect intervals.icu" or
+   "Connect OpenRouter" round trip (?code=), show the front door when
+   this browser has no intervals.icu account yet (the landing: the demo,
+   the guided connect flow, or straight to its last step),
    start the Python worker, show the ready screen after a first connect,
    then hand off to the shell module. */
 
@@ -10,6 +11,7 @@ import {
   loadSettings, saveSettings, hasRequiredSettings, isDemo,
 } from './data/settings.js';
 import { finishConnect } from './data/openrouter_connect.js';
+import { finishConnect as finishIntervalsConnect } from './data/intervals_connect.js';
 import { createBootScreen } from './components/boot_screen.js';
 import { showLanding, runConnect, showReady } from './components/front_door.js';
 import { mountRuntimeBanner } from './components/runtime_banner.js';
@@ -53,7 +55,18 @@ const screen = createBootScreen({ firstVisit: !navigator.serviceWorker?.controll
 
 let settings = loadSettings();
 let connectError = null;
+// Whether the athlete came through the connect flow: they then see the
+// ready screen once the first boot is done.
+let connected = false;
 try {
+  // intervals.icu first: its return carries a code too, and takes it off
+  // the address bar before OpenRouter's check looks.
+  const grant = await finishIntervalsConnect(settings, screen.status);
+  if (grant) {
+    settings = { ...settings, ...grant, intervals_api_key: '', demo: '' };
+    saveSettings(settings);
+    connected = true;
+  }
   const key = await finishConnect(settings.openrouter_base_url, screen.status);
   if (key) {
     settings = { ...settings, openrouter_api_key: key };
@@ -62,18 +75,16 @@ try {
 } catch (err) {
   connectError = err.message;
 }
-// Whether the athlete came through the connect flow: they then see the
-// ready screen once the first boot is done. A corrected key reloads the
-// page first, so the flag rides across in sessionStorage.
+// A corrected key reloads the page first, so the flag rides across in
+// sessionStorage.
 const READY_KEY = 'endury.ready';
-let connected = false;
 try {
-  connected = sessionStorage.getItem(READY_KEY) === '1';
+  connected ||= sessionStorage.getItem(READY_KEY) === '1';
   sessionStorage.removeItem(READY_KEY);
 } catch { /* blocked storage: no ready screen after a corrected key */ }
 if (connectError || !hasRequiredSettings(settings)) {
   for (;;) {
-    const door = await showLanding(screen.body, { error: connectError });
+    const door = await showLanding(screen.body, { settings, error: connectError });
     connectError = null;
     if (door === 'demo') {
       settings = { ...settings, demo: '1' };
@@ -104,7 +115,8 @@ for (;;) {
     }
     // The worker was booted with the old keys: new ones need a new worker.
     if (choice === 'settings') {
-      const next = await runConnect(screen.body, settings, { startAt: 'key', intro: 'Check your key.' });
+      const intro = settings.intervals_access_token ? 'Connect again.' : 'Check your key.';
+      const next = await runConnect(screen.body, settings, { startAt: 'key', intro });
       try {
         if (next) sessionStorage.setItem(READY_KEY, '1');
       } catch { /* blocked storage: no ready screen after the reload */ }

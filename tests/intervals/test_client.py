@@ -53,6 +53,21 @@ def test_sends_basic_auth_and_user_agent():
     assert request.headers["user-agent"] == "endury/0.1 (+https://localhost)"
 
 
+def test_an_access_token_goes_out_as_a_bearer_instead_of_the_key():
+    captured: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured.append(request)
+        return httpx.Response(200, json={"id": "42", "sportSettings": []})
+
+    client = IntervalsClient(
+        access_token="oauth-token", transport=httpx.MockTransport(handler)
+    )
+    client.get_athlete()
+
+    assert captured[0].headers["authorization"] == "Bearer oauth-token"
+
+
 def test_athlete_id_defaults_to_zero_and_is_overridable():
     seen_paths: list[str] = []
 

@@ -12,12 +12,13 @@ from endury.intervals.client import IntervalsApiError, IntervalsAuthError
 
 
 class TestToolErrorResponse:
-    def test_an_auth_error_names_the_api_key(self) -> None:
+    def test_an_auth_error_points_to_settings(self) -> None:
         body = json.loads(
             tool_error_response("fetch data", IntervalsAuthError(401, "bad key"))
         )
         assert body["message"] == (
-            "intervals.icu rejected the API key — check it in Settings."
+            "intervals.icu rejected Endury's access — connect again or check "
+            "the key in Settings."
         )
 
     def test_an_api_error_reports_unreachable(self) -> None:

@@ -16,20 +16,30 @@ separate matter between the two of you.
 ## Your keys
 
 They stay in this browser (`localStorage`). Each one is sent only to its
-own service: the intervals.icu key to intervals.icu, the OpenRouter key
-to OpenRouter. The intervals.icu key has full access to your account: API
-keys have no narrower scope. intervals.icu's OAuth does offer per-scope grants,
-and Endury currently uses a key. The optional name you enter beside the key
-stays in this browser too and is never sent anywhere.
+own service: what connects Endury to intervals.icu goes to intervals.icu, the
+OpenRouter key to OpenRouter. The name shown beside the connection stays in
+this browser too and is never sent anywhere.
+
+Where the site offers **Connect intervals.icu**, you sign in at intervals.icu
+and approve what Endury may do: your activities, wellness, calendar and
+settings, not your chats or your workout library. Your browser keeps the
+access token that comes back, and intervals.icu lists Endury among your apps.
+Remove it there, or use **Forget my keys**, and the token stops working.
+
+Otherwise you paste an intervals.icu API key. A key has full access to your
+account, with no narrower scope, until you delete it at intervals.icu. A copy
+of Endury on another address offers Connect only once its host has registered
+an app of their own at intervals.icu.
 
 ## What stays in your browser
 
 Nothing is stored or cached until you start the demo or connect, except a theme
 you pick. After that: your settings (keys, athlete id, AI model, service addresses
 if you changed them, name, the version of the chat consent, the demo flag),
-your last calendar place and your theme, a one-time code during OpenRouter
-sign-in, and the cached runtime and site files. **Forget my keys** removes
-the settings; clearing this site's data removes all of it.
+your last calendar place and your theme, a one-time code during an
+intervals.icu or OpenRouter sign-in, and the cached runtime and site files.
+**Forget my keys** removes the settings; clearing this site's data removes
+all of it.
 
 ## The demo
 
@@ -113,4 +123,5 @@ Delete the plan in Endury, which removes its sessions and races from today on.
 Past events, workouts the coach booked and races added outside a plan stay
 until you delete them in intervals.icu; events carry the tag `endury` (older
 ones `coachie`). Delete the "Endury data", "Endury chat" and "Endury session
-takes" notes in intervals.icu, then clear this site's data in your browser.
+takes" notes in intervals.icu. If you used Connect, **Forget my keys** removes
+Endury from your apps there. Then clear this site's data in your browser.

@@ -1,8 +1,10 @@
-/* Endury — the front door: what a browser with no intervals.icu key sees.
-   Three screens rendered into the boot screen's body: the landing (demo,
-   the guided connect flow, or straight to the key), the connect flow (the
-   training log, then the key in a real <form> so a password manager saves
-   it), and — after the first boot — the ready screen that checks history
+/* Endury — the front door: what a browser with no intervals.icu account
+   sees. Three screens rendered into the boot screen's body: the landing
+   (demo, the guided connect flow, or straight to its last step), the
+   connect flow (the training log, then Connect intervals.icu where this
+   copy has an app there (data/intervals_connect.js), or the API key in a
+   real <form> so a password manager saves it), and — after the first
+   boot — the ready screen that checks history
    and watch upload. Each screen attaches its listeners to the element it
    rendered, so the next screen's innerHTML drops them. Its buttons carry
    data-door, not data-action: no shell is mounted yet. */
@@ -12,6 +14,7 @@ import {
   field, renderAdvanced, readSettingsForm, legalLinksHtml, TERMS_BOX,
 } from './settings_panel.js';
 import { saveSettings } from '../data/settings.js';
+import { canConnect, startConnect } from '../data/intervals_connect.js';
 
 const INTERVALS = 'https://intervals.icu';
 const INTERVALS_SETTINGS = 'https://intervals.icu/settings';
@@ -61,16 +64,18 @@ const FACTS = [
 ];
 
 /* The privacy page's essentials, for the landing's fold-out. */
+const KEY_PRIVACY = 'Your intervals.icu key goes only to intervals.icu. It has full access to your account; delete it there to stop Endury.';
+const CONNECT_PRIVACY = 'Connect asks intervals.icu for your activities, wellness, calendar and settings, not your chats or workout library. That access stays in this browser and goes only to intervals.icu; remove Endury in intervals.icu’s settings to stop it.';
 const PRIVACY = [
-  'Your intervals.icu key goes only to intervals.icu. It has full access to your account; delete it there to stop Endury.',
   'Endury keeps your plan, chat and the coach’s memory in three hidden notes on your own intervals.icu calendar, so every device sees the same plan. They are not encrypted, so a coach or app you gave access there may be able to read them.',
   'Chat is optional: with your own OpenRouter key, and only after you agree in Settings, your messages and training context — health data such as sleep, resting heart rate and HRV included — go to OpenRouter (USA) and the company that runs the AI model.',
   'The demo is built in this tab. Your browser keeps only that it runs the demo and your last place.',
 ];
 
 /** The landing; resolves 'demo' | 'connect' | 'key'. `error` (a failed
-    OpenRouter Connect) shows above the doors. */
-export function showLanding(body, { error } = {}) {
+    Connect) shows above the doors. */
+export function showLanding(body, { settings = {}, error } = {}) {
+  const connect = canConnect(settings);
   const doors = DOORS.map((d) => `<div class="cb-door__door">
       <button type="button" class="cb-confirm__btn cb-door__btn${d.primary ? ' cb-confirm__btn--primary' : ''}"
         data-door="${d.door}">${d.label}</button>
@@ -85,13 +90,15 @@ export function showLanding(body, { error } = {}) {
         ${error ? `<div class="cb-boot__error" role="alert">${esc(error)}</div>` : ''}
         <div class="cb-door__doors">${doors}
           <div class="cb-door__row cb-door__row--center">
-            <button type="button" class="cb-door__link" data-door="key">I already have my intervals.icu key</button>
+            <button type="button" class="cb-door__link" data-door="key">${connect
+              ? 'I already use intervals.icu' : 'I already have my intervals.icu key'}</button>
           </div>
         </div>
         <ul class="cb-door__facts">${FACTS.map((f) => `<li>${f}</li>`).join('')}</ul>
         <details class="cb-door__privacy">
           <summary>Where your data goes</summary>
-          <ul class="cb-door__facts">${PRIVACY.map((f) => `<li>${f}</li>`).join('')}</ul>
+          <ul class="cb-door__facts">${[connect ? CONNECT_PRIVACY : KEY_PRIVACY, ...PRIVACY]
+            .map((f) => `<li>${f}</li>`).join('')}</ul>
         </details>
         <div class="cb-door__legal">${legalLinksHtml()}</div>
       </div>`, (door) => resolve(door));
@@ -123,7 +130,7 @@ function logStepHtml() {
     </div>`;
 }
 
-function keyStepHtml(settings, intro) {
+function keyStepHtml(settings, intro, connect) {
   return `<div class="cb-door" data-step="key">
       ${progress(2)}
       <h1 class="cb-door__title">Your key</h1>
@@ -156,30 +163,87 @@ function keyStepHtml(settings, intro) {
       </form>
       <div class="cb-door__row">
         <button type="button" class="cb-door__quiet" data-door="back">Back</button>
+        ${connect ? '<button type="button" class="cb-door__link" data-door="use-connect">Connect intervals.icu instead</button>' : ''}
       </div>
     </div>`;
 }
 
-/** The guided connect flow. Resolves the new settings (saved already:
-    `settings` with the key step's fields over it and the demo ended), or
-    null when the athlete goes back from its first screen. */
+function connectStepHtml(settings, intro) {
+  return `<div class="cb-door" data-step="connect">
+      ${progress(2)}
+      <h1 class="cb-door__title">Connect intervals.icu</h1>
+      ${intro ? `<div class="cb-boot__error" role="alert">${esc(intro)}</div>` : ''}
+      <p class="cb-door__lede">intervals.icu asks you to sign in and shows what Endury may do.
+        Approve it there and you come straight back. Nothing to copy or paste.</p>
+      <div class="cb-door__form">
+        <div class="cb-door__box">
+          <div class="cb-door__box-title">What Endury asks for</div>
+          Your activities, wellness, calendar and settings: to read your training, write and remove
+          the workouts and races it created, pair activities, save the thresholds and feel you
+          enter, and keep its hidden notes. Not your chats or your workout library. The access
+          stays in this browser and goes only to intervals.icu. Remove Endury in
+          <a href="${INTERVALS_SETTINGS}" target="_blank" rel="noopener">intervals.icu’s settings</a>
+          at any time and it stops.
+        </div>
+        ${TERMS_BOX}
+        ${renderAdvanced(settings)}
+        <span class="cb-settings__status" role="status"></span>
+        <button type="button" class="cb-confirm__btn cb-confirm__btn--primary cb-door__btn" data-door="oauth">Connect intervals.icu</button>
+        <div class="cb-door__note">Coach chat is optional and comes later, in Settings.</div>
+      </div>
+      <div class="cb-door__row">
+        <button type="button" class="cb-door__quiet" data-door="back">Back</button>
+        <button type="button" class="cb-door__link" data-door="use-key">Use an API key instead</button>
+      </div>
+    </div>`;
+}
+
+/** The guided connect flow. Its last step is Connect where this copy can
+    (each of the two screens links to the other), else the key; an athlete
+    correcting a stored key starts on the key. Resolves the new settings
+    (saved already: `settings` with the key step's fields over it and the
+    demo ended), or null when the athlete goes back from its first screen.
+    Connect leaves the page instead; boot finishes it on the way back. */
 export function runConnect(body, settings, { startAt = 'log', intro = '' } = {}) {
+  const connect = canConnect(settings);
+  // `intro` belongs to the screen the step opens on.
+  const keyFirst = !connect || Boolean(settings.intervals_api_key);
   return new Promise((resolve) => {
+    const back = () => (startAt === 'key' ? resolve(null) : showLog());
+
     const showLog = () => render(body, logStepHtml(), (door) => {
       if (door === 'back') resolve(null);
-      if (door === 'next' || door === 'skip') showKey();
+      if (door === 'next' || door === 'skip') showLast();
     });
 
+    const showConnect = () => {
+      const root = render(body, connectStepHtml(settings, keyFirst ? '' : intro), async (door) => {
+        if (door === 'back') back();
+        if (door === 'use-key') showKey();
+        if (door !== 'oauth') return;
+        // The Advanced overrides ride along: boot reads them on the way back.
+        const next = { ...settings, ...readSettingsForm(root) };
+        try {
+          if (!saveSettings(next)) throw new Error('storage');
+          await startConnect(next);
+        } catch {
+          root.querySelector('.cb-settings__status').textContent = 'This browser is blocking '
+            + 'storage, so Connect can’t work here. Use an API key instead.';
+        }
+      });
+    };
+
     const showKey = () => {
-      const root = render(body, keyStepHtml(settings, intro), (door) => {
-        if (door !== 'back') return;
-        if (startAt === 'key') resolve(null);
-        else showLog();
+      const root = render(body, keyStepHtml(settings, keyFirst ? intro : '', connect), (door) => {
+        if (door === 'back') back();
+        if (door === 'use-connect') showConnect();
       });
       const form = root.querySelector('form');
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const next = { ...settings, ...readSettingsForm(form), demo: '' };
+        const next = {
+          ...settings, ...readSettingsForm(form), intervals_access_token: '', demo: '',
+        };
         if (!next.intervals_api_key) {
           form.querySelector('.cb-settings__status').textContent = 'Your intervals.icu API key is required.';
           form.querySelector('[name="intervals_api_key"]').focus();
@@ -190,7 +254,8 @@ export function runConnect(body, settings, { startAt = 'log', intro = '' } = {})
       });
     };
 
-    if (startAt === 'key') showKey();
+    const showLast = keyFirst ? showKey : showConnect;
+    if (startAt === 'key') showLast();
     else showLog();
   });
 }

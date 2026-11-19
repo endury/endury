@@ -44,7 +44,11 @@ Chromium (service workers blocked) then drives the whole life of a plan:
 14. an account whose trail maintenance block ended last Sunday: the plan
     card shows the block finished, "Start a new plan" applies the next
     block over it, and every workout the finished block put on the
-    calendar stays there.
+    calendar stays there;
+15. Connect intervals.icu (its consent page stubbed) on an account of its
+    own: a decline and a grant short of a permission return to the front
+    door with the reason, the full grant boots on the token alone, and
+    "Forget my keys" withdraws it.
 
 Console and page errors are collected throughout; the exit code is non-zero
 on any failed step or page error. The site build downloads Pyodide the
@@ -79,9 +83,11 @@ from typing import TYPE_CHECKING, Any
 from urllib.parse import parse_qsl, urlsplit
 
 from devtools.frontend.fakes import (
+    ENDURY_SCOPES,
     BurstHTTPServer,
     CorsJsonServer,
     FakeIntervals,
+    FakeIntervalsOAuth,
     FakeOpenRouter,
     Script,
 )
@@ -1231,6 +1237,148 @@ class Harness:
         finally:
             server.stop()
 
+    def run_intervals_connect(self, browser: Browser) -> None:
+        """Connect intervals.icu from the front door: declined, short, then through.
+
+        A fresh context whose only setting is the API address of an account
+        of its own, fronted by the token endpoint; intervals.icu's consent
+        page is stubbed to answer at once. A decline and a grant short of a
+        permission both land back on the front door with the reason and no
+        token kept. The full grant boots on the token alone: the exchange is
+        a form post carrying the PKCE verifier and no secret, every API call
+        carries the token, and "Forget my keys" withdraws it.
+        """
+        self.step = "16-intervals-connect"
+        oauth = FakeIntervalsOAuth(FakeIntervals(athlete=triathlete()))
+        server = CorsJsonServer(oauth.handle).start()
+        token_url = f"{server.url}/api/oauth/token"
+        asked: dict[str, str] = {}
+        answer = {"query": "error=access_denied"}
+        posted: list[str] = []
+
+        def consent(route: Route) -> None:
+            asked.clear()
+            asked.update(parse_qsl(urlsplit(route.request.url).query))
+            back = f"{asked['redirect_uri']}?{answer['query'].format(**asked)}"
+            route.fulfill(status=302, headers={"Location": back})
+
+        def connect(page: Page) -> None:
+            page.wait_for_selector('[data-door="key"]', timeout=30000)
+            page.click('[data-door="key"]')
+            page.wait_for_selector('[data-door="oauth"]', timeout=10000)
+            page.click('[data-door="oauth"]')
+
+        def stored(page: Page) -> dict[str, str]:
+            raw = page.evaluate("localStorage.getItem('endury.settings')")
+            kept: dict[str, str] = json.loads(raw or "{}")
+            return kept
+
+        try:
+            ctx = self.new_context(browser, 1440, 900, settings=False)
+            page = ctx.new_page()
+            self.wire(page)
+            page.route(
+                lambda url: url.startswith(f"{server.url}/oauth/authorize"), consent
+            )
+            page.on(
+                "request",
+                lambda r: (
+                    posted.append(r.headers.get("content-type", ""))
+                    if r.url == token_url
+                    else None
+                ),
+            )
+            page.goto(f"{self.base}/?shell=web")
+            page.evaluate(
+                "(s) => localStorage.setItem('endury.settings', s)",
+                json.dumps({"intervals_base_url": f"{server.url}/api/v1"}),
+            )
+            page.reload()
+
+            connect(page)
+            page.wait_for_selector(".cb-boot__error", timeout=30000)
+            reason = page.locator(".cb-boot__error").inner_text()
+            self.record(
+                "16a consent declined at intervals.icu",
+                "declined" in reason
+                and not stored(page).get("intervals_access_token")
+                and not oauth.token_requests
+                and page.url == f"{self.base}/",
+                f"front door says {reason!r}, url {page.url}",
+            )
+
+            answer["query"] = f"code={CONNECT_CODE}&state={{state}}"
+            oauth.scope = ENDURY_SCOPES.replace("CALENDAR:WRITE", "CALENDAR:READ")
+            connect(page)
+            page.wait_for_selector(".cb-boot__error", timeout=30000)
+            reason = page.locator(".cb-boot__error").inner_text()
+            self.record(
+                "16b a permission left unticked",
+                "permissions" in reason
+                and not stored(page).get("intervals_access_token"),
+                f"front door says {reason!r}",
+            )
+
+            oauth.scope = ENDURY_SCOPES
+            page.click('[data-door="key"]')
+            page.wait_for_selector('[data-door="oauth"]', timeout=10000)
+            page.screenshot(path=str(self.shots / "16_connect_step.png"))
+            page.click('[data-door="oauth"]')
+            self.wait_booted(page, '[data-step="ready"]')
+            page.screenshot(path=str(self.shots / "16_ready.png"))
+            greeting = page.locator(
+                '.cb-check[data-check="connected"] .cb-check__title'
+            ).inner_text()
+            page.click('[data-door="look"]')
+            self.wait_booted(page, ".cbw-weekrow[data-week-start]")
+            kept = stored(page)
+            exchange = oauth.token_requests[-1]
+            digest = hashlib.sha256(str(exchange.get("code_verifier")).encode())
+            pkce_ok = base64.urlsafe_b64encode(digest.digest()).rstrip(
+                b"="
+            ).decode() == asked.get("code_challenge")
+            self.record(
+                "16c connect intervals.icu -> ready -> shell, on the token alone",
+                kept.get("intervals_access_token") == oauth.token
+                and not kept.get("intervals_api_key")
+                and greeting == f"Connected as {oauth.athlete_name}"
+                and asked.get("scope") == ENDURY_SCOPES
+                and asked.get("code_challenge_method") == "S256"
+                and asked.get("redirect_uri") == f"{self.base}/"
+                and exchange.get("code") == CONNECT_CODE
+                and exchange.get("client_id") == asked.get("client_id")
+                and "client_secret" not in exchange
+                and pkce_ok
+                and all(
+                    t.startswith("application/x-www-form-urlencoded") for t in posted
+                )
+                and server.credentials == {f"Bearer {oauth.token}"}
+                and "code=" not in page.url,
+                f"{greeting!r}, verifier matches challenge: {pkce_ok}, token posts "
+                f"{posted}, API credentials {sorted(server.credentials)}, url {page.url}",
+            )
+
+            page.click('[data-action="open-settings"]')
+            page.wait_for_selector('[data-settings="connect-intervals"]', timeout=10000)
+            page.screenshot(path=str(self.shots / "16_settings.png"))
+            again = page.locator('[data-settings="connect-intervals"]').inner_text()
+            key_fields = page.locator('[name="intervals_api_key"]').count()
+            page.click('[data-settings="forget"]')
+            page.click('[data-confirm="yes"]')
+            page.wait_for_selector('[data-door="demo"]', timeout=30000)
+            self.record(
+                "16d Forget my keys withdraws the token",
+                again == "Connect again"
+                and key_fields == 0
+                and oauth.disconnects == 1
+                and not stored(page),
+                f"Settings offers {again!r} and {key_fields} key fields; "
+                f"{oauth.disconnects} disconnect call(s); kept {stored(page)}",
+            )
+            ctx.close()
+        finally:
+            server.stop()
+
     def summary(self) -> int:
         """Print the verdict block; return the process exit code."""
         print("=" * 70)
@@ -1384,6 +1532,7 @@ def main() -> int:
             harness.run_demo(browser)
             harness.run_experimental_confirm(browser, exp_race_date.isoformat())
             harness.run_finished_block(browser, ended)
+            harness.run_intervals_connect(browser)
             browser.close()
     except Exception as exc:
         harness.record(harness.step, False, f"{type(exc).__name__}: {exc}")

@@ -651,14 +651,14 @@ export function toInputsPanel(payload) {
   if (!payload || !payload.available) {
     const reason = payload?.reason || 'intervals.icu is unavailable.';
     const missingKey = reason.includes('not configured');
-    const authRejected = reason.includes('rejected the API key');
+    const authRejected = reason.includes('rejected Endury');
     return {
       available: false,
       reason,
       hint: missingKey
         ? 'Add your intervals.icu API key in Settings.'
         : authRejected
-          ? 'Regenerate the key at intervals.icu → Settings → Developer Settings and paste it into Endury’s Settings.'
+          ? 'Open Endury’s Settings and connect intervals.icu again, or paste a new key from intervals.icu → Settings → Developer Settings.'
           : 'Check your network connection and intervals.icu’s status, then reopen this panel.',
     };
   }

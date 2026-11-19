@@ -37,7 +37,7 @@ store note still has to be uploaded; the next call, or `flush`, retries.
 | `not_found` | The addressed activity or session does not exist. |
 | `refused` | A planning `ValueError`: an athlete-readable refusal, not a crash. |
 | `chat_disabled` | A chat call without an OpenRouter key. |
-| `intervals_auth` | intervals.icu rejected the key. |
+| `intervals_auth` | intervals.icu rejected the key or token. |
 | `upstream_error` | intervals.icu, the AI model's service or the network failed. |
 | `store_conflict` | Another device saved since this one loaded. |
 | `store_read_only` | A newer Endury wrote the note; saving over it would drop columns. |

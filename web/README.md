@@ -16,6 +16,8 @@ copies it and pins the asset URLs.
 | `data/api.js` | The RPC client: unwraps the worker's envelope, holds the one-writer lock, feeds the runtime banners. |
 | `data/settings.js` | The keys and the chat consent in `localStorage`; "Forget my keys". |
 | `data/openrouter_connect.js` | "Connect OpenRouter": the OAuth PKCE round trip that fills the key. |
+| `data/intervals_connect.js` | "Connect intervals.icu": the OAuth PKCE round trip that brings back an access token. A self-hoster names their own intervals.icu app here. |
+| `data/pkce.js` | The verifier and challenge both round trips use. |
 | `data/adapters.js`, `data/store.js`, `data/format.js` | Wire shapes into view shapes; the calendar state both shells render, which opens on today unless the athlete left another day moments ago; formatting. |
 | `worker/py_worker.js` | Loads the site's own Pyodide and the Python bundle, runs one RPC call at a time, and pins the Pyodide version and package list. |
 | `worker/analysis_worker.js`, `data/analysis_sandbox.js` | The sandbox for the coach's analysis scripts: a second Pyodide with numpy, no key and no network once loaded. |

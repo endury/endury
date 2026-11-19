@@ -1,4 +1,5 @@
-/* Endury — settings: the intervals.icu key (required) and athlete id, the
+/* Endury — settings: the intervals.icu connection (Connect where this copy
+   has an app there, else the API key) and athlete id, the
    optional OpenRouter key and model for coach chat, an Advanced section
    of base-URL overrides (the e2e fakes use them), and the theme
    (theme.js), which applies on tap without the Save. The header's Settings
@@ -7,8 +8,9 @@
    <form>, so a password manager offers to save the key under the name. Self-contained like the memory panel: its buttons carry
    data-settings, not data-action, so no shell delegation is involved.
    Saving from the panel reloads the page — the Python worker was booted
-   with the old keys. "Connect OpenRouter" (data/openrouter_connect.js)
-   leaves the page and boots again on the way back. */
+   with the old keys. "Connect intervals.icu" (data/intervals_connect.js)
+   and "Connect OpenRouter" (data/openrouter_connect.js) leave the page
+   and boot again on the way back. */
 
 import { openModal, openConfirm } from './modal.js';
 import { icons } from './icons.js';
@@ -18,6 +20,9 @@ import {
   CHAT_CONSENT_VERSION, hasChatConsent,
 } from '../data/settings.js';
 import { startConnect } from '../data/openrouter_connect.js';
+import {
+  canConnect, disconnect, startConnect as startIntervalsConnect,
+} from '../data/intervals_connect.js';
 
 /** Where the source lives: the AGPL's offer of it, linked from the front door,
     Settings and the mobile Planning Inputs drawer. */
@@ -87,18 +92,26 @@ export function renderAdvanced(settings) {
     </details>`;
 }
 
+const INTERVALS_SETTINGS = '<a href="https://intervals.icu/settings" target="_blank" rel="noopener">Settings</a>';
+
 /** The form's fields (no buttons), filled from `settings`. */
 export function renderSettingsForm(settings) {
+  const connect = canConnect(settings);
   return `<form class="cb-settings__group" id="cb-settings-intervals">
       <div class="cb-settings__legend">intervals.icu</div>
       ${field('athlete_name', 'Your name', settings.athlete_name, { autocomplete: 'username' })}
-      ${field('intervals_api_key', 'API key (required)', settings.intervals_api_key, {
-        type: 'password',
-        autocomplete: 'current-password',
-        hint: 'intervals.icu → <a href="https://intervals.icu/settings" target="_blank" rel="noopener">Settings</a> → Developer Settings.',
-      })}
+      ${connect ? `<button type="button" class="cb-confirm__btn cb-settings__connect" data-settings="connect-intervals">${
+        settings.intervals_access_token ? 'Connect again' : 'Connect intervals.icu'}</button>` : ''}
+      ${settings.intervals_access_token
+        ? `<div class="cb-settings__hint">Connected. Endury has the access you approved at intervals.icu.
+          Remove Endury in intervals.icu → ${INTERVALS_SETTINGS} to stop it.</div>`
+        : field('intervals_api_key', connect ? 'API key' : 'API key (required)', settings.intervals_api_key, {
+          type: 'password',
+          autocomplete: 'current-password',
+          hint: `${connect ? 'Connect signs you in at intervals.icu, or paste a key: ' : ''}intervals.icu → ${INTERVALS_SETTINGS} → Developer Settings.`,
+        })}
       ${field('intervals_athlete_id', 'Athlete id', settings.intervals_athlete_id, {
-        placeholder: '0 — the key’s own athlete',
+        placeholder: '0 — your own athlete',
       })}
     </form>
     <div class="cb-settings__group">
@@ -161,6 +174,21 @@ export function connectOpenRouter(root) {
   startConnect();
 }
 
+/** Keep what the form under `root` holds so far, then leave for
+    intervals.icu's consent page; boot finishes the connection on the way
+    back. */
+async function connectIntervals(root) {
+  const next = mergeForm(loadSettings(), root);
+  if (!chatConsented(next, root)) return;
+  try {
+    if (!saveSettings(next)) throw new Error('storage');
+    await startIntervalsConnect(next);
+  } catch {
+    root.querySelector('.cb-settings__status').textContent = 'This browser is blocking storage, so '
+      + 'Connect can’t work here. Paste a key instead.';
+  }
+}
+
 const THEMES = [['dark', 'Dark'], ['light', 'Light'], ['system', 'Auto']];
 
 /** The theme row: applies on tap, outside the form and its Save. */
@@ -187,7 +215,8 @@ export function openSettingsPanel({ variant = 'center' } = {}) {
         <div class="cb-settings__title">Settings</div>
         <button type="button" class="cb-ib cb-settings__close" data-action="close-modal" aria-label="Close">${icons.close(15)}</button>
       </div>
-      ${isDemo(current) ? '<div class="cb-settings__hint">You’re in the demo. Add your intervals.icu key here to make it yours.</div>' : ''}
+      ${isDemo(current) ? `<div class="cb-settings__hint">You’re in the demo. ${canConnect(current)
+        ? 'Connect your intervals.icu' : 'Add your intervals.icu key'} here to make it yours.</div>` : ''}
       ${settingsPrivacyHtml()}
       ${isDemo(current) ? TERMS_BOX : ''}
       ${renderSettingsForm(current)}
@@ -211,6 +240,7 @@ export function openSettingsPanel({ variant = 'center' } = {}) {
 
   modal.el.addEventListener('click', async (e) => {
     if (e.target.closest('[data-settings="connect"]')) connectOpenRouter(modal.el);
+    if (e.target.closest('[data-settings="connect-intervals"]')) connectIntervals(modal.el);
     const theme = e.target.closest('[data-theme-choice]');
     if (theme) {
       globalThis.enduryTheme?.set(theme.dataset.themeChoice);
@@ -219,13 +249,18 @@ export function openSettingsPanel({ variant = 'center' } = {}) {
     if (!e.target.closest('[data-settings="forget"]')) return;
     const sure = await openConfirm({
       title: 'Forget your keys?',
-      body: 'This browser forgets your intervals.icu and OpenRouter keys and goes back to the '
-        + 'front door. Nothing on your intervals.icu account changes; the privacy page says how '
-        + 'to remove Endury’s data there too.',
+      body: current.intervals_access_token
+        ? 'This browser forgets your intervals.icu connection and your OpenRouter key, withdraws '
+          + 'Endury’s access at intervals.icu and goes back to the front door. Your data on '
+          + 'intervals.icu stays; the privacy page says how to remove Endury’s data there too.'
+        : 'This browser forgets your intervals.icu and OpenRouter keys and goes back to the '
+          + 'front door. Nothing on your intervals.icu account changes; the privacy page says how '
+          + 'to remove Endury’s data there too.',
       confirmLabel: 'Forget keys',
       variant,
     });
     if (!sure) return;
+    await disconnect(current);
     clearSettings();
     location.reload();
   });

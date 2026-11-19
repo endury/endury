@@ -57,26 +57,32 @@
     you do, Endury keeps these in your browser's local storage, none of it sent to the provider of this
     site:</p>
   <ul>
-    <li>your settings, needed to run the app: your intervals.icu API key and athlete id, your
+    <li>your settings, needed to run the app: what connects Endury to intervals.icu (the access
+      token from Connect, or your API key) and your athlete id, your
       OpenRouter key and choice of AI model if you use chat, service addresses if you changed them,
       the name you may enter, the version of the chat consent you agreed to, and whether this
       browser runs the demo;</li>
     <li>which week and day of the calendar you last had open, so the app reopens there, and the
       theme you chose;</li>
-    <li>for a moment during OpenRouter sign-in, a one-time code that completes it, and during
+    <li>for a moment during an intervals.icu or OpenRouter sign-in, a one-time code that completes it, and during
       connecting, a flag for the ready screen.</li>
   </ul>
   <p>It also caches the runtime and the site's files once you start, so the about 34 MB download
     happens only once. The settings and the cache are what it takes to run the app you started
     (§ 25(2) no. 2 TDDDG); the last place and the theme are small conveniences that stay on this
     device.</p>
-  <p>To remove it: <strong>Settings → Forget my keys</strong> removes your keys and settings.
+  <p>To remove it: <strong>Settings → Forget my keys</strong> removes your keys and settings, and
+    withdraws the access Connect gave Endury at intervals.icu.
     Clearing this site's data in your browser removes all of it.</p>
 
   <h2>4. Your intervals.icu account</h2>
-  <p>Endury works on your own intervals.icu account with the API key you enter, which is only needed
-    for a plan of your own: the demo works without one. Your browser sends that key only to
-    intervals.icu. An intervals.icu API key has full access to your account, with no narrower option.
+  <p>Endury works on your own intervals.icu account, which is only needed for a plan of your own:
+    the demo works without one. Where this site offers Connect intervals.icu, you sign in at
+    intervals.icu and approve what Endury may do: your activities, wellness, calendar and settings,
+    not your chats or your workout library. Your browser keeps the access token that comes back, and
+    removing Endury from your apps at intervals.icu ends it. Otherwise you enter an intervals.icu API
+    key, which has full access to your account, with no narrower option, until you delete it there.
+    Your browser sends the token or the key only to intervals.icu.
     Endury reads your activities, thresholds, fitness and wellness live and stores no copy
     anywhere else. It writes and removes the planned sessions and races it created, pairs a
     completed activity with its session, and writes the thresholds you save in Planning Inputs to

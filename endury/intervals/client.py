@@ -1,7 +1,8 @@
 """HTTP client for the intervals.icu REST API.
 
 Wraps :class:`httpx.Client` with the auth/transport shape intervals.icu
-expects (HTTP Basic with the literal username ``"API_KEY"``), a single retry
+expects (HTTP Basic with the literal username ``"API_KEY"``, or an OAuth
+access token as a Bearer header), a single retry
 on ``429`` honoring ``Retry-After``, a short bounded retry on transient
 network failures and ``5xx`` responses, and typed errors so callers can tell
 an auth failure apart from any other API error. The transport is injectable
@@ -79,7 +80,7 @@ class IntervalsApiError(Exception):
 
 
 class IntervalsAuthError(IntervalsApiError):
-    """Raised on 401/403 responses (missing or invalid API key)."""
+    """Raised on 401/403 responses (a missing, invalid or withdrawn credential)."""
 
 
 def _parse_retry_after(header: str | None) -> float:
@@ -107,10 +108,11 @@ class IntervalsClient:
 
     def __init__(
         self,
-        api_key: str,
+        api_key: str = "",
         athlete_id: str = "0",
         base_url: str = _DEFAULT_BASE_URL,
         transport: httpx.BaseTransport | None = None,
+        access_token: str | None = None,
     ) -> None:
         """Initialize the client.
 
@@ -120,12 +122,17 @@ class IntervalsClient:
                 athlete.
             base_url: API base URL, overridable for tests.
             transport: Optional injectable httpx transport for offline tests.
+            access_token: An OAuth access token; sent as a Bearer header
+                in place of the key.
         """
         self._athlete_id = athlete_id
+        headers = {"User-Agent": _USER_AGENT}
+        if access_token:
+            headers["Authorization"] = f"Bearer {access_token}"
         self._client = httpx.Client(
             base_url=base_url,
-            auth=("API_KEY", api_key),
-            headers={"User-Agent": _USER_AGENT},
+            auth=None if access_token else ("API_KEY", api_key),
+            headers=headers,
             timeout=_TIMEOUT_S,
             transport=transport,
         )

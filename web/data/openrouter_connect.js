@@ -6,22 +6,20 @@
    in localStorage, not sessionStorage: signing up at OpenRouter can finish
    in another tab (an emailed link). */
 
+import { pkcePair } from './pkce.js';
+
 const AUTH_URL = 'https://openrouter.ai/auth';
 const VERIFIER_KEY = 'endury.openrouter_verifier';
 const DEFAULT_BASE_URL = 'https://openrouter.ai/api/v1';
 
-const base64url = (bytes) => btoa(String.fromCharCode(...bytes))
-  .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-
 /** Leave for OpenRouter's sign-in; it returns to this page with ?code=. */
 export async function startConnect() {
-  const verifier = base64url(crypto.getRandomValues(new Uint8Array(32)));
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
+  const { verifier, challenge } = await pkcePair();
   localStorage.setItem(VERIFIER_KEY, verifier);
   const url = new URL(AUTH_URL);
   url.search = new URLSearchParams({
     callback_url: location.origin + location.pathname,
-    code_challenge: base64url(new Uint8Array(digest)),
+    code_challenge: challenge,
     code_challenge_method: 'S256',
   });
   location.assign(url);

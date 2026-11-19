@@ -10,18 +10,20 @@ deployments are the live site at [endury.app](https://endury.app) and the
 ## Threat model
 
 Endury has no server. It runs entirely in your browser: your intervals.icu
-API key, and your OpenRouter API key if you use chat, live in this
+access token or API key, and your OpenRouter API key if you use chat, live in this
 browser's `localStorage` and are sent only to those two services. Any code
 the page loads runs in the same origin and could in principle read those
 keys; that is why the site serves everything itself, the Pyodide runtime
 and its Python packages included (staged by `make site` from Pyodide's
 release, each package checked against the sha256 in Pyodide's lock), and
 sends a Content Security Policy that allows no other origin (`web/_headers`,
-honoured by Cloudflare). The intervals.icu key has full access to your
-account: API keys have no narrower scope. intervals.icu's OAuth does offer
-per-scope grants, and Endury currently uses a key. This is why the README
-asks you to host Endury on an origin that serves nothing else. What Endury
-stores where, and how to remove it, is in [docs/privacy.md](docs/privacy.md).
+honoured by Cloudflare). Connect intervals.icu keeps an OAuth access token
+there in place of the key: it is limited to your activities, wellness,
+calendar and settings, and removing Endury from your apps at intervals.icu
+ends it. An API key has full access to your account, with no narrower
+scope. This is why the README asks you to host Endury on an origin that
+serves nothing else. What Endury stores where, and how to remove it, is in
+[docs/privacy.md](docs/privacy.md).
 
 ## In scope
 
@@ -50,7 +52,8 @@ stores where, and how to remove it, is in [docs/privacy.md](docs/privacy.md).
 
 Never send your API key to anyone working on Endury, by any channel: nobody here
 will ask for it. To report a bug, show it on the demo or with invented data. If a
-key leaks, generate a new one at intervals.icu or OpenRouter.
+key leaks, generate a new one at intervals.icu or OpenRouter; after Connect,
+remove Endury from your apps at intervals.icu and connect again.
 
 ## Reporting
 
