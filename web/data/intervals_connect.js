@@ -15,7 +15,7 @@ import { pkcePair, randomToken } from './pkce.js';
    connects with an API key until it names an app of its own here. An
    overridden API address (the e2e fakes) is not intervals.icu and takes
    any id. */
-const CLIENT_ID = '';
+const CLIENT_ID = '1881';
 const CLIENT_HOSTS = ['endury.app', 'localhost'];
 const clientId = (settings) => {
   if (settings.intervals_base_url) return 'endury';
