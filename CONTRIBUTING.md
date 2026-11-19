@@ -43,6 +43,9 @@ make lint            # ruff, mypy, the architecture checks, the generated docs
 - `make install-hooks` turns on the pre-push hook, which runs `make lint`,
   `make test`, `make test-scorecards` and `make site`. Without it, run
   them by hand.
+- GitHub runs `make lint` and `make test` on every pull request
+  (`.github/workflows/checks.yml`). The scorecards and the site build
+  stay with you: they take minutes.
 
 The tracked `.claude/` folder holds a session hook for Claude Code's
 remote environments; other editors can ignore it.
