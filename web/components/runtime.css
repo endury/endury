@@ -153,11 +153,12 @@ body > .cb-app { flex: 1 1 auto; min-height: 0; height: auto; }
 .cb-door__lede a { color: var(--cb-accent); }
 
 .cb-door__doors { display: flex; flex-direction: column; gap: var(--cb-sp-2-5); margin-top: var(--cb-sp-1); }
-.cb-door__door { display: flex; flex-direction: column; gap: var(--cb-sp-1); }
+.cb-door__ask { font-weight: 600; color: var(--cb-text); }
 
 .cb-door__btn { width: 100%; padding: var(--cb-sp-3) var(--cb-sp-3-5); }
 
 .cb-door__note { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); line-height: 1.4; text-align: center; }
+.cb-door__note a { color: var(--cb-accent); }
 
 .cb-door__facts {
   margin: var(--cb-sp-1) 0 0;
@@ -460,10 +461,9 @@ body > .cb-app { flex: 1 1 auto; min-height: 0; height: auto; }
   cursor: pointer;
 }
 
-/* Landing: the privacy fold-out under the facts */
-.cb-door__privacy > summary {
-  cursor: pointer;
-  font-size: var(--cb-fs-meta);
-  color: var(--cb-text-muted);
-}
-.cb-door__privacy[open] > summary { margin-bottom: var(--cb-sp-2); }
+/* Front door: a fold-out holding what the screen need not show at once */
+.cb-door__more { font-size: var(--cb-fs-meta); color: var(--cb-text-muted); line-height: 1.5; }
+.cb-door__more > summary { cursor: pointer; }
+.cb-door__more[open] > summary { margin-bottom: var(--cb-sp-2); }
+.cb-door__more p { margin: 0; }
+.cb-door__more a { color: var(--cb-accent); }

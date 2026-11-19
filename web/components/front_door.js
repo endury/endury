@@ -11,7 +11,7 @@
 
 import { esc } from './util.js';
 import {
-  field, renderAdvanced, readSettingsForm, legalLinksHtml, TERMS_BOX,
+  field, renderAdvanced, readSettingsForm, legalLinksHtml,
 } from './settings_panel.js';
 import { saveSettings } from '../data/settings.js';
 import { canConnect, startConnect } from '../data/intervals_connect.js';
@@ -37,25 +37,28 @@ const externalLink = (href, label) =>
   `<a class="cb-confirm__btn cb-door__ext" href="${href}" target="_blank" rel="noopener">${label} ↗</a>`;
 
 function progress(step) {
-  const bars = [1, 2, 3].map((i) => `<i class="${i <= step ? 'is-done' : ''}"></i>`).join('');
+  const bars = [1, 2].map((i) => `<i class="${i <= step ? 'is-done' : ''}"></i>`).join('');
   return `<div class="cb-door__progress">
-      <span>Step ${step} of 3</span><span class="cb-door__bars" aria-hidden="true">${bars}</span>
+      <span>Step ${step} of 2</span><span class="cb-door__bars" aria-hidden="true">${bars}</span>
     </div>`;
 }
 
+const more = (summary, html) => `<details class="cb-door__more">
+      <summary>${summary}</summary>${html}</details>`;
+
+/* The terms in one line under the button; the rest folds out below it. */
+const TERMS_LINE = `<div class="cb-door__note">By connecting you accept the
+        <a href="impressum.html#terms" target="_blank" rel="noopener">terms of use</a>.
+        Training software for adults, not medical advice.</div>`;
+const BEFORE_YOU_START = more('Before you start', `<p>Endury comes as is. See a doctor before you
+        start or return to hard training, and stop when something hurts. The coach chat is an AI
+        model that can be wrong. The
+        <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a> explains your data.</p>`);
+
 /* ── Landing ─────────────────────────────────────────────────────────── */
 
-const DOORS = [
-  {
-    door: 'connect',
-    label: 'Start with your training',
-    note: 'Needs a free intervals.icu account. About five minutes.',
-    primary: true,
-  },
-  { door: 'demo', label: 'Try the demo', note: 'A sample athlete, mid-plan. Nothing to sign up for.' },
-];
-
 const FACTS = [
+  'Endury builds the whole preparation from the training you already do, sends your sessions to your watch where intervals.icu supports it, and adapts when life gets in the way.',
   'Free and open source. No subscription, no Endury account.',
   'No Endury server holds your data. Your keys stay in this browser.',
   'Your plan and training live on your own intervals.icu.',
@@ -75,31 +78,24 @@ const PRIVACY = [
 /** The landing; resolves 'demo' | 'connect' | 'key'. `error` (a failed
     Connect) shows above the doors. */
 export function showLanding(body, { settings = {}, error } = {}) {
-  const connect = canConnect(settings);
-  const doors = DOORS.map((d) => `<div class="cb-door__door">
-      <button type="button" class="cb-confirm__btn cb-door__btn${d.primary ? ' cb-confirm__btn--primary' : ''}"
-        data-door="${d.door}">${d.label}</button>
-      <div class="cb-door__note">${d.note}</div>
-    </div>`).join('');
+  const facts = (items) => `<ul class="cb-door__facts">${items.map((f) => `<li>${f}</li>`).join('')}</ul>`;
   return new Promise((resolve) => {
     render(body, `<div class="cb-door">
         <h1 class="cb-door__title">A free coach for your next race.</h1>
-        <p class="cb-door__lede">Pick a race. Endury builds the whole preparation from the training
-          you already do, sends your sessions to your watch where intervals.icu supports it, and adapts
-          when life gets in the way.</p>
+        <p class="cb-door__lede">Pick a race. Endury plans the training and sends it to your watch.</p>
         ${error ? `<div class="cb-boot__error" role="alert">${esc(error)}</div>` : ''}
-        <div class="cb-door__doors">${doors}
+        <div class="cb-door__doors">
+          <div class="cb-door__ask">Do you use intervals.icu?</div>
+          <button type="button" class="cb-confirm__btn cb-confirm__btn--primary cb-door__btn" data-door="key">Yes, connect it</button>
+          <button type="button" class="cb-confirm__btn cb-door__btn" data-door="connect">Not yet, set it up</button>
+          <div class="cb-door__note">A free account. About five minutes.</div>
           <div class="cb-door__row cb-door__row--center">
-            <button type="button" class="cb-door__link" data-door="key">${connect
-              ? 'I already use intervals.icu' : 'I already have my intervals.icu key'}</button>
+            <button type="button" class="cb-door__link" data-door="demo">Try the demo first</button>
           </div>
         </div>
-        <ul class="cb-door__facts">${FACTS.map((f) => `<li>${f}</li>`).join('')}</ul>
-        <details class="cb-door__privacy">
-          <summary>Where your data goes</summary>
-          <ul class="cb-door__facts">${[connect ? CONNECT_PRIVACY : KEY_PRIVACY, ...PRIVACY]
-            .map((f) => `<li>${f}</li>`).join('')}</ul>
-        </details>
+        <div class="cb-door__note">Free · open source · your data stays yours</div>
+        ${more('What Endury is', facts(FACTS))}
+        ${more('Where your data goes', facts([canConnect(settings) ? CONNECT_PRIVACY : KEY_PRIVACY, ...PRIVACY]))}
         <div class="cb-door__legal">${legalLinksHtml()}</div>
       </div>`, (door) => resolve(door));
   });
@@ -110,35 +106,33 @@ export function showLanding(body, { settings = {}, error } = {}) {
 function logStepHtml() {
   return `<div class="cb-door" data-step="log">
       ${progress(1)}
-      <h1 class="cb-door__title">Your training log</h1>
-      <p class="cb-door__lede">Endury doesn’t talk to your watch directly. It works through
-        intervals.icu, a free training log. Connect your watch brand there, not Strava: activities
-        that arrive only through Strava don’t reach apps like Endury. intervals.icu expects Garmin
-        activity data may stop reaching other apps too; files you upload yourself should keep working.
-        Endury’s workouts go out to Garmin, Wahoo, Coros, Suunto, Zepp, Huawei and Zwift, when you
-        turn that on in intervals.icu.</p>
+      <h1 class="cb-door__title">Set up intervals.icu</h1>
+      <p class="cb-door__lede">Endury reads your training and reaches your watch through
+        intervals.icu, a free training log.</p>
       <ol class="cb-door__steps">
-        <li><div>Create a free intervals.icu account.</div>${externalLink(INTERVALS, 'Open intervals.icu')}</li>
-        <li><div>In intervals.icu, open Settings and connect your watch brand. Your recent activities
-          appear within a few minutes.</div></li>
+        <li><div>Create a free account.</div>${externalLink(INTERVALS, 'Open intervals.icu')}</li>
+        <li><div>In its Settings, connect your watch brand, not Strava.</div></li>
       </ol>
-      <button type="button" class="cb-confirm__btn cb-confirm__btn--primary cb-door__btn" data-door="next">Done, next</button>
+      ${more('Which watches work', `<p>Endury’s workouts go out to Garmin, Wahoo, Coros, Suunto,
+        Zepp, Huawei and Zwift, when you turn that on in intervals.icu. Activities that arrive only
+        through Strava don’t reach apps like Endury. intervals.icu expects Garmin activity data may
+        stop reaching other apps too; files you upload yourself should keep working. Your recent
+        activities appear within a few minutes.</p>`)}
+      <button type="button" class="cb-confirm__btn cb-confirm__btn--primary cb-door__btn" data-door="next">Done, connect</button>
       <div class="cb-door__row">
         <button type="button" class="cb-door__quiet" data-door="back">Back</button>
-        <button type="button" class="cb-door__link" data-door="skip">I already use intervals.icu</button>
       </div>
     </div>`;
 }
 
-function keyStepHtml(settings, intro, connect) {
+function keyStepHtml(settings, intro, connect, guided) {
   return `<div class="cb-door" data-step="key">
-      ${progress(2)}
+      ${guided ? progress(2) : ''}
       <h1 class="cb-door__title">Your key</h1>
       ${intro ? `<div class="cb-boot__error" role="alert">${esc(intro)}</div>` : ''}
       <p class="cb-door__lede">In intervals.icu, open
-        <a href="${INTERVALS_SETTINGS}" target="_blank" rel="noopener">Settings</a> and scroll to
-        Developer Settings near the bottom. Generate an API key if there is none, copy it and paste
-        it here.</p>
+        <a href="${INTERVALS_SETTINGS}" target="_blank" rel="noopener">Settings</a>, scroll to
+        Developer Settings and copy your API key.</p>
       <form class="cb-door__form">
         ${field('athlete_name', 'Your name', settings.athlete_name, {
           autocomplete: 'username',
@@ -148,18 +142,17 @@ function keyStepHtml(settings, intro, connect) {
           type: 'password',
           autocomplete: 'current-password',
         })}
-        <div class="cb-door__box">
-          <div class="cb-door__box-title">What this key does</div>
-          intervals.icu API keys have full access to your account, with no narrower option. Endury uses
-          yours to read your training, write and remove the workouts and races it created, pair
-          activities, save the thresholds and feel you enter, and keep its hidden notes. It stays in this
-          browser and goes only to intervals.icu. Delete it in intervals.icu at any time and Endury stops.
-        </div>
-        ${TERMS_BOX}
-        ${renderAdvanced(settings)}
         <span class="cb-settings__status" role="status"></span>
         <button type="submit" class="cb-confirm__btn cb-confirm__btn--primary cb-door__btn">Connect</button>
-        <div class="cb-door__note">Coach chat is optional and comes later, in Settings.</div>
+        ${TERMS_LINE}
+        ${more('What this key does', `<p>intervals.icu API keys have full access to your account,
+          with no narrower option. Generate one in Developer Settings if there is none. Endury uses
+          yours to read your training, write and remove the workouts and races it created, pair
+          activities, save the thresholds and feel you enter, and keep its hidden notes. It stays in
+          this browser and goes only to intervals.icu. Delete it in intervals.icu at any time and
+          Endury stops.</p>`)}
+        ${BEFORE_YOU_START}
+        ${renderAdvanced(settings)}
       </form>
       <div class="cb-door__row">
         <button type="button" class="cb-door__quiet" data-door="back">Back</button>
@@ -168,28 +161,24 @@ function keyStepHtml(settings, intro, connect) {
     </div>`;
 }
 
-function connectStepHtml(settings, intro) {
+function connectStepHtml(settings, intro, guided) {
   return `<div class="cb-door" data-step="connect">
-      ${progress(2)}
+      ${guided ? progress(2) : ''}
       <h1 class="cb-door__title">Connect intervals.icu</h1>
       ${intro ? `<div class="cb-boot__error" role="alert">${esc(intro)}</div>` : ''}
-      <p class="cb-door__lede">intervals.icu asks you to sign in and shows what Endury may do.
-        Approve it there and you come straight back. Nothing to copy or paste.</p>
+      <p class="cb-door__lede">Sign in there, approve, and you come straight back.</p>
       <div class="cb-door__form">
-        <div class="cb-door__box">
-          <div class="cb-door__box-title">What Endury asks for</div>
-          Your activities, wellness, calendar and settings: to read your training, write and remove
-          the workouts and races it created, pair activities, save the thresholds and feel you
-          enter, and keep its hidden notes. Not your chats or your workout library. The access
-          stays in this browser and goes only to intervals.icu. Remove Endury in
-          <a href="${INTERVALS_SETTINGS}" target="_blank" rel="noopener">intervals.icu’s settings</a>
-          at any time and it stops.
-        </div>
-        ${TERMS_BOX}
-        ${renderAdvanced(settings)}
         <span class="cb-settings__status" role="status"></span>
         <button type="button" class="cb-confirm__btn cb-confirm__btn--primary cb-door__btn" data-door="oauth">Connect intervals.icu</button>
-        <div class="cb-door__note">Coach chat is optional and comes later, in Settings.</div>
+        ${TERMS_LINE}
+        ${more('What Endury asks for', `<p>Your activities, wellness, calendar and settings: to read
+          your training, write and remove the workouts and races it created, pair activities, save
+          the thresholds and feel you enter, and keep its hidden notes. Not your chats or your
+          workout library. The access stays in this browser and goes only to intervals.icu. Remove
+          Endury in <a href="${INTERVALS_SETTINGS}" target="_blank" rel="noopener">intervals.icu’s
+          settings</a> at any time and it stops.</p>`)}
+        ${BEFORE_YOU_START}
+        ${renderAdvanced(settings)}
       </div>
       <div class="cb-door__row">
         <button type="button" class="cb-door__quiet" data-door="back">Back</button>
@@ -208,16 +197,17 @@ export function runConnect(body, settings, { startAt = 'log', intro = '' } = {})
   const connect = canConnect(settings);
   // `intro` belongs to the screen the step opens on.
   const keyFirst = !connect || Boolean(settings.intervals_api_key);
+  const guided = startAt !== 'key';
   return new Promise((resolve) => {
     const back = () => (startAt === 'key' ? resolve(null) : showLog());
 
     const showLog = () => render(body, logStepHtml(), (door) => {
       if (door === 'back') resolve(null);
-      if (door === 'next' || door === 'skip') showLast();
+      if (door === 'next') showLast();
     });
 
     const showConnect = () => {
-      const root = render(body, connectStepHtml(settings, keyFirst ? '' : intro), async (door) => {
+      const root = render(body, connectStepHtml(settings, keyFirst ? '' : intro, guided), async (door) => {
         if (door === 'back') back();
         if (door === 'use-key') showKey();
         if (door !== 'oauth') return;
@@ -234,7 +224,7 @@ export function runConnect(body, settings, { startAt = 'log', intro = '' } = {})
     };
 
     const showKey = () => {
-      const root = render(body, keyStepHtml(settings, keyFirst ? intro : '', connect), (door) => {
+      const root = render(body, keyStepHtml(settings, keyFirst ? intro : '', connect, guided), (door) => {
         if (door === 'back') back();
         if (door === 'use-connect') showConnect();
       });
@@ -326,7 +316,6 @@ export function showReady(body, { settings, bootstrap, inputs, recheck }) {
   const connected = settings.athlete_name ? `Connected as ${settings.athlete_name}` : 'Connected to intervals.icu';
   return new Promise((resolve) => {
     const root = render(body, `<div class="cb-door" data-step="ready">
-        ${progress(3)}
         <h1 class="cb-door__title">You’re connected</h1>
         <div class="cb-door__box cb-door__checks">
           ${checkRow('connected', 'ok', connected)}
