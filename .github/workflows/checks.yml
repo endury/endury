@@ -9,7 +9,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: checks-${{ github.ref }}
+  # A newer push replaces a pull request's run; on main every commit keeps its own.
+  group: checks-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: true
 
 jobs:
