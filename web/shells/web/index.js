@@ -685,7 +685,7 @@ export function mount(root) {
       date: d.date,
       dow: DAY_NAMES[i],
       current: d.date === session.date,
-      disabled: d.date < store.state.today || raceDates.has(d.date),
+      disabled: raceDates.has(d.date),
     }));
   }
 
@@ -1206,8 +1206,9 @@ export function mount(root) {
     }
   });
 
-  // Drag-to-reschedule (scope delta: static guards only — past days and race
-  // days are blocked; the server re-validates via PATCH …/schedule).
+  // Drag-to-reschedule (scope delta: static guards only — race days are
+  // blocked; the server re-validates via PATCH …/schedule). A past day is a
+  // target: a session done on another day goes back to it.
   let dragId = null;
 
   function clearDropMarks() {
@@ -1229,7 +1230,7 @@ export function mount(root) {
       .map((r) => r.race_date));
     root.querySelectorAll('.cbw-daycol').forEach((col) => {
       const date = col.dataset.dropday;
-      const valid = date >= store.state.today && !raceDates.has(date);
+      const valid = !raceDates.has(date);
       col.classList.toggle('is-droptarget', valid);
       col.classList.toggle('is-dropblocked', !valid);
     });

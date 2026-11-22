@@ -722,13 +722,14 @@ def reschedule_session(
     req: ScheduleRequest,
     *,
     get_repos: Callable[[], Any],
-    today: date | None = None,
     client: Any | None = None,
 ) -> dict[str, Any]:
     """Move a plan session to another date on the materialized layer.
 
     Validates that an active plan exists, the date parses, lies inside the
-    plan window, is not in the past, and is not the race day. planner is
+    plan window and is not the race day. A day that has passed is allowed:
+    a session done on another day goes back to it, where the day's activity
+    can pair with it. planner is
     never involved; the session row and the persisted solve payload are
     updated together, and the session's intervals.icu event is re-dated in
     the same call. A session that lands in a different phase takes that
@@ -740,7 +741,6 @@ def reschedule_session(
         session_id: The plan session to move.
         req: The requested new date.
         get_repos: Repository container factory.
-        today: Override for "today" (tests); defaults to the current date.
         client: intervals.icu client, or ``None`` when unconfigured — a
             failed remote move is reported as a warning, never rolled back.
     """
@@ -754,9 +754,6 @@ def reschedule_session(
     except ValueError:
         return {"status": "error", "message": f"Invalid date: {req.date!r}"}
 
-    today = today or clock.today()
-    if new_date < today:
-        return {"status": "error", "message": "Cannot move a session into the past."}
     if not (active.plan_start <= req.date <= active.goal_date):
         return {"status": "error", "message": "Date is outside the plan window."}
     if _is_race_day(active, req.date):

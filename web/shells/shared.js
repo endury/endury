@@ -951,14 +951,14 @@ export async function moveSession(store, ui, sessionId, date, renderAll, {
 }
 
 /** The open plan session of the same sport already on `date`, which a move
-    of `sessionId` there could swap with — or null. Only a session moving
-    from today or later offers it, since the other one takes its old day. */
+    of `sessionId` there could swap with — or null. A missed one counts: a
+    swap puts two sessions done on each other's days where they happened. */
 function swapPartner(store, sessionId, date) {
   const sessions = Object.values(store.state.weeks || {}).flatMap((w) => w.sessions || []);
   const moving = sessions.find((s) => s.id === String(sessionId));
-  if (!moving || moving.date < store.state.today) return null;
+  if (!moving) return null;
   const other = sessions.find((s) => s.id !== moving.id && s.date === date
-    && s.sport === moving.sport && s.status === 'pending' && !s.done && /^\d+$/.test(String(s.id)));
+    && s.sport === moving.sport && ['pending', 'missed'].includes(s.status) && !s.done && /^\d+$/.test(String(s.id)));
   return other
     ? { other: { id: other.id, name: other.title.replace(/^[^·]*·\s*/, '') }, from: moving.date }
     : null;

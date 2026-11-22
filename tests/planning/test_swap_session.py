@@ -336,7 +336,6 @@ class TestGuards:
             row.id,
             ScheduleRequest(date="2026-06-04"),
             get_repos=lambda: repos,
-            today=_TODAY,
         )
         assert moved["status"] == "ok"
         assert row.phase_type == "taper"

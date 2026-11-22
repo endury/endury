@@ -182,11 +182,16 @@ def make_plan_edit_tools(
         session's intervals.icu calendar event is re-dated with it. Use the
         ``session_id`` reported by ``get_planned_sessions``.
 
-        The move is refused with a reason when the date is in the past,
-        outside the plan window, on race day, or when the session is already
-        completed — relay that reason to the athlete. The completed refusal
-        is the one you can act on: if the athlete says the linked activity is
-        the wrong match, call ``set_session_status(session_id, "unlinked")``
+        The date may be a day that has passed: a session the athlete did on
+        another day goes back to that day, where its activity pairs with it.
+        To switch two sessions, move each to the other's date, the one whose
+        target day has passed included.
+
+        The move is refused with a reason when the date is outside the plan
+        window, on race day, or when the session is already completed —
+        relay that reason to the athlete. The completed refusal is the one
+        you can act on: if the athlete says the linked activity is the wrong
+        match, call ``set_session_status(session_id, "unlinked")``
         to drop the link, then move the session. When the result carries a
         ``warning`` (the day is now double-booked, or the intervals.icu
         re-date failed), relay it verbatim.

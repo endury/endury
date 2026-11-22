@@ -683,7 +683,7 @@ export function mount(root) {
       date: d.date,
       dow: DAY_NAMES[i],
       current: d.date === session.date,
-      disabled: d.date < store.state.today || raceDates.has(d.date),
+      disabled: raceDates.has(d.date),
     }));
   }
 

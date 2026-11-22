@@ -246,7 +246,6 @@ class TestRescheduleAcrossReplanCutoff:
                 moved.id,
                 ScheduleRequest(date="2026-05-28"),
                 get_repos=lambda: repos,
-                today=_TODAY,
             )["status"]
             == "ok"
         )
@@ -271,10 +270,29 @@ class TestRescheduleAcrossReplanCutoff:
                 moved.id,
                 ScheduleRequest(date="2026-05-24"),
                 get_repos=lambda: repos,
-                today=_TODAY,
             )["status"]
             == "ok"
         )
+
+        run_replan(
+            repos=repos,
+            progress=_progress,
+            maybe_get_coach=lambda: None,
+            today=_TODAY,
+        )
+        self._assert_coherent(plan_repo)
+
+    def test_move_into_a_day_that_has_passed_stays_coherent(self) -> None:
+        """A session done on another day goes back to that day."""
+        repos, plan_repo = _stateful_repos()
+        moved = next(r for r in plan_repo.get_sessions(1) if r.date >= "2026-05-25")
+        result = reschedule_session(
+            moved.id,
+            ScheduleRequest(date="2026-05-19"),
+            get_repos=lambda: repos,
+        )
+        assert result["status"] == "ok"
+        assert moved.date == "2026-05-19"
 
         run_replan(
             repos=repos,

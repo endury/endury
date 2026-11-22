@@ -1270,7 +1270,6 @@ class TestComposesWithAMove:
                 row.id,
                 ScheduleRequest(date="2026-05-22"),
                 get_repos=lambda: move_repos,
-                today=_TODAY,
                 client=None,
             )["status"]
             == "ok"
