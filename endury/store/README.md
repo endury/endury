@@ -28,6 +28,12 @@ found by, so they do not change.
 - **Save** reads the remote revision first and raises `StoreConflict` on
   a mismatch. The dirty flag stays set until a save succeeds, and the next
   call retries.
+- **One owner.** intervals.icu lets an API key and a Connect intervals.icu
+  sign-in update only the events each created itself. A Connect session
+  therefore takes over the key's Endury events at boot
+  (`endury/intervals/ownership.py`), and a key session that finds a
+  Connect-owned note loads read-only, so the two never keep separate
+  copies.
 - **Chat and takes** have notes of their own, `coachie:chat` and
   `coachie:takes`, outside the revision. The takes note holds the coach's
   briefs on coming sessions and races beside its takes on activities. They

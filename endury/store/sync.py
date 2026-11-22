@@ -61,6 +61,9 @@ class Remote:
 
     snapshot: Snapshot | None
     chunk_ids: frozenset[str]
+    #: A Connect intervals.icu session wrote the note: an API key's upsert
+    #: cannot reach it, so a key session must not save.
+    connect_owned: bool = False
 
     @property
     def rev(self) -> int:
@@ -131,13 +134,20 @@ def _read(client: IntervalsClient) -> Remote:
     """Read the note from the first store date holding its first chunk."""
     for when in note.STORE_DATE_CANDIDATES:
         day = date.fromisoformat(when[:10])
-        chunks = {
-            external_id: event.description or ""
+        events = [
+            event
             for event in client.list_events(day, day, category="NOTE")
-            if (external_id := event.external_id) and _is_chunk(external_id)
+            if event.external_id and _is_chunk(event.external_id)
+        ]
+        # A key's copy beside a Connect one is stale: the Connect one wins.
+        connect_owned = any(event.oauth_client_id for event in events)
+        chunks = {
+            str(event.external_id): event.description or ""
+            for event in events
+            if not connect_owned or event.oauth_client_id
         }
         if note.STORE_ID in chunks:
-            return Remote(_decode(chunks), frozenset(chunks))
+            return Remote(_decode(chunks), frozenset(chunks), connect_owned)
     return Remote(None, frozenset())
 
 

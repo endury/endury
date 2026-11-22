@@ -69,6 +69,7 @@ class BrowserApp:
     coach: CoachSession | None = None
     rev: int = 0
     read_only: bool = False
+    connect_owned: bool = False
     chat_saved: int = 0
     takes: list[dict[str, str]] | None = None
     takes_unsaved: bool = False

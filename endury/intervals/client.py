@@ -126,6 +126,8 @@ class IntervalsClient:
                 in place of the key.
         """
         self._athlete_id = athlete_id
+        #: Whether this client signs in with an OAuth token, not the key.
+        self.uses_oauth = bool(access_token)
         headers = {"User-Agent": _USER_AGENT}
         if access_token:
             headers["Authorization"] = f"Bearer {access_token}"
@@ -445,6 +447,23 @@ class IntervalsClient:
             "PUT",
             f"/athlete/{self._athlete_id}/events/bulk-delete",
             json=[{"external_id": external_id} for external_id in external_ids],
+        )
+        body: dict[str, Any] = response.json()
+        return int(body.get("eventsDeleted", 0))
+
+    def delete_events_by_id(self, event_ids: list[int]) -> int:
+        """Delete calendar events by server id, whoever created them.
+
+        Args:
+            event_ids: Server ids of the events to delete.
+
+        Returns:
+            The number of events actually deleted.
+        """
+        response = self._request(
+            "PUT",
+            f"/athlete/{self._athlete_id}/events/bulk-delete",
+            json=[{"id": event_id} for event_id in event_ids],
         )
         body: dict[str, Any] = response.json()
         return int(body.get("eventsDeleted", 0))

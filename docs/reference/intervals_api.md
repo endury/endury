@@ -103,10 +103,17 @@ and the thresholds the athlete saves:
 
 - `POST /athlete/{id}/events/bulk?upsert=true&upsertOnUid=false&updatePlanApplied=false`
   with an array of events (the latter two are required params). Upsert matches
-  our own `external_id` and only ever touches events created by our app/key.
+  our own `external_id` and only ever touches events created by the caller:
+  the same OAuth application, or an API key for events no application
+  created. The same `external_id` written with a key and with a token is two
+  events, and a list returns both, each with its `oauth_client_id` (absent
+  for a key's). `endury/intervals/ownership.py` moves an account to its
+  Connect sign-in for that reason.
 - Responses send `null` (not `[]`) for empty `tags` / `push_errors`; the
   models coerce it.
-- `PUT /athlete/{id}/events/bulk-delete` body `[{"external_id": "..."}, ...]`.
+- `PUT /athlete/{id}/events/bulk-delete` body `[{"external_id": "..."}, ...]`,
+  limited to the caller's own events like the upsert; `[{"id": 123}, ...]`
+  deletes by server id whoever created the event.
 - Event fields we use: `category` (`WORKOUT` | `RACE_A` | `RACE_B` | `RACE_C`),
   `start_date_local` — **must be a full LocalDateTime, no zone**
   (`YYYY-MM-DDT00:00:00`); a bare `YYYY-MM-DD` is rejected with

@@ -21,6 +21,7 @@ external id scheme are in
 | `fitness.py` | Per-sport Banister CTL and ATL over daily TSS. |
 | `fake.py` | `FakeIntervals`: an in-memory intervals.icu at the HTTP level, for the tests, the E2E harness and the demo athlete. |
 | `push.py` | Plan sessions and races into calendar events: upsert and delete payloads, the readback diff. |
+| `ownership.py` | Moves an API key's Endury events to a Connect intervals.icu sign-in. |
 
 Start reading:
 - [client.py](client.py) — every call to intervals.icu goes through it.

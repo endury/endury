@@ -28,6 +28,9 @@ const OTHER_TAB = 'Endury is open in another tab, so this one is read-only. '
 const NEWER_DATA = 'Your saved Endury data is newer than this copy of the app, so it '
   + 'is read-only. Reload to update.';
 
+const CONNECT_OWNED = 'This account is connected through intervals.icu on another device, so '
+  + 'this one is read-only. Connect intervals.icu here too, in Settings, to change anything.';
+
 // The RPCs that write to intervals.icu or the store — refused up front in a
 // read-only tab rather than half-run.
 const MUTATING = new Set([
@@ -97,7 +100,8 @@ async function call(method, params = {}, { onProgress } = {}) {
   if (typeof env.unsaved === 'boolean') setRuntime({ unsaved: env.unsaved });
   if (env.error_code === 'store_conflict') setRuntime({ conflict: true });
   if (env.read_only === true || env.error_code === 'store_read_only') {
-    setRuntime({ readOnly: true, readOnlyReason: runtime.readOnlyReason || NEWER_DATA });
+    const reason = env.result?.connect_owned ? CONNECT_OWNED : NEWER_DATA;
+    setRuntime({ readOnly: true, readOnlyReason: runtime.readOnlyReason || reason });
   }
   if (!env.ok) {
     const err = new Error(env.error || `${method} failed`);

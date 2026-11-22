@@ -14,6 +14,13 @@ behind each line is in the git history.
   wellness, calendar and settings only, and removing Endury from your apps at
   intervals.icu ends it. An API key still works.
 
+### Fixed
+
+- An account used with an API key on one device and Connect intervals.icu on
+  another no longer keeps two copies of its data. Once a device connects, the
+  account belongs to that sign-in: the others open read-only until they
+  connect too.
+
 ## [0.1.0]
 
 The first public release: a free, open-source endurance coach that runs

@@ -279,6 +279,11 @@ class IntervalsEvent(BaseModel):
     # Server-parsed steps of a WORKOUT event, read back for the calendar
     # (never sent on push — we author the DSL, intervals.icu parses it).
     workout_doc: dict[str, Any] | None = None
+    hide_from_athlete: bool | None = None
+    # The OAuth app that created the event; None for an API key's or the
+    # athlete's own. An upsert or delete by external_id reaches only the
+    # caller's own events (docs/reference/intervals_api.md).
+    oauth_client_id: int | None = None
     # intervals.icu sends these as JSON null rather than [] when empty.
     tags: list[str] = Field(default_factory=list)
     push_errors: list[IntervalsPushError] = Field(default_factory=list)

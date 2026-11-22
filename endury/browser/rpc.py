@@ -53,6 +53,7 @@ from endury.intervals.client import (
     IntervalsAuthError,
     IntervalsClient,
 )
+from endury.intervals.ownership import take_over_key_events
 from endury.planning.race_book import drop_block_ends
 from endury.planning.race_calendar import reconcile_race_events
 from endury.planning.race_day import complete_raced_races
@@ -242,13 +243,18 @@ async def _boot(
     )
     repos = RepositoryContainer.in_memory()
     repos.bind_intervals_client(client)
+    if client.uses_oauth and not read_only:
+        # Before the note is read: the key's copy of it moves over too.
+        take_over_key_events(client, clock.today())
     if start_fresh:
         store.delete(client)
-    snapshot = store.load(client)
+    remote = store.read(client)
+    snapshot = remote.snapshot
+    connect_owned = remote.connect_owned and not client.uses_oauth
     store.restore(repos.session, snapshot)
     store.chat.restore(repos.session, store.chat.load(client))
     drop_block_ends(repos)
-    writable = not (read_only or (snapshot is not None and snapshot.read_only))
+    writable = not (read_only or connect_owned or remote.read_only)
     if writable:
         # A planned race the calendar lost comes back before the coach reads it.
         reconcile_race_events(repos.races.list(), client=client, today=clock.today())
@@ -276,6 +282,7 @@ async def _boot(
         coach=coach,
         rev=snapshot.rev if snapshot is not None else 0,
         read_only=not writable,
+        connect_owned=connect_owned,
         chat_saved=store.chat.last_id(repos.session),
     )
 
@@ -321,7 +328,8 @@ async def boot(
         llm: A coach LLM standing in for OpenRouter (tests).
 
     Returns:
-        The envelope; its result is ``{coach_ready, read_only, rev}``.
+        The envelope; its result is ``{coach_ready, read_only,
+        connect_owned, rev}``.
     """
     global _app
     _app = None
@@ -335,6 +343,7 @@ async def boot(
     result = {
         "coach_ready": _app.coach is not None,
         "read_only": _app.read_only,
+        "connect_owned": _app.connect_owned,
         "rev": _app.rev,
     }
     return {"ok": True, "result": result, "unsaved": False, "read_only": _app.read_only}
@@ -357,6 +366,11 @@ def _check_rev(app: BrowserApp) -> store.Remote:
     if remote.read_only:
         raise store.StoreReadOnly(
             "A newer version of Endury wrote this store; this copy is read-only."
+        )
+    if remote.connect_owned and not app.client.uses_oauth:
+        raise store.StoreReadOnly(
+            "This account now signs in through Connect intervals.icu; "
+            "connect on this device to change anything."
         )
     if remote.rev != app.rev:
         raise store.StoreConflict(

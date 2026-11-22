@@ -13,8 +13,10 @@ lives here rather than under ``devtools/``.
 
 Event semantics follow the verified API facts in
 ``docs/reference/intervals_api.md``: a bulk upsert matches on
-``external_id`` (a match is updated in place and keeps its server id), a
-bulk delete by ``external_id`` ignores unknown ids, ``start_date_local``
+``external_id`` among the caller's own events (a match is updated in place
+and keeps its server id), a bulk delete by ``external_id`` does the same and
+ignores unknown ids, a bulk delete by ``id`` reaches any event,
+``start_date_local``
 must be a full LocalDateTime, and ``list_events`` filters on the date part
 of ``start_date_local`` plus an optional comma-separated ``category``.
 Fields the server never interprets for us — ``hide_from_athlete``, ``tags``,
@@ -53,6 +55,9 @@ _API_PREFIX = "/api/v1"
 #: First server id handed to a created event.
 _FIRST_EVENT_ID = 1001
 
+#: The ``oauth_client_id`` on every event a Bearer token creates.
+OAUTH_CLIENT_ID = 1
+
 
 @dataclass(frozen=True)
 class FakeResponse:
@@ -85,8 +90,9 @@ class FakeIntervals:
 
     Every attribute is public and mutable, so a test can script more
     history mid-run or inspect exactly what was written. ``events`` holds
-    the raw stored event dicts keyed by ``external_id`` (the shape the API
-    returns), ``calls`` logs every ``(method, path)`` served.
+    the raw stored event dicts an API key created, keyed by ``external_id``
+    (the shape the API returns), ``app_events`` those a Bearer token
+    created, and ``calls`` logs every ``(method, path)`` served.
     """
 
     def __init__(
@@ -116,6 +122,7 @@ class FakeIntervals:
         self.streams = {key: list(rows) for key, rows in (streams or {}).items()}
         self.wellness = list(wellness)
         self.events: dict[str, dict[str, Any]] = {}
+        self.app_events: dict[str, dict[str, Any]] = {}
         self.calls: list[tuple[str, str]] = []
         self._next_event_id = _FIRST_EVENT_ID
         self._failures: list[tuple[int, str | None]] = []
@@ -126,14 +133,20 @@ class FakeIntervals:
         """Return an httpx transport that routes every request to this fake."""
         return httpx.MockTransport(self._serve)
 
-    def client(self, athlete_id: str = "0") -> IntervalsClient:
+    def client(
+        self, athlete_id: str = "0", access_token: str | None = None
+    ) -> IntervalsClient:
         """Return a real ``IntervalsClient`` bound to this fake.
 
         Args:
             athlete_id: Athlete id path segment the client sends.
+            access_token: Sign in with this OAuth token instead of the key.
         """
         return IntervalsClient(
-            api_key="fake-key", athlete_id=athlete_id, transport=self.transport()
+            api_key="fake-key",
+            athlete_id=athlete_id,
+            transport=self.transport(),
+            access_token=access_token,
         )
 
     def fail_next(self, status: int, method: str | None = None) -> None:
@@ -158,13 +171,24 @@ class FakeIntervals:
     def _serve(self, request: httpx.Request) -> httpx.Response:
         """Answer one httpx request (the ``MockTransport`` handler)."""
         body = json.loads(request.content) if request.content else None
+        bearer = request.headers.get("Authorization", "").startswith("Bearer ")
         answer = self.handle(
-            request.method, request.url.path, dict(request.url.params), body
+            request.method,
+            request.url.path,
+            dict(request.url.params),
+            body,
+            oauth=bearer,
         )
         return httpx.Response(answer.status, json=answer.body)
 
     def handle(
-        self, method: str, path: str, params: Mapping[str, str], body: Any
+        self,
+        method: str,
+        path: str,
+        params: Mapping[str, str],
+        body: Any,
+        *,
+        oauth: bool = False,
     ) -> FakeResponse:
         """Answer one API request.
 
@@ -173,6 +197,7 @@ class FakeIntervals:
             path: Request path, with or without the ``/api/v1`` prefix.
             params: Query parameters.
             body: Parsed JSON body, or ``None``.
+            oauth: The caller signed in with an OAuth token, not the key.
 
         Returns:
             The status and JSON body the live API would send.
@@ -185,7 +210,7 @@ class FakeIntervals:
             return _error(failure, "scripted failure")
         parts = [part for part in path.split("/") if part]
         if len(parts) >= 2 and parts[0] == "athlete":
-            return self._athlete_route(method, parts[2:], params, body)
+            return self._athlete_route(method, parts[2:], params, body, oauth)
         if len(parts) >= 2 and parts[0] == "activity":
             return self._activity_route(method, parts[1], parts[2:], params, body)
         return _error(404, f"no route for {method} {path}")
@@ -199,7 +224,12 @@ class FakeIntervals:
         return None
 
     def _athlete_route(
-        self, method: str, rest: list[str], params: Mapping[str, str], body: Any
+        self,
+        method: str,
+        rest: list[str],
+        params: Mapping[str, str],
+        body: Any,
+        oauth: bool,
     ) -> FakeResponse:
         """Route ``/athlete/{id}/...``."""
         route = (method, "/".join(rest))
@@ -212,9 +242,9 @@ class FakeIntervals:
         if route == ("GET", "events"):
             return FakeResponse(200, self._list_events(params))
         if route == ("POST", "events/bulk"):
-            return self._bulk_upsert(body)
+            return self._bulk_upsert(body, oauth)
         if route == ("PUT", "events/bulk-delete"):
-            return self._bulk_delete(body)
+            return self._bulk_delete(body, oauth)
         if method == "PUT" and rest[:1] == ["sport-settings"] and len(rest) == 2:
             return self._update_sport_settings(rest[1], body)
         return _error(404, f"no athlete route for {method} /{route[1]}")
@@ -280,7 +310,10 @@ class FakeIntervals:
         categories = set(filter(None, params.get("category", "").split(",")))
         return [
             dict(event)
-            for event in sorted(self.events.values(), key=lambda e: e["id"])
+            for event in sorted(
+                [*self.events.values(), *self.app_events.values()],
+                key=lambda e: e["id"],
+            )
             if (day := _day(event.get("start_date_local"))) is not None
             and oldest <= day <= newest
             and (not categories or event.get("category") in categories)
@@ -288,8 +321,8 @@ class FakeIntervals:
 
     # -- writes ----------------------------------------------------------------
 
-    def _bulk_upsert(self, body: Any) -> FakeResponse:
-        """Create or update events keyed on ``external_id``; all or nothing."""
+    def _bulk_upsert(self, body: Any, oauth: bool) -> FakeResponse:
+        """Create or update the caller's events by ``external_id``; all or nothing."""
         if not isinstance(body, list):
             return _error(422, "expected a JSON array of events")
         for payload in body:
@@ -297,16 +330,19 @@ class FakeIntervals:
             if refusal is not None:
                 return refusal
         stored = []
+        events = self.app_events if oauth else self.events
         for payload in body:
             external_id = str(payload["external_id"])
-            existing = self.events.get(external_id)
+            existing = events.get(external_id)
             if existing is None:
                 event_id = self._next_event_id
                 self._next_event_id += 1
                 event = {**payload, "id": event_id}
+                if oauth:
+                    event["oauth_client_id"] = OAUTH_CLIENT_ID
             else:
                 event = {**existing, **payload, "id": existing["id"]}
-            self.events[external_id] = event
+            events[external_id] = event
             stored.append(dict(event))
         return FakeResponse(200, stored)
 
@@ -331,14 +367,25 @@ class FakeIntervals:
                 return FakeResponse(200, _dump(rows[index]))
         return _error(404, f"sport settings {row_id} not found")
 
-    def _bulk_delete(self, body: Any) -> FakeResponse:
-        """Delete events by ``external_id``, ignoring ids that do not exist."""
+    def _bulk_delete(self, body: Any, oauth: bool) -> FakeResponse:
+        """Delete the caller's events by ``external_id``, or any event by ``id``."""
         if not isinstance(body, list):
             return _error(422, "expected a JSON array of {external_id}")
         deleted = 0
+        own = self.app_events if oauth else self.events
         for entry in body:
-            if self.events.pop(str(entry.get("external_id")), None) is not None:
-                deleted += 1
+            if "external_id" in entry:
+                found = [(own, str(entry["external_id"]))]
+            else:
+                found = [
+                    (events, key)
+                    for events in (self.events, self.app_events)
+                    for key, event in events.items()
+                    if event["id"] == entry.get("id")
+                ]
+            for events, key in found:
+                if events.pop(key, None) is not None:
+                    deleted += 1
         return FakeResponse(200, {"eventsDeleted": deleted})
 
     def _pair_activity(self, index: int, body: Any) -> FakeResponse:

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import timedelta
+
 import httpx
 
 from endury.browser import CRASH_MESSAGE, api, rpc
@@ -56,7 +58,12 @@ async def test_boot_on_an_empty_account_seeds_plan_ids(fake):
 
     result = await boot(fake)
 
-    assert result == {"coach_ready": False, "read_only": False, "rev": 0}
+    assert result == {
+        "coach_ready": False,
+        "read_only": False,
+        "connect_owned": False,
+        "rev": 0,
+    }
     assert sequences(app().repos.session)["plans"] >= before
     assert await ok("health") == {"status": "ok", "ready": True, "coach_ready": False}
     assert STORE_ID not in fake.events
@@ -73,7 +80,12 @@ async def test_boot_through_dispatch(fake, monkeypatch):
 
     assert envelope == {
         "ok": True,
-        "result": {"coach_ready": False, "read_only": False, "rev": 0},
+        "result": {
+            "coach_ready": False,
+            "read_only": False,
+            "connect_owned": False,
+            "rev": 0,
+        },
         "unsaved": False,
         "read_only": False,
     }
@@ -142,7 +154,12 @@ async def test_boot_restores_the_store_and_the_conversation(fake):
 
     result = await boot(fake, llm=FakeLLM())
 
-    assert result == {"coach_ready": True, "read_only": False, "rev": 1}
+    assert result == {
+        "coach_ready": True,
+        "read_only": False,
+        "connect_owned": False,
+        "rev": 1,
+    }
     assert (await ok("get_memory"))["content"] == "- Runs before work."
     assert (await ok("conversation_recent"))["messages"] == [
         {"role": "user", "content": "Can I run tomorrow?"},
@@ -500,3 +517,94 @@ async def test_a_read_only_boot_never_saves(fake):
     assert flushed["unsaved"] is False
     assert refused["error_code"] == "store_read_only"
     assert fake.events[STORE_ID]["description"] == note_before
+
+
+# one account, two sign-ins
+
+CONNECT = {"intervals_access_token": "oauth-token"}
+
+
+async def _connect(fake: FakeIntervals) -> dict:
+    """Boot signed in through Connect intervals.icu."""
+    envelope = await rpc.boot(CONNECT, transport=fake.transport())
+    assert envelope["ok"] is True, envelope
+    return envelope["result"]
+
+
+def _workout(day, external_id: str) -> dict:
+    return {
+        "category": "WORKOUT",
+        "external_id": external_id,
+        "start_date_local": f"{day.isoformat()}T00:00:00",
+        "type": "Run",
+        "name": "Easy run",
+        "description": "- 40m Z2",
+        "tags": ["endury"],
+    }
+
+
+async def test_a_connect_boot_takes_over_the_key_devices_events(fake):
+    await boot(fake)
+    await ok("put_memory", content="- First.")
+    yesterday, tomorrow = (SIM_TODAY + timedelta(days=d) for d in (-1, 1))
+    fake.client().bulk_upsert_events(
+        [
+            _workout(yesterday, "coachie:1:done"),
+            _workout(tomorrow, "coachie:1:next"),
+            _workout(tomorrow, "someone-elses"),
+        ]
+    )
+
+    await _connect(fake)
+
+    # A finished session keeps its event; another app's is not Endury's.
+    assert set(fake.events) == {"coachie:1:done", "someone-elses"}
+    taken = fake.app_events["coachie:1:next"]
+    assert {k: taken[k] for k in _workout(tomorrow, "")} == _workout(
+        tomorrow, "coachie:1:next"
+    )
+    assert fake.app_events[STORE_ID]["hide_from_athlete"] is True
+    assert (await ok("get_memory"))["content"] == "- First."
+    # The second write after connecting used to read the key's stale note.
+    await ok("put_memory", content="- Second.")
+    await ok("put_memory", content="- Third.")
+    assert app().rev == 3
+
+
+async def test_a_connect_boot_drops_a_key_copy_it_already_owns(fake):
+    await _connect(fake)
+    await ok("put_memory", content="- Connect's.")
+    stale = {**fake.app_events[STORE_ID], "description": "stale"}
+    del stale["id"], stale["oauth_client_id"]
+    fake.client().bulk_upsert_events([stale])
+
+    await _connect(fake)
+
+    assert STORE_ID not in fake.events
+    assert (await ok("get_memory"))["content"] == "- Connect's."
+
+
+async def test_a_key_boot_on_a_connect_account_is_read_only(fake):
+    await _connect(fake)
+    await ok("put_memory", content="- Connect's.")
+    note_before = fake.app_events[STORE_ID]["description"]
+
+    result = await boot(fake)
+    envelope = await call("put_memory", content="- The key's.")
+
+    assert result["read_only"] is True
+    assert result["connect_owned"] is True
+    assert envelope["error_code"] == "store_read_only"
+    assert fake.events == {}
+    assert fake.app_events[STORE_ID]["description"] == note_before
+
+
+async def test_a_key_session_stops_writing_once_another_device_connects(fake):
+    await boot(fake)
+    await ok("put_memory", content="- First.")
+    fake.app_events[STORE_ID] = {**fake.events.pop(STORE_ID), "oauth_client_id": 1}
+
+    envelope = await call("put_memory", content="- Second.")
+
+    assert envelope["error_code"] == "store_read_only"
+    assert "- First." in fake.app_events[STORE_ID]["description"]
