@@ -130,12 +130,13 @@ let answer = 'look';
 if (connected) {
   screen.status('Checking your intervals.icu…');
   // Best-effort each: a failed read shows its calm or warn variant.
-  const [bootstrap, inputs] = await Promise.all([
+  const [bootstrap, inputs, active] = await Promise.all([
     api.plannerBootstrap().catch(() => null),
     api.getInputs().catch(() => null),
+    api.plannerActive().catch(() => null),
   ]);
   answer = await showReady(screen.body, {
-    settings, bootstrap, inputs, recheck: () => api.getInputs(),
+    settings, bootstrap, inputs, hasPlan: Boolean(active?.active_plan), recheck: () => api.getInputs(),
   });
 }
 

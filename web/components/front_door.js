@@ -311,8 +311,9 @@ function uploadRow(inputs) {
 
 /** The ready screen after the first boot; resolves 'plan' | 'look'.
     `bootstrap` / `inputs` are null when their read failed; `recheck()`
-    resolves fresh inputs for the upload row. */
-export function showReady(body, { settings, bootstrap, inputs, recheck }) {
+    resolves fresh inputs for the upload row. An athlete whose plan is
+    already on intervals.icu (`hasPlan`) is shown to it, not asked to plan. */
+export function showReady(body, { settings, bootstrap, inputs, hasPlan, recheck }) {
   const connected = settings.athlete_name ? `Connected as ${settings.athlete_name}` : 'Connected to intervals.icu';
   return new Promise((resolve) => {
     const root = render(body, `<div class="cb-door" data-step="ready">
@@ -320,12 +321,15 @@ export function showReady(body, { settings, bootstrap, inputs, recheck }) {
         <div class="cb-door__box cb-door__checks">
           ${checkRow('connected', 'ok', connected)}
           ${historyRow(bootstrap)}
+          ${hasPlan ? checkRow('plan', 'ok', 'Your plan is already here') : ''}
           ${uploadRow(inputs)}
         </div>
-        <button type="button" class="cb-confirm__btn cb-confirm__btn--primary cb-door__btn" data-door="plan">Plan my race</button>
+        ${hasPlan
+          ? '<button type="button" class="cb-confirm__btn cb-confirm__btn--primary cb-door__btn" data-door="look">Open my plan</button>'
+          : `<button type="button" class="cb-confirm__btn cb-confirm__btn--primary cb-door__btn" data-door="plan">Plan my race</button>
         <div class="cb-door__row cb-door__row--center">
           <button type="button" class="cb-door__link" data-door="look">Look around first</button>
-        </div>
+        </div>`}
       </div>`, async (door, btn) => {
       if (door === 'plan' || door === 'look') resolve(door);
       if (door !== 'recheck') return;

@@ -1233,6 +1233,23 @@ class Harness:
                 f"({pushed} workouts pushed), finished block's workouts "
                 f"{len(kept)}/{len(before)} kept",
             )
+
+            # A reconnect with the plan in place: the ready screen opens it.
+            page.evaluate("sessionStorage.setItem('endury.ready', '1')")
+            page.reload()
+            self.wait_booted(page, '[data-step="ready"]')
+            page.screenshot(path=str(self.shots / "14_ready_with_plan.png"))
+            plan_row = page.locator('.cb-check[data-check="plan"]').count()
+            plan_ask = page.locator('[data-door="plan"]').count()
+            button = page.locator('[data-door="look"]').inner_text()
+            page.click('[data-door="look"]')
+            self.wait_booted(page, ".cbw-weekrow[data-week-start]")
+            self.record(
+                "14c ready screen with a plan in place opens it, asks for none",
+                plan_row == 1 and plan_ask == 0 and button == "Open my plan",
+                f"plan row={plan_row}, 'Plan my race' buttons={plan_ask}, "
+                f"button={button!r}",
+            )
             ctx.close()
         finally:
             server.stop()
