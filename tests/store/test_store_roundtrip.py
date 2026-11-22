@@ -144,7 +144,6 @@ def _edit_everything(device: Device) -> None:
             by_date["2026-10-16"].id,
             ScheduleRequest(date="2026-10-17"),
             get_repos=lambda: repos,
-            today=TODAY,
             client=client,
         )
     )
