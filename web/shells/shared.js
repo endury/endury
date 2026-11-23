@@ -950,15 +950,17 @@ export async function moveSession(store, ui, sessionId, date, renderAll, {
   }
 }
 
-/** The open plan session of the same sport already on `date`, which a move
-    of `sessionId` there could swap with — or null. A missed one counts: a
-    swap puts two sessions done on each other's days where they happened. */
+/** The open plan session already on `date`, which a move of `sessionId`
+    there could swap with — or null: one of the same sport first, else
+    another (a ride done on the run's day). A missed one counts: a swap
+    puts two sessions done on each other's days where they happened. */
 function swapPartner(store, sessionId, date) {
   const sessions = Object.values(store.state.weeks || {}).flatMap((w) => w.sessions || []);
   const moving = sessions.find((s) => s.id === String(sessionId));
   if (!moving) return null;
-  const other = sessions.find((s) => s.id !== moving.id && s.date === date
-    && s.sport === moving.sport && ['pending', 'missed'].includes(s.status) && !s.done && /^\d+$/.test(String(s.id)));
+  const open = sessions.filter((s) => s.id !== moving.id && s.date === date
+    && ['pending', 'missed'].includes(s.status) && !s.done && /^\d+$/.test(String(s.id)));
+  const other = open.find((s) => s.sport === moving.sport) || open[0];
   return other
     ? { other: { id: other.id, name: other.title.replace(/^[^·]*·\s*/, '') }, from: moving.date }
     : null;
