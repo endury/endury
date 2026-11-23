@@ -174,14 +174,15 @@ function successPart(rubric) {
 
 /** The deterministic brief as {rows, pages, foot}: a row per part the sheet
     carries, none for a part it leaves null, each opening a page when it has
-    more to say than its line. `foot` is the credit its figures need. `back`
-    names the way back from a page. */
+    more to say than its line. How to do it leads and where the athlete
+    stands follows. `foot` is the credit its figures need. `back` names the
+    way back from a page. */
 export function renderBriefSheet(sheet, { back = 'Back' } = {}) {
   const routes = sheet.routes || [];
   const thin = sheet.thin || [];
   const parts = [
-    sheet.state && standPart(sheet.state),
     holdPart(sheet.hold),
+    (sheet.rubric || []).length && successPart(sheet.rubric),
     sheet.fuel && fuelPart(sheet.fuel),
     sheet.conditions && kitPart(sheet.conditions),
     routes.length && {
@@ -191,7 +192,7 @@ export function renderBriefSheet(sheet, { back = 'Back' } = {}) {
     sheet.logistics && {
       id: 'logistics', title: 'Logistics', summary: sheet.logistics.notes, body: note(sheet.logistics.notes),
     },
-    (sheet.rubric || []).length && successPart(sheet.rubric),
+    sheet.state && standPart(sheet.state),
     thin.length && {
       id: 'thin', title: 'Not enough data yet', summary: thin[0], body: thin.map(note).join(''),
     },

@@ -114,18 +114,14 @@ function repeatHero(block, sets) {
   };
 }
 
-/** The workout's main set as the hero says it: {big, lines, sub, warm, cool},
-    or null without steps. The longest repeat block leads, and the same block
-    again counts as sets; without one, the longest step that is not a warm-up
-    or a cool-down, with the others listed under it. */
+/** The workout's main set as the hero says it: {big, lines, sub}, or null
+    without steps. The longest repeat block leads, and the same block again
+    counts as sets; without one, the longest step that is not a warm-up or a
+    cool-down, with the others listed under it. */
 export function mainSet(steps = []) {
   const flat = steps.flatMap((s) => (s.type === 'repeat' && s.reps <= 1 ? s.children : [s]));
   if (!flat.length) return null;
   const longest = (list) => list.reduce((a, b) => (b.sec > a.sec ? b : a));
-  const ends = {
-    warm: flat.find((s) => s.type === 'warmup')?.dur,
-    cool: flat.findLast((s) => s.type === 'cooldown')?.dur,
-  };
   const blocks = flat.filter((s) => s.type === 'repeat');
   if (blocks.length) {
     const main = longest(blocks);
@@ -133,16 +129,17 @@ export function mainSet(steps = []) {
     const sets = blocks.filter((b) => shape(b) === shape(main)).length;
     const more = blocks.length - sets;
     const { big, lines, sub = [] } = repeatHero(main, sets);
-    return { ...ends, big, lines, sub: more ? [...sub, `plus ${more} more block${more === 1 ? '' : 's'}`] : sub };
+    return { big, lines, sub: more ? [...sub, `plus ${more} more block${more === 1 ? '' : 's'}`] : sub };
   }
   const steady = flat.filter((s) => !ENDS.has(s.type));
   const main = longest(steady.length ? steady : flat);
   const others = steady.filter((s) => s !== main).slice(0, 2).map((s) => `plus ${withTarget(s)}`);
-  return { ...ends, big: main.short, lines: [main.target].filter(Boolean), sub: others };
+  return { big: main.short, lines: [main.target].filter(Boolean), sub: others };
 }
 
-/** The hero of a session still to come: the set, its shape, how it starts and
-    ends. Without steps it says the session's length and intensity. */
+/** The hero of a session still to come: the set and its shape; the steps
+    under it say how it starts and ends. Without steps it says the session's
+    length and intensity. */
 function planHero(session) {
   const stat = (label) => session.stats?.find((s) => s.l === label)?.v;
   const set = mainSet(session.workout?.steps) || {
@@ -153,16 +150,12 @@ function planHero(session) {
   if (!set.big) return '';
   const outline = session.outline?.length
     ? renderOutline(session.outline, { height: 36, sport: session.sport }) : '';
-  const ends = set.warm || set.cool
-    ? `<div class="cb-sheet-hero__ends"><span>${set.warm ? `${esc(set.warm)} warm-up` : ''}</span><span>${set.cool ? `${esc(set.cool)} cool-down` : ''}</span></div>`
-    : '';
   return `
     <div class="cb-sheet-hero">
       <div class="cb-sheet-hero__big">${esc(set.big)}</div>
       ${set.lines.map((l) => `<div class="cb-sheet-hero__line">${esc(l)}</div>`).join('')}
       ${(set.sub || []).map((l) => `<div class="cb-sheet-hero__sub">${esc(l)}</div>`).join('')}
       ${outline}
-      ${ends}
     </div>`;
 }
 
@@ -210,18 +203,24 @@ function stepsSummary(session) {
 
 const whyBody = (why) => why.map((p) => `<p class="cb-why-para">${esc(p)}</p>`).join('');
 
-/** The workout in full: every step, the session's idea and its cues; a done
-    session's reason for being here folds in too. Cues are server-authored
-    HTML with <b> labels — compile-time app constants, not user input, so
-    rendered without esc() (see endury/planner/activity/steps.py). */
-function stepsPage(session, back, isDone) {
+/** The workout in full: every step, the session's idea and its cues. A
+    session to come shows it on the overview, where the athlete follows it.
+    Cues are server-authored HTML with <b> labels — compile-time app
+    constants, not user input, so rendered without esc() (see
+    endury/planner/activity/steps.py). */
+function stepsBody(session) {
   const steps = session.workout?.steps || [];
-  const body = [
+  return [
     steps.length ? `<div class="cb-sheet-card">${stepRows(steps)}</div>` : '',
     session.note ? `<div><div class="cb-reschedule-label">The idea</div><p class="cb-why-para">${esc(session.note)}</p></div>` : '',
     session.cues?.length ? `<div><div class="cb-reschedule-label">Cues</div><div class="cb-detail-cues">${session.cues.map((c) => `<div class="cb-detail-cue">${c}</div>`).join('')}</div></div>` : '',
-    isDone && session.why?.length ? `<div><div class="cb-reschedule-label">Why this session</div>${whyBody(session.why)}</div>` : '',
   ].filter(Boolean).join('');
+}
+
+/** A done session's steps behind a row, its reason for being here folded in. */
+function stepsPage(session, back) {
+  const body = stepsBody(session)
+    + (session.why?.length ? `<div><div class="cb-reschedule-label">Why this session</div>${whyBody(session.why)}</div>` : '');
   return body ? sheetPage({ id: 'steps', title: 'All steps and cues', back, body }) : '';
 }
 
@@ -295,7 +294,7 @@ export function renderSessionDetail(session, {
   const feel = session.actual?.execution?.feel ?? null;
   const rpe = session.actual?.execution?.rpe ?? null;
   const numbers = isDone ? numbersPage(session.actual, back) : '';
-  const steps = stepsPage(session, back, isDone);
+  const steps = isDone ? stepsPage(session, back) : '';
   const canMove = !isDone && moveDays.length > 0;
 
   const rows = [
@@ -322,7 +321,7 @@ export function renderSessionDetail(session, {
     color: sportColor(session.sport), title: session.title, meta: metaLine(session, isDone), badge, extra: trashBtn,
   })}
         <div class="cb-sheet__body">
-          ${isDone ? doneHero(session, activityId) : planHero(session)}
+          ${isDone ? doneHero(session, activityId) : planHero(session) + stepsBody(session)}
           <div data-sheet-lead></div>
           ${testNote}
           ${isDone ? renderBriefedFold(briefTakes) : ''}

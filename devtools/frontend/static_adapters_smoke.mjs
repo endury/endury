@@ -351,17 +351,17 @@ for (const fx of fixtures) {
 
   const reps = sessionOf('running', [step('warmup', 900), set(10, step('interval', 150, pace), step('recovery', 20)), step('cooldown', 600)]);
   same('10 × 2:30', mainSet(reps.workout.steps), {
-    warm: '15min', cool: '10min', big: '10 × 2:30', lines: ['4:00–4:15 /km'], sub: ['20s recovery between reps'],
+    big: '10 × 2:30', lines: ['4:00–4:15 /km'], sub: ['20s recovery between reps'],
   });
   const html = renderSessionDetail(reps);
   ['cb-sheet-hero__big">10 × 2:30<', 'cb-sheet-hero__line">4:00–4:15 /km<', 'cb-sheet-hero__sub">20s recovery between reps<',
-    '15min warm-up', '10min cool-down'].forEach((t) => { if (!html.includes(t)) fail('main set', `the hero lacks "${t}"`); });
+    'cb-workout-dur">15min<', 'cb-workout-dur">10min<'].forEach((t) => { if (!html.includes(t)) fail('main set', `the sheet lacks "${t}"`); });
 
   const power = { target_type: 'power', low_watts: 280, high_watts: 295 };
   const block = set(13, step('interval', 30, power), step('recovery', 15));
   const ride = sessionOf('cycling', [step('warmup', 900), block, step('recovery', 150), block, step('recovery', 150), block, step('cooldown', 600)]);
   same('30/15 ride', mainSet(ride.workout.steps), {
-    warm: '15min', cool: '10min', big: '3 × (13 × 30s)', lines: ['280–295 W'], sub: ['15s recovery between reps'],
+    big: '3 × (13 × 30s)', lines: ['280–295 W'], sub: ['15s recovery between reps'],
   });
 
   const steady = sessionOf('running', [step('interval', 5400, zone2)]);
@@ -371,7 +371,7 @@ for (const fx of fixtures) {
     step('interval', 600, zone2), step('cooldown', 300),
   ]);
   same('steady with a second step', mainSet(tempo.workout.steps), {
-    warm: '10min', cool: '5min', big: '40min', lines: ['Z3 · 150–160 bpm'], sub: ['plus 10min · Z2 · 130–145 bpm'],
+    big: '40min', lines: ['Z3 · 150–160 bpm'], sub: ['plus 10min · Z2 · 130–145 bpm'],
   });
 
   if (mainSet(sessionOf('running', [], { name: 'Easy', steps: [] }).workout.steps) !== null) fail('main set', 'a session with no steps has a main set');
@@ -618,15 +618,15 @@ for (const fx of fixtures) {
   const labelsOf = (html) => [...html.matchAll(/cb-reschedule-label">([^<]+)</g)].map((m) => m[1]);
   const has = (html, what, text) => { if (!html.includes(text)) fail('brief', `${what} lacks "${text}"`); };
   const session = renderBriefSheet(sheets.session, { back: 'Long trail run' });
-  const want = ['Where you stand', 'What to hold', 'Fuel and water', 'Kit and conditions',
-    'Routes that fit', 'What success looks like', 'Not enough data yet'];
+  const want = ['What to hold', 'What success looks like', 'Fuel and water', 'Kit and conditions',
+    'Routes that fit', 'Where you stand', 'Not enough data yet'];
   if (JSON.stringify(titlesOf(session.rows)) !== JSON.stringify(want)) fail('brief', `session rows = ${titlesOf(session.rows)}`);
-  const wantPages = ['stand', 'hold', 'fuel', 'kit', 'routes', 'success', 'thin'];
+  const wantPages = ['hold', 'success', 'fuel', 'kit', 'routes', 'stand', 'thin'];
   if (JSON.stringify(pagesOf(session.pages)) !== JSON.stringify(wantPages)) fail('brief', `session pages = ${pagesOf(session.pages)}`);
   const all = session.rows + session.pages;
   ['≤150 bpm', '152–158 bpm', '60–80 g', 'First third under 155 bpm', 'Finish feeling you had another 5 km in you',
     'Coastal Trail Running', '4:30', '7–17 °C', 'No run over three hours'].forEach((t) => has(all, 'session sheet', t));
-  // Proven ground is a subsection of the hold page; the card's own steps have their page.
+  // Proven ground is a subsection of the hold page; the card's own steps are on the sheet.
   if (!labelsOf(session.pages).includes('Proven ground') || labelsOf(session.rows).length) fail('brief', 'Proven ground is not a subsection of the hold page');
   if (all.includes('Easy warm-up 10 min')) fail('brief', 'the hold card still renders');
   if (!session.pages.includes('<span>Long trail run</span>')) fail('brief', 'a page does not name the way back');
@@ -718,14 +718,16 @@ for (const fx of fixtures) {
   const briefTakes = [{ depth: 'quick', created_at: '2026-03-01T08:00:00', text: 'Go out easy.' }];
   const moveDays = [{ date: '2026-03-03', dow: 'Tue', current: false, disabled: false }, { date: '2026-03-04', dow: 'Wed', current: true, disabled: true }];
 
-  clean('planned', renderSessionDetail(toSession(plan('planned'), {}), { moveDays, briefTakes }),
-    ['data-brief-slot', 'Why this session', 'All steps and cues', 'Move to another day']);
+  // A session to come shows its steps, idea and cues on the overview; a done one keeps them behind a row.
+  const planned = renderSessionDetail(toSession(plan('planned'), {}), { moveDays, briefTakes });
+  clean('planned', planned, ['data-brief-slot', 'Why this session', 'cb-workout-row', 'Hold the band.', 'relax the shoulders', 'Move to another day']);
+  if (planned.includes('All steps and cues')) fail('sheet states', 'a planned session hides its steps behind a row');
   clean('planned, brief in flight', renderSessionDetail(toSession(plan('planned'), {}), { moveDays, briefPending: 'full' }),
     ['Writing your full brief…']);
   clean('planned, little known', renderSessionDetail(toSession({ id: 11, date: '2026-03-02', sport: 'cycling', status: 'planned' }, {})), ['data-brief-slot']);
   const finished = plan('completed', { matched_activity_id: 'a1' });
   clean('done', renderSessionDetail(toSession(finished, { a1: act }), { takes, briefTakes }),
-    ['Done as planned', 'data-debrief-slot', 'All the numbers', 'Briefed']);
+    ['Done as planned', 'data-debrief-slot', 'All the numbers', 'Briefed', 'All steps and cues']);
   clean('done, take in flight', renderSessionDetail(toSession(finished, { a1: act }), { pending: 'quick' }), ['Writing your quick take…']);
   clean('done, activity barely known', renderSessionDetail(toSession(finished, { a1: { id: 'a1', sport: 'running' } })), ['data-debrief-slot']);
   clean('done, activity withheld', renderSessionDetail(toSession(finished, { a1: { id: 'a1', sport: 'other', source: 'STRAVA' } })),

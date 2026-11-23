@@ -178,14 +178,6 @@
 .cb-sheet-hero__sub { font-size: var(--cb-fs-sheet-meta); color: var(--cb-text-muted); }
 .cb-sheet-hero .cb-outline, .cb-sheet-hero [data-trace-slot] { margin-top: var(--cb-sp-3-5); }
 .cb-sheet-hero .cb-outline { border: 0; background: none; }
-.cb-sheet-hero__ends {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--cb-sp-3);
-  margin-top: var(--cb-sp-1-5);
-  font-size: var(--cb-fs-sheet-label);
-  color: var(--cb-text-muted);
-}
 
 /* The rows: a title and its one-line answer, in one grouped list. */
 .cb-sheet-list { flex: none; background: var(--cb-surface-3); border-radius: 14px; overflow: hidden; }
